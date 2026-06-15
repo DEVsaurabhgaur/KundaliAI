@@ -1,0 +1,165 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-display: "Cinzel", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-cosmic: var(--cosmic);
+  --color-cosmic-light: var(--cosmic-light);
+  --color-amber-gold: var(--amber-gold);
+  --color-mystic-gold: var(--mystic-gold);
+  --color-nebula: var(--nebula);
+  --color-lavender: var(--lavender);
+  --color-starlight: var(--starlight);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Cosmic palette */
+  --background: oklch(0.12 0.05 290);          /* #050310 deep space */
+  --foreground: oklch(0.96 0.02 295);          /* starlight */
+  --surface: oklch(0.18 0.08 290);             /* #0F0A2E */
+  --surface-elevated: oklch(0.23 0.11 290);    /* #1A1145 */
+
+  --card: oklch(0.18 0.08 290);
+  --card-foreground: oklch(0.96 0.02 295);
+  --popover: oklch(0.18 0.08 290);
+  --popover-foreground: oklch(0.96 0.02 295);
+
+  --cosmic: oklch(0.7 0.2 40);                 /* #FF6B2B orange */
+  --cosmic-light: oklch(0.78 0.17 50);
+  --amber-gold: oklch(0.83 0.15 75);
+  --mystic-gold: oklch(0.88 0.16 90);
+  --nebula: oklch(0.55 0.22 290);              /* purple */
+  --lavender: oklch(0.82 0.09 295);
+  --starlight: oklch(0.97 0.02 295);
+
+  --primary: oklch(0.7 0.2 40);
+  --primary-foreground: oklch(0.12 0.05 290);
+  --secondary: oklch(0.55 0.22 290);
+  --secondary-foreground: oklch(0.97 0.02 295);
+  --muted: oklch(0.23 0.06 290);
+  --muted-foreground: oklch(0.65 0.06 290);
+  --accent: oklch(0.83 0.15 75);
+  --accent-foreground: oklch(0.12 0.05 290);
+  --destructive: oklch(0.6 0.24 25);
+  --destructive-foreground: oklch(0.97 0.02 295);
+  --border: oklch(0.3 0.08 290 / 60%);
+  --input: oklch(0.25 0.08 290);
+  --ring: oklch(0.7 0.2 40);
+
+  --gradient-cosmic: linear-gradient(135deg, oklch(0.7 0.2 40), oklch(0.83 0.15 75));
+  --gradient-nebula: linear-gradient(135deg, oklch(0.55 0.22 290), oklch(0.7 0.2 40));
+  --gradient-aurora: radial-gradient(ellipse at top, oklch(0.55 0.22 290 / 0.4), transparent 60%),
+                     radial-gradient(ellipse at bottom right, oklch(0.7 0.2 40 / 0.25), transparent 50%);
+  --shadow-cosmic: 0 0 60px oklch(0.7 0.2 40 / 0.35);
+  --shadow-nebula: 0 0 80px oklch(0.55 0.22 290 / 0.4);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility text-gradient-cosmic {
+  background: var(--gradient-cosmic);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-nebula {
+  background: linear-gradient(135deg, var(--lavender), var(--cosmic-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-aurora {
+  background-image: var(--gradient-aurora);
+}
+
+@utility shadow-cosmic {
+  box-shadow: var(--shadow-cosmic);
+}
+
+@utility shadow-nebula {
+  box-shadow: var(--shadow-nebula);
+}
+
+@utility glass {
+  background: oklch(0.18 0.08 290 / 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid oklch(0.5 0.12 290 / 0.25);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 30px oklch(0.7 0.2 40 / 0.3); }
+  50% { box-shadow: 0 0 60px oklch(0.7 0.2 40 / 0.6); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 60s linear infinite; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
