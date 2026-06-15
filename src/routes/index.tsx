@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { StarField } from "@/components/StarField";
 import { KundaliChart } from "@/components/KundaliChart";
+import { KundaliGenerator } from "@/components/KundaliGenerator";
 import {
   Sparkles,
   Stars,
@@ -50,18 +51,28 @@ function Nav() {
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-lavender md:flex">
-          <a href="#features" className="transition hover:text-starlight">Features</a>
-          <a href="#chart" className="transition hover:text-starlight">Sample Chart</a>
-          <a href="#pricing" className="transition hover:text-starlight">Pricing</a>
-          <a href="#testimonials" className="transition hover:text-starlight">Reviews</a>
+          <a href="#features" className="transition hover:text-starlight">
+            Features
+          </a>
+          <a href="#chart" className="transition hover:text-starlight">
+            Sample Chart
+          </a>
+          <a href="#pricing" className="transition hover:text-starlight">
+            Pricing
+          </a>
+          <a href="#testimonials" className="transition hover:text-starlight">
+            Reviews
+          </a>
         </nav>
         <div className="flex items-center gap-3">
           <button className="hidden text-sm text-lavender transition hover:text-starlight sm:block">
             Sign in
           </button>
-          <button className="rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-5 py-2.5 text-sm font-semibold text-background shadow-cosmic transition hover:scale-[1.03]">
-            Get Your Kundali
-          </button>
+          <KundaliGenerator>
+            <button className="rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-5 py-2.5 text-sm font-semibold text-background shadow-cosmic transition hover:scale-[1.03]">
+              Get Your Kundali
+            </button>
+          </KundaliGenerator>
         </div>
       </div>
     </header>
@@ -84,31 +95,40 @@ function Hero() {
             Powered by Advanced Vedic AI
           </div>
           <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] text-starlight sm:text-6xl lg:text-7xl">
-            Decode Your<br />
+            Decode Your
+            <br />
             <span className="text-gradient-cosmic">Cosmic Blueprint</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-lavender">
-            A 5,000-year-old science meets modern AI. Generate an accurate Vedic Kundali in
-            seconds and receive a deeply personal reading on your personality, career, love
-            and destiny — written, not templated.
+            A 5,000-year-old science meets modern AI. Generate an accurate Vedic Kundali in seconds
+            and receive a deeply personal reading on your personality, career, love and destiny —
+            written, not templated.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <button className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-7 py-3.5 text-sm font-semibold text-background shadow-cosmic transition animate-glow-pulse hover:scale-[1.03]">
-              Get Your Free Kundali
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </button>
+            <KundaliGenerator>
+              <button className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-7 py-3.5 text-sm font-semibold text-background shadow-cosmic transition animate-glow-pulse hover:scale-[1.03]">
+                Get Your Free Kundali
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </button>
+            </KundaliGenerator>
             <button className="rounded-full border border-border bg-surface/50 px-7 py-3.5 text-sm font-medium text-starlight backdrop-blur transition hover:border-cosmic/50 hover:bg-surface">
               See sample report
             </button>
           </div>
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-gold" /> 3 free Kundalis</div>
-            <div className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-gold" /> No credit card</div>
-            <div className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-gold" /> Instant PDF export</div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-amber-gold" /> 3 free Kundalis
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-amber-gold" /> No credit card
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-amber-gold" /> Instant PDF export
+            </div>
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="relative mx-auto aspect-square w-full max-w-[520px] animate-float"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -164,7 +184,8 @@ function Features() {
             What makes KundaliAI different
           </div>
           <h2 className="mt-5 font-display text-4xl font-bold text-starlight sm:text-5xl">
-            Ancient wisdom,<br />
+            Ancient wisdom,
+            <br />
             <span className="text-gradient-cosmic">re-engineered</span>
           </h2>
           <p className="mt-4 text-lavender">
@@ -183,7 +204,9 @@ function Features() {
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-cosmic/20 to-nebula/20 text-amber-gold ring-1 ring-cosmic/30">
                   <f.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-5 font-display text-xl font-semibold text-starlight">{f.title}</h3>
+                <h3 className="mt-5 font-display text-xl font-semibold text-starlight">
+                  {f.title}
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-lavender">{f.desc}</p>
               </div>
             </div>
@@ -196,10 +219,26 @@ function Features() {
 
 function SampleChart() {
   const insights = [
-    { icon: Brain, label: "Personality", text: "With Atmakaraka Saturn in the 10th house, you carry the weight of destiny in your work…" },
-    { icon: Briefcase, label: "Career", text: "Mercury–Jupiter parivartana suggests excellence in communication, teaching, or strategy…" },
-    { icon: Heart, label: "Love", text: "Venus in Libra in the 7th house — your relationships are governed by aesthetics and balance…" },
-    { icon: Activity, label: "Health", text: "Mars aspecting Lagna grants strong vitality; Saturn's gaze asks for disciplined routines…" },
+    {
+      icon: Brain,
+      label: "Personality",
+      text: "With Atmakaraka Saturn in the 10th house, you carry the weight of destiny in your work…",
+    },
+    {
+      icon: Briefcase,
+      label: "Career",
+      text: "Mercury–Jupiter parivartana suggests excellence in communication, teaching, or strategy…",
+    },
+    {
+      icon: Heart,
+      label: "Love",
+      text: "Venus in Libra in the 7th house — your relationships are governed by aesthetics and balance…",
+    },
+    {
+      icon: Activity,
+      label: "Health",
+      text: "Mars aspecting Lagna grants strong vitality; Saturn's gaze asks for disciplined routines…",
+    },
   ];
 
   return (
@@ -212,7 +251,9 @@ function SampleChart() {
           </div>
         </div>
         <div className="order-1 lg:order-2">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-amber-gold">A peek inside</p>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-amber-gold">
+            A peek inside
+          </p>
           <h2 className="mt-3 font-display text-4xl font-bold text-starlight sm:text-5xl">
             Every reading is <span className="text-gradient-cosmic">uniquely yours</span>
           </h2>
@@ -222,7 +263,10 @@ function SampleChart() {
           </p>
           <div className="mt-8 space-y-3">
             {insights.map((i) => (
-              <div key={i.label} className="flex gap-4 rounded-xl border border-border bg-surface/50 p-4 backdrop-blur">
+              <div
+                key={i.label}
+                className="flex gap-4 rounded-xl border border-border bg-surface/50 p-4 backdrop-blur"
+              >
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-cosmic/20 to-nebula/20 text-amber-gold ring-1 ring-cosmic/20">
                   <i.icon className="h-4 w-4" />
                 </div>
@@ -254,7 +298,13 @@ const PLANS = [
     period: "/mo",
     desc: "For seekers, astrologers, and curious minds.",
     credits: "Unlimited Kundalis",
-    features: ["Everything in Starter", "Compatibility matching", "Dasha forecasts", "Priority AI", "Premium PDF"],
+    features: [
+      "Everything in Starter",
+      "Compatibility matching",
+      "Dasha forecasts",
+      "Priority AI",
+      "Premium PDF",
+    ],
     featured: true,
   },
   {
@@ -263,7 +313,13 @@ const PLANS = [
     period: "/yr",
     desc: "Save 33% — the choice of serious practitioners.",
     credits: "Unlimited + White-label",
-    features: ["Everything in Pro", "White-label PDFs", "API access", "Early features", "1:1 onboarding"],
+    features: [
+      "Everything in Pro",
+      "White-label PDFs",
+      "API access",
+      "Early features",
+      "1:1 onboarding",
+    ],
     featured: false,
   },
 ];
@@ -279,7 +335,9 @@ function Pricing() {
           <h2 className="mt-5 font-display text-4xl font-bold text-starlight sm:text-5xl">
             Choose your <span className="text-gradient-cosmic">cosmic plan</span>
           </h2>
-          <p className="mt-4 text-lavender">Start free with 3 Kundalis. Upgrade when the stars call.</p>
+          <p className="mt-4 text-lavender">
+            Start free with 3 Kundalis. Upgrade when the stars call.
+          </p>
         </div>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
@@ -303,7 +361,9 @@ function Pricing() {
                 <span className="font-display text-5xl font-bold text-starlight">{p.price}</span>
                 {p.period && <span className="text-sm text-muted-foreground">{p.period}</span>}
               </div>
-              <p className="mt-2 font-mono text-xs uppercase tracking-wider text-amber-gold">{p.credits}</p>
+              <p className="mt-2 font-mono text-xs uppercase tracking-wider text-amber-gold">
+                {p.credits}
+              </p>
 
               <button
                 className={`mt-7 w-full rounded-full py-3 text-sm font-semibold transition ${
@@ -371,7 +431,9 @@ function Testimonials() {
             >
               <div className="mb-4 flex gap-0.5 text-amber-gold">
                 {"★★★★★".split("").map((s, i) => (
-                  <span key={i} className="text-sm">{s}</span>
+                  <span key={i} className="text-sm">
+                    {s}
+                  </span>
                 ))}
               </div>
               <blockquote className="text-sm leading-relaxed text-starlight">
@@ -382,7 +444,9 @@ function Testimonials() {
                   {r.name[0]}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate font-display text-sm font-semibold text-starlight">{r.name}</p>
+                  <p className="truncate font-display text-sm font-semibold text-starlight">
+                    {r.name}
+                  </p>
                   <p className="truncate text-xs text-muted-foreground">{r.role}</p>
                 </div>
               </figcaption>
@@ -408,10 +472,12 @@ function CTA() {
             <p className="mx-auto mt-5 max-w-xl text-lavender">
               Generate your first Kundali in under 30 seconds. Free, always.
             </p>
-            <button className="group mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-8 py-4 text-sm font-semibold text-background shadow-cosmic transition hover:scale-[1.03]">
-              Generate My Free Kundali
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </button>
+            <KundaliGenerator>
+              <button className="group mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cosmic to-amber-gold px-8 py-4 text-sm font-semibold text-background shadow-cosmic transition hover:scale-[1.03]">
+                Generate My Free Kundali
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </button>
+            </KundaliGenerator>
           </div>
         </div>
       </div>
@@ -433,23 +499,48 @@ function Footer() {
             </span>
           </Link>
           <p className="mt-4 max-w-sm text-sm text-lavender">
-            Your stars. Your story. Your future. Vedic astrology re-engineered for the modern seeker.
+            Your stars. Your story. Your future. Vedic astrology re-engineered for the modern
+            seeker.
           </p>
         </div>
         <div>
           <p className="font-display text-sm font-semibold text-starlight">Product</p>
           <ul className="mt-3 space-y-2 text-sm text-lavender">
-            <li><a href="#features" className="hover:text-starlight">Features</a></li>
-            <li><a href="#pricing" className="hover:text-starlight">Pricing</a></li>
-            <li><a href="#chart" className="hover:text-starlight">Sample reading</a></li>
+            <li>
+              <a href="#features" className="hover:text-starlight">
+                Features
+              </a>
+            </li>
+            <li>
+              <a href="#pricing" className="hover:text-starlight">
+                Pricing
+              </a>
+            </li>
+            <li>
+              <a href="#chart" className="hover:text-starlight">
+                Sample reading
+              </a>
+            </li>
           </ul>
         </div>
         <div>
           <p className="font-display text-sm font-semibold text-starlight">Company</p>
           <ul className="mt-3 space-y-2 text-sm text-lavender">
-            <li><a href="#" className="hover:text-starlight">About</a></li>
-            <li><a href="#" className="hover:text-starlight">Privacy</a></li>
-            <li><a href="#" className="hover:text-starlight">Contact</a></li>
+            <li>
+              <a href="#" className="hover:text-starlight">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-starlight">
+                Privacy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-starlight">
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
       </div>

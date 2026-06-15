@@ -74,9 +74,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "KundaliAI — Your Stars. Your Story. Your Future." },
-      { name: "description", content: "AI-powered Vedic astrology platform. Get a 100% accurate Kundali with deep personality, career, and destiny analysis powered by Swiss Ephemeris and Claude AI." },
+      {
+        name: "description",
+        content:
+          "AI-powered Vedic astrology platform. Get a 100% accurate Kundali with deep personality, career, and destiny analysis powered by Swiss Ephemeris and Claude AI.",
+      },
       { property: "og:title", content: "KundaliAI — Your Stars. Your Story. Your Future." },
-      { property: "og:description", content: "Decode your cosmic blueprint with AI-powered Vedic astrology. Instant Kundali, personality analysis, and predictions." },
+      {
+        property: "og:description",
+        content:
+          "Decode your cosmic blueprint with AI-powered Vedic astrology. Instant Kundali, personality analysis, and predictions.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

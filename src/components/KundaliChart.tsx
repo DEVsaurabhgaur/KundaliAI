@@ -47,15 +47,43 @@ export function KundaliChart({ className = "" }: { className?: string }) {
               <stop offset="100%" stopColor="oklch(0.55 0.22 290)" />
             </linearGradient>
           </defs>
-          <circle cx="200" cy="200" r="195" fill="none" stroke="url(#ringGrad)" strokeWidth="1" strokeDasharray="2 6" opacity="0.6" />
-          <circle cx="200" cy="200" r="180" fill="none" stroke="url(#ringGrad)" strokeWidth="0.5" opacity="0.4" />
+          <circle
+            cx="200"
+            cy="200"
+            r="195"
+            fill="none"
+            stroke="url(#ringGrad)"
+            strokeWidth="1"
+            strokeDasharray="2 6"
+            opacity="0.6"
+          />
+          <circle
+            cx="200"
+            cy="200"
+            r="180"
+            fill="none"
+            stroke="url(#ringGrad)"
+            strokeWidth="0.5"
+            opacity="0.4"
+          />
           {Array.from({ length: 12 }).map((_, i) => {
             const a = (i * 30 * Math.PI) / 180;
             const x1 = 200 + Math.cos(a) * 180;
             const y1 = 200 + Math.sin(a) * 180;
             const x2 = 200 + Math.cos(a) * 195;
             const y2 = 200 + Math.sin(a) * 195;
-            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="url(#ringGrad)" strokeWidth="1" opacity="0.7" />;
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="url(#ringGrad)"
+                strokeWidth="1"
+                opacity="0.7"
+              />
+            );
           })}
         </svg>
       </div>
@@ -74,7 +102,16 @@ export function KundaliChart({ className = "" }: { className?: string }) {
         </defs>
 
         {/* Outer square */}
-        <rect x="40" y="40" width="320" height="320" fill="url(#bgGrad)" stroke="url(#lineGrad)" strokeWidth="1.5" rx="6" />
+        <rect
+          x="40"
+          y="40"
+          width="320"
+          height="320"
+          fill="url(#bgGrad)"
+          stroke="url(#lineGrad)"
+          strokeWidth="1.5"
+          rx="6"
+        />
         {/* Diagonals */}
         <line x1="40" y1="40" x2="360" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
         <line x1="360" y1="40" x2="40" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
@@ -119,8 +156,22 @@ export function KundaliChart({ className = "" }: { className?: string }) {
         })}
 
         {/* Center sigil */}
-        <circle cx="200" cy="200" r="22" fill="oklch(0.12 0.05 290)" stroke="url(#lineGrad)" strokeWidth="1" />
-        <text x="200" y="206" textAnchor="middle" fontSize="20" fill="oklch(0.88 0.16 90)" fontFamily="Cinzel, serif">
+        <circle
+          cx="200"
+          cy="200"
+          r="22"
+          fill="oklch(0.12 0.05 290)"
+          stroke="url(#lineGrad)"
+          strokeWidth="1"
+        />
+        <text
+          x="200"
+          y="206"
+          textAnchor="middle"
+          fontSize="20"
+          fill="oklch(0.88 0.16 90)"
+          fontFamily="Cinzel, serif"
+        >
           ॐ
         </text>
       </svg>
