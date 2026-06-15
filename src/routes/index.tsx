@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { StarField } from "@/components/StarField";
 import { KundaliChart } from "@/components/KundaliChart";
 import {
@@ -73,7 +74,11 @@ function Hero() {
       <div className="absolute inset-0 bg-aurora" />
       <StarField density={120} />
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 pb-28 pt-16 lg:grid-cols-2 lg:pt-24">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <div className="inline-flex items-center gap-2 rounded-full border border-cosmic/30 bg-surface/60 px-3.5 py-1.5 text-xs font-medium text-amber-gold backdrop-blur">
             <Stars className="h-3.5 w-3.5" />
             Powered by Advanced Vedic AI
@@ -101,11 +106,16 @@ function Hero() {
             <div className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-gold" /> No credit card</div>
             <div className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-gold" /> Instant PDF export</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="relative mx-auto aspect-square w-full max-w-[520px] animate-float">
+        <motion.div 
+          className="relative mx-auto aspect-square w-full max-w-[520px] animate-float"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2 }}
+        >
           <KundaliChart className="h-full w-full" />
-        </div>
+        </motion.div>
       </div>
     </section>
   );
