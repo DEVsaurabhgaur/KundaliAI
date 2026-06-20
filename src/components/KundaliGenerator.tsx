@@ -23,6 +23,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
     dateOfBirth: "",
     timeOfBirth: "",
     placeOfBirth: "",
+    language: "en" as "en" | "hi",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,6 +111,34 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
                 placeholder="E.g., Mumbai, India"
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-cosmic focus:outline-none focus:ring-1 focus:ring-cosmic text-white"
               />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-starlight">Reading Language / भाषा</label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, language: "en" }))}
+                  className={`flex-1 py-2.5 text-sm rounded-md border font-semibold transition ${
+                    formData.language === "en"
+                      ? "bg-gradient-to-r from-cosmic to-amber-gold border-transparent text-background"
+                      : "bg-background border-border text-lavender hover:text-starlight hover:border-cosmic/30"
+                  }`}
+                >
+                  English
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, language: "hi" }))}
+                  className={`flex-1 py-2.5 text-sm rounded-md border font-semibold transition ${
+                    formData.language === "hi"
+                      ? "bg-gradient-to-r from-cosmic to-amber-gold border-transparent text-background"
+                      : "bg-background border-border text-lavender hover:text-starlight hover:border-cosmic/30"
+                  }`}
+                >
+                  हिन्दी (Hindi)
+                </button>
+              </div>
             </div>
 
             {error && (
