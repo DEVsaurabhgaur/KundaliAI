@@ -322,49 +322,196 @@
 
 /* ── Print / PDF Styling ──────────────────────────────────────────────── */
 @media print {
-  body, html {
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-family: 'Inter', system-ui, sans-serif !important;
-    font-size: 12pt !important;
+  /* Base reset for print */
+  *, *::before, *::after {
+    box-sizing: border-box !important;
   }
 
-  header, footer, nav, #features, #pricing, #testimonials, #chart, section, .no-print, button {
+  @page {
+    size: A4 portrait;
+    margin: 20mm 18mm 20mm 18mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #1a1a2e !important;
+    font-family: 'Georgia', 'Times New Roman', serif !important;
+    font-size: 11pt !important;
+    line-height: 1.7 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide everything except the dialog content */
+  header, footer, nav, section, aside,
+  .no-print, .animate-glow-pulse,
+  [data-radix-portal],
+  #features, #pricing, #reviews, #how-it-works {
     display: none !important;
   }
 
-  div[role="dialog"], .DialogContent, [data-state="open"] {
+  /* Make dialog content the main print area */
+  [role="dialog"], [data-state="open"],
+  .DialogContent, [data-radix-dialog-content] {
     position: static !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #1a1a2e !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     overflow: visible !important;
     display: block !important;
+    border-radius: 0 !important;
+    inset: auto !important;
+    transform: none !important;
+    backdrop-filter: none !important;
   }
 
-  .text-gradient-cosmic, .text-gradient-nebula {
+  /* Dialog overlay – hide */
+  [data-radix-dialog-overlay], [data-state="open"][role="dialog"] ~ * {
+    background: none !important;
+  }
+
+  /* ── Print Header (branding strip) ── */
+  [data-radix-dialog-header],
+  .DialogHeader {
+    display: block !important;
+    border-bottom: 3px solid #1a1a2e !important;
+    padding-bottom: 14pt !important;
+    margin-bottom: 20pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Make the gradient title readable */
+  .text-gradient-cosmic,
+  .text-gradient-nebula,
+  [style*="-webkit-text-fill-color"] {
     background: none !important;
     -webkit-background-clip: initial !important;
     background-clip: initial !important;
-    color: #111111 !important;
-    font-weight: 800 !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+    color: #1a1a2e !important;
   }
 
-  p, li, span, h1, h2, h3, h4 { color: #222222 !important; }
-  h1, h2, h3 { page-break-after: avoid; page-break-inside: avoid; }
-  ul, p { page-break-inside: avoid; }
+  /* Headings */
+  h1, h2, h3, h4, h5, h6,
+  [class*="font-display"],
+  [style*="font-family: Cinzel"] {
+    font-family: 'Georgia', serif !important;
+    color: #1a1a2e !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
 
+  h1 { font-size: 22pt !important; margin: 0 0 8pt !important; }
+  h2 { font-size: 16pt !important; margin: 16pt 0 6pt !important; border-bottom: 1px solid #ccc !important; padding-bottom: 4pt !important; }
+  h3 { font-size: 13pt !important; margin: 12pt 0 4pt !important; }
+
+  p, li, span, div {
+    color: #1a1a2e !important;
+  }
+  p { margin: 0 0 10pt !important; }
+  ul, ol { margin: 0 0 10pt 20pt !important; }
+  li { margin-bottom: 4pt !important; }
+
+  /* Kundali Chart SVG */
   svg {
+    display: block !important;
+    max-width: 260pt !important;
+    width: 260pt !important;
+    height: auto !important;
+    margin: 0 auto 20pt !important;
+    page-break-inside: avoid !important;
     filter: none !important;
-    page-break-inside: avoid;
-    max-width: 320px !important;
-    margin: 0 auto !important;
+    opacity: 1 !important;
   }
-  text { fill: #000000 !important; }
-  circle, rect, polygon, line { stroke: #000000 !important; }
+  svg text {
+    fill: #1a1a2e !important;
+  }
+  svg line, svg path, svg polyline, svg rect {
+    stroke: #1a1a2e !important;
+  }
+  svg circle {
+    stroke: #1a1a2e !important;
+    fill-opacity: 0.08 !important;
+  }
+  svg polygon {
+    stroke: #1a1a2e !important;
+    fill-opacity: 0.06 !important;
+  }
+
+  /* Chart container */
+  [class*="aspect-square"],
+  [class*="w-[200px]"] {
+    width: 260pt !important;
+    max-width: 260pt !important;
+    margin: 0 auto 20pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Tabs – hide the tab buttons, show all content */
+  [class*="no-print"],
+  button,
+  .tab-active,
+  [class*="overflow-x-auto"],
+  [class*="border-b"][class*="shrink-0"] {
+    display: none !important;
+  }
+
+  /* Prose content area - make full width and visible */
+  .prose, [class*="prose"] {
+    color: #1a1a2e !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .prose h1, .prose h2, .prose h3 {
+    color: #1a1a2e !important;
+  }
+  .prose p, .prose li {
+    color: #333 !important;
+    font-size: 11pt !important;
+    line-height: 1.75 !important;
+  }
+  .prose strong {
+    color: #1a1a2e !important;
+    font-weight: 700 !important;
+  }
+
+  /* Overflow container fix */
+  [class*="overflow-y-auto"],
+  [class*="overflow-hidden"],
+  [class*="flex-col"],
+  [class*="flex-1"] {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Result action buttons */
+  [class*="px-6 py-4 border-t"] {
+    display: none !important;
+  }
+
+  /* Page break helpers */
+  .page-break { page-break-before: always !important; }
+  blockquote, pre, table, figure { page-break-inside: avoid !important; }
+
+  /* KundaliAI footer watermark on last page */
+  body::after {
+    content: "Generated by KundaliAI · kundaliai-zeta.vercel.app · Powered by Gemini 2.5 Flash" !important;
+    display: block !important;
+    text-align: center !important;
+    font-size: 8pt !important;
+    color: #888 !important;
+    margin-top: 24pt !important;
+    border-top: 1px solid #ddd !important;
+    padding-top: 8pt !important;
+  }
 }
+

@@ -4,6 +4,7 @@ import { StarField } from "@/components/StarField";
 import { KundaliChart } from "@/components/KundaliChart";
 import { KundaliGenerator } from "@/components/KundaliGenerator";
 import { PaymentModal } from "@/components/PaymentModal";
+import { SupportChat } from "@/components/SupportChat";
 import { verifyOwnerBypass } from "@/lib/api/bypass";
 import type { PlanId } from "@/lib/api/payment";
 import {
@@ -541,13 +542,20 @@ function Footer() {
           </div>
         </div>
         <div>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Company</p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Legal</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {["About","Privacy Policy","Terms","Contact"].map(l => (
-              <a key={l} href="#" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-                onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-                onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>{l}</a>
-            ))}
+            <Link to="/terms" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Terms & Conditions</Link>
+            <Link to="/privacy" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Privacy Policy</Link>
+            <Link to="/refund" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>No Refund Policy</Link>
+            <a href="mailto:devsaurabhgaur@gmail.com" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Contact Support</a>
           </div>
         </div>
       </div>
@@ -588,6 +596,7 @@ function Landing() {
         <FinalCTA />
       </main>
       <Footer />
+      <SupportChat />
     </div>
   );
 }
