@@ -28,7 +28,11 @@ export const generateKundali = createServerFn({ method: "POST" })
       return { success: true, reading: aiReading };
     } catch (err: unknown) {
       const error = err as Error;
-      console.error("Kundali Generation Error:", error);
-      return { success: false, error: error.message };
+      console.error("Secure Server Error Log:", error.stack || error.message);
+      const isDev = process.env.NODE_ENV === "development";
+      const clientMessage = isDev
+        ? error.message
+        : "The cosmos is briefly offline. We could not align the stars for you at this moment. Please verify your details and try again.";
+      return { success: false, error: clientMessage };
     }
   });
