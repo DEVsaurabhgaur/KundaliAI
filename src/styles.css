@@ -199,3 +199,70 @@
 .animate-glow-pulse {
   animation: glow-pulse 3s ease-in-out infinite;
 }
+
+/* Print / PDF Styling */
+@media print {
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 12pt !important;
+  }
+
+  /* Hide non-report layout elements */
+  header, footer, nav, #features, #pricing, #testimonials, #chart, section, .no-print, button {
+    display: none !important;
+  }
+
+  /* Allow dialog content to fill print screen */
+  div[role="dialog"], .DialogContent, [data-state="open"] {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .text-gradient-cosmic, .text-gradient-nebula {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    color: #111111 !important;
+    font-weight: 800 !important;
+  }
+
+  p, li, span, h1, h2, h3, h4 {
+    color: #222222 !important;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  ul, p {
+    page-break-inside: avoid;
+  }
+
+  /* Recolor SVG for clear ink printing */
+  svg {
+    filter: none !important;
+    page-break-inside: avoid;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  text {
+    fill: #000000 !important;
+  }
+
+  circle, rect, polygon, line {
+    stroke: #000000 !important;
+  }
+}
