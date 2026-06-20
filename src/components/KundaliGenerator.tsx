@@ -10,6 +10,7 @@ import {
 import { generateKundali } from "../lib/api/kundali";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { SafeMarkdown } from "./ui/markdown";
 
 export function KundaliGenerator({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -140,7 +141,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
             className="mt-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar space-y-4"
           >
             <div className="prose prose-invert prose-sm max-w-none text-lavender">
-              <div dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, "<br/>") }} />
+              <SafeMarkdown text={result} />
             </div>
             <button
               onClick={() => {
