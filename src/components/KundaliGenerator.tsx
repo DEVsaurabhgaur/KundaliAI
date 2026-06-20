@@ -400,7 +400,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
                 </button>
 
                 <p className="text-center text-xs text-lavender/50 pb-1">
-                  ✨ Powered by Vedic AI · Gemini 1.5 Flash
+                  ✨ Powered by Vedic AI · Gemini 2.5 Flash
                 </p>
               </form>
             </motion.div>

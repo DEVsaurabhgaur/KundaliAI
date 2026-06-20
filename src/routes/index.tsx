@@ -126,7 +126,7 @@ function Hero() {
         {/* Text */}
         <div style={{ animation: "fadeSlideUp 0.7s ease both" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,107,43,0.12)", border: "1px solid rgba(255,107,43,0.35)", borderRadius: 99, padding: "7px 16px", fontSize: 12, fontWeight: 700, color: "#FFB347", marginBottom: 28, letterSpacing: "0.02em" }}>
-            <Stars size={14} /> Vedic AI · Powered by Gemini 1.5 Flash
+            <Stars size={14} /> Vedic AI · Powered by Gemini 2.5 Flash
           </div>
 
           <h1 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(40px,6vw,76px)", fontWeight: 800, lineHeight: 1.07, color: "#fff", margin: "0 0 24px" }}>

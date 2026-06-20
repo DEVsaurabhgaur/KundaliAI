@@ -60,7 +60,7 @@ export const generateKundali = createServerFn({ method: "POST" })
       const prompt = `Act as an expert Vedic astrologer. Generate a detailed, mystical, and personalized personality, career, love, and health reading for a person named ${data.name} born on ${data.dateOfBirth} at ${data.timeOfBirth} in ${data.placeOfBirth}. Use standard astrological associations for this date and time. Keep the tone encouraging but deeply insightful, avoiding cliché. Output in clean Markdown format with headers. ${languageInstruction}`;
 
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(prompt);
       const aiReading = result.response.text();
 
