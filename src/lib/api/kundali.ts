@@ -5,10 +5,22 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const generateKundali = createServerFn({ method: "POST" })
   .validator(
     z.object({
-      name: z.string().min(1, "Name is required"),
-      dateOfBirth: z.string(),
-      timeOfBirth: z.string(),
-      placeOfBirth: z.string(),
+      name: z
+        .string()
+        .min(1, "Name is required")
+        .max(100, "Name must be under 100 characters")
+        .transform((val) => val.replace(/[<>'"/;`%]/g, "").trim()),
+      dateOfBirth: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD"),
+      timeOfBirth: z
+        .string()
+        .regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format. Expected HH:MM or HH:MM:SS"),
+      placeOfBirth: z
+        .string()
+        .min(1, "Place of birth is required")
+        .max(150, "Place of birth must be under 150 characters")
+        .transform((val) => val.replace(/[<>'"/;`%]/g, "").trim()),
     }),
   )
   .handler(async ({ data }) => {
