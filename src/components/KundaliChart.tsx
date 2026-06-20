@@ -86,14 +86,25 @@ const HOUSE_POS: Record<number, { x: number; y: number }> = {
   12: { x: 290, y: 75 },
 };
 
-export function KundaliChart({ className = "" }: { className?: string }) {
+export function KundaliChart({
+  className = "",
+  dateOfBirth,
+  timeOfBirth,
+}: {
+  className?: string;
+  dateOfBirth?: string;
+  timeOfBirth?: string;
+}) {
+  const chartData = dateOfBirth
+    ? getCalculatedPlacements(dateOfBirth, timeOfBirth)
+    : SAMPLE;
   return (
     <div className={`relative ${className}`}>
       {/* Halo */}
       <div className="absolute inset-0 -m-10 rounded-full bg-gradient-to-br from-cosmic/30 via-nebula/20 to-transparent blur-3xl" />
 
       {/* Outer rotating zodiac ring */}
-      <div className="absolute inset-0 animate-spin-slow">
+      <div className="absolute inset-0 animate-spin-slow will-change-transform transform-gpu">
         <svg viewBox="0 0 400 400" className="h-full w-full">
           <defs>
             <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
@@ -143,7 +154,7 @@ export function KundaliChart({ className = "" }: { className?: string }) {
       </div>
 
       {/* North Indian diamond chart */}
-      <svg viewBox="0 0 400 400" className="relative h-full w-full">
+      <svg viewBox="0 0 400 400" className="relative h-full w-full transition-transform duration-500 hover:scale-[1.03]">
         <defs>
           <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="oklch(0.83 0.15 75)" />
@@ -178,7 +189,7 @@ export function KundaliChart({ className = "" }: { className?: string }) {
         />
 
         {/* House labels & planets */}
-        {SAMPLE.map((h) => {
+        {chartData.map((h) => {
           const p = HOUSE_POS[h.house];
           return (
             <g key={h.house}>
