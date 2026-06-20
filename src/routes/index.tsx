@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { StarField } from "@/components/StarField";
 import { KundaliChart } from "@/components/KundaliChart";
@@ -8,119 +7,102 @@ import { PaymentModal } from "@/components/PaymentModal";
 import { verifyOwnerBypass } from "@/lib/api/bypass";
 import type { PlanId } from "@/lib/api/payment";
 import {
-  Sparkles, Stars, Moon, Sun, FileDown, Brain,
-  Compass, Heart, Briefcase, Activity, Check, ArrowRight,
-  Menu, X, Shield, Zap, Users, TrendingUp, Quote,
+  Sparkles, Stars, FileDown, Brain, Compass, Heart,
+  Briefcase, Activity, Check, ArrowRight, Menu, X,
+  Shield, Users, TrendingUp, Quote, Moon, Sun,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "KundaliAI — Decode Your Cosmic Blueprint with AI" },
-      {
-        name: "description",
-        content:
-          "AI-powered Vedic astrology. Get your accurate Kundali, personality, career, love and destiny analysis in seconds. Powered by Gemini AI.",
-      },
-      { property: "og:title", content: "KundaliAI — Decode Your Cosmic Blueprint" },
-      { property: "og:description", content: "5,000-year-old Vedic science meets modern AI. Your stars, your story." },
-      { name: "theme-color", content: "#0B0520" },
-    ],
-  }),
   component: Landing,
 });
 
-/* ─── Intersection Observer hook (no framer-motion dependency) ─────────── */
-function useScrollReveal(threshold = 0.15) {
+/* ─── Scroll reveal (pure IntersectionObserver) ──────────────────────── */
+function Reveal({ children, delay = 0, className = "" }: {
+  children: React.ReactNode; delay?: number; className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.12 }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
-
-/* ─── Fade-in wrapper ─────────────────────────────────────────────────── */
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, visible } = useScrollReveal();
+  }, []);
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.65s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.65s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
+    <div ref={ref} className={className} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(32px)",
+      transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+    }}>{children}</div>
   );
 }
 
+/* ─── Gradient text helper ────────────────────────────────────────────── */
+const GradText = ({ children }: { children: React.ReactNode }) => (
+  <span style={{ background: "linear-gradient(135deg,#FF6B2B,#FFD700)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+    {children}
+  </span>
+);
+
 /* ═══════════════════════════════════════════════════════════════════════ */
-/* NAV                                                                    */
+/*  NAV                                                                   */
 /* ═══════════════════════════════════════════════════════════════════════ */
 function Nav({ ownerMode }: { ownerMode: boolean }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-white/10 bg-[oklch(0.1_0.05_290/0.92)] backdrop-blur-xl" : "bg-transparent"}`}>
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[#FF6B2B] to-[#FFB347] shadow-[0_0_20px_#FF6B2B55]">
-            <Sparkles className="h-4.5 w-4.5 text-white" />
+    <header style={{ background: scrolled ? "rgba(10,5,30,0.92)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent", position: "sticky", top: 0, zIndex: 50, transition: "all 0.3s ease" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 68 }}>
+        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg,#FF6B2B,#FFB347)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px #FF6B2B55" }}>
+            <Sparkles size={16} color="#fff" />
           </div>
-          <span className="font-display text-xl font-bold text-white">
-            Kundali<span style={{ background: "linear-gradient(90deg,#FF6B2B,#FFD700)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI</span>
+          <span style={{ fontFamily: "Cinzel,serif", fontSize: 20, fontWeight: 700, color: "#fff" }}>
+            Kundali<GradText>AI</GradText>
           </span>
-          {ownerMode && (
-            <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-300 border border-amber-400/30">★ OWNER</span>
-          )}
+          {ownerMode && <span style={{ background: "rgba(255,183,71,0.2)", border: "1px solid rgba(255,183,71,0.4)", borderRadius: 99, padding: "2px 10px", fontSize: 11, fontWeight: 700, color: "#FFB347" }}>★ OWNER</span>}
         </Link>
 
-        {/* Desktop links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm text-white/60">
-          {[["#features","Features"],["#how-it-works","How It Works"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([href,label])=>(
-            <a key={label} href={href} className="hover:text-white transition-colors duration-200">{label}</a>
+        <nav style={{ display: "flex", gap: 32, fontSize: 14 }} className="hidden md:flex">
+          {[["#features","Features"],["#how-it-works","How It Works"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([h,l]) => (
+            <a key={l} href={h} style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.6)"}
+            >{l}</a>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <KundaliGenerator>
-            <button id="nav-cta" className="hidden sm:flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF6B2B] to-[#FFB347] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_#FF6B2B55] hover:shadow-[0_0_30px_#FF6B2B88] hover:scale-105 active:scale-95 transition-all duration-200">
-              Free Kundali <ArrowRight className="h-3.5 w-3.5" />
+            <button id="nav-cta" style={{ background: "linear-gradient(135deg,#FF6B2B,#FFB347)", border: "none", borderRadius: 99, padding: "10px 22px", fontSize: 14, fontWeight: 700, color: "#fff", cursor: "pointer", boxShadow: "0 0 20px #FF6B2B55", transition: "all 0.2s" }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.05)"; (e.target as HTMLElement).style.boxShadow = "0 0 32px #FF6B2B88"; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 20px #FF6B2B55"; }}>
+              Free Kundali ✨
             </button>
           </KundaliGenerator>
-          <button onClick={() => setMenuOpen(p=>!p)} className="md:hidden rounded-lg border border-white/15 bg-white/5 p-2 text-white/70 hover:text-white transition" aria-label="Menu">
-            {menuOpen ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}
+          <button onClick={() => setOpen(p => !p)} className="md:hidden" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: 8, color: "rgba(255,255,255,0.7)", cursor: "pointer" }}>
+            {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-[oklch(0.12_0.06_290/0.97)] backdrop-blur-xl px-5 py-5 space-y-4">
-          {[["#features","Features"],["#how-it-works","How It Works"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([href,label])=>(
-            <a key={label} href={href} onClick={()=>setMenuOpen(false)} className="block text-sm text-white/70 hover:text-white py-1.5 transition">{label}</a>
+      {open && (
+        <div style={{ background: "rgba(10,5,30,0.97)", borderTop: "1px solid rgba(255,255,255,0.08)", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+          {[["#features","Features"],["#how-it-works","How It Works"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([h,l]) => (
+            <a key={l} href={h} onClick={() => setOpen(false)} style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: 15, padding: "6px 0" }}>{l}</a>
           ))}
           <KundaliGenerator>
-            <button className="w-full mt-2 rounded-full bg-gradient-to-r from-[#FF6B2B] to-[#FFB347] py-3 text-sm font-semibold text-white">
-              Get Free Kundali ✨
+            <button style={{ background: "linear-gradient(135deg,#FF6B2B,#FFB347)", border: "none", borderRadius: 99, padding: "12px 0", fontSize: 15, fontWeight: 700, color: "#fff", cursor: "pointer", width: "100%" }}>
+              ✨ Get Free Kundali
             </button>
           </KundaliGenerator>
         </div>
@@ -130,131 +112,127 @@ function Nav({ ownerMode }: { ownerMode: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */
-/* HERO                                                                   */
+/*  HERO                                                                  */
 /* ═══════════════════════════════════════════════════════════════════════ */
 function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0" style={{background:"radial-gradient(ellipse at 60% 0%, oklch(0.55 0.22 290 / 0.3) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, oklch(0.7 0.2 40 / 0.2) 0%, transparent 50%), oklch(0.1 0.05 290)"}} />
-      <StarField density={100} />
-      {/* glow orbs */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full" style={{background:"radial-gradient(circle, oklch(0.55 0.22 290 / 0.12) 0%, transparent 70%)"}} />
+    <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "center", overflow: "hidden", background: "radial-gradient(ellipse at 65% 0%, rgba(120,40,200,0.22) 0%, transparent 55%), radial-gradient(ellipse at 20% 85%, rgba(255,107,43,0.15) 0%, transparent 50%)" }}>
+      <StarField density={110} />
+      {/* Glow blobs */}
+      <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(100,40,180,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 lg:grid-cols-5 lg:py-24">
-        {/* Left: text — takes 3/5 */}
-        <motion.div className="lg:col-span-3" initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.8,ease:[0.16,1,0.3,1]}}>
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 px-4 py-2 text-xs font-semibold text-[#FFB347] mb-7">
-            <Stars className="h-3.5 w-3.5" />
-            Vedic AI · Powered by Gemini 1.5 Flash
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 48, alignItems: "center", width: "100%" }} className="lg:grid-cols-hero">
+
+        {/* Text */}
+        <div style={{ animation: "fadeSlideUp 0.7s ease both" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,107,43,0.12)", border: "1px solid rgba(255,107,43,0.35)", borderRadius: 99, padding: "7px 16px", fontSize: 12, fontWeight: 700, color: "#FFB347", marginBottom: 28, letterSpacing: "0.02em" }}>
+            <Stars size={14} /> Vedic AI · Powered by Gemini 1.5 Flash
           </div>
 
-          <h1 className="font-display text-5xl font-bold leading-[1.07] text-white sm:text-6xl xl:text-7xl">
+          <h1 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(40px,6vw,76px)", fontWeight: 800, lineHeight: 1.07, color: "#fff", margin: "0 0 24px" }}>
             Your Stars.<br />
-            <span style={{background:"linear-gradient(135deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-              Your Story.
-            </span><br />
+            <GradText>Your Story.</GradText><br />
             Your Destiny.
           </h1>
 
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/70">
-            A 5,000-year-old science, reimagined with AI. Get a deeply personal Vedic Kundali — personality, career, love & health — in under 30 seconds.
+          <p style={{ fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.7, color: "rgba(255,255,255,0.7)", maxWidth: 500, margin: "0 0 40px" }}>
+            A 5,000-year-old science, reimagined with AI. Get a deeply personal Vedic Kundali — personality, career, love &amp; health — in under 30 seconds.
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", marginBottom: 40 }}>
             <KundaliGenerator>
-              <button id="hero-cta" className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#FF6B2B] to-[#FFD700] px-9 py-4 text-base font-bold text-white shadow-[0_0_40px_#FF6B2B66] hover:shadow-[0_0_60px_#FF6B2B99] hover:scale-105 active:scale-95 transition-all duration-200">
-                ✨ Get Free Kundali
-                <ArrowRight className="h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
+              <button id="hero-cta" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "16px 36px", fontSize: 16, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 40px #FF6B2B55", transition: "all 0.2s" }}
+                onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.04)"; (e.target as HTMLElement).style.boxShadow = "0 0 60px #FF6B2B88"; }}
+                onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 40px #FF6B2B55"; }}>
+                ✨ Get Free Kundali <ArrowRight size={18} />
               </button>
             </KundaliGenerator>
-            <a href="#how-it-works" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-7 py-4 text-sm font-medium text-white/80 hover:border-white/40 hover:text-white transition-all duration-200">
+            <a href="#how-it-works" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 99, padding: "15px 28px", fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.8)", textDecoration: "none", transition: "all 0.2s" }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.borderColor = "rgba(255,107,43,0.5)"; (e.target as HTMLElement).style.color = "#fff"; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.18)"; (e.target as HTMLElement).style.color = "rgba(255,255,255,0.8)"; }}>
               See how it works
             </a>
           </div>
 
-          {/* Trust row */}
-          <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/50">
-            {["✅ 3 free readings","✅ No credit card","✅ Instant PDF","✅ Hindi + English"].map(t=>(
-              <span key={t}>{t}</span>
-            ))}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 28px", fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 40 }}>
+            {["✅ 3 free readings","✅ No credit card","✅ Instant PDF","✅ Hindi + English"].map(t => <span key={t}>{t}</span>)}
           </div>
 
-          {/* Social proof numbers */}
-          <div className="mt-10 flex items-center gap-8">
-            {[["12,400+","Readings generated"],["4.9★","Average rating"],["2 min","Avg generation time"]].map(([num,label])=>(
-              <div key={label}>
-                <div className="font-display text-2xl font-bold text-white">{num}</div>
-                <div className="text-xs text-white/50 mt-0.5">{label}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px 40px" }}>
+            {[["12,400+","Readings generated"],["4.9★","Average rating"],["< 30s","Generation time"]].map(([n,l]) => (
+              <div key={l}>
+                <div style={{ fontFamily: "Cinzel,serif", fontSize: 26, fontWeight: 800, color: "#fff" }}>{n}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>{l}</div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right: chart — takes 2/5 */}
-        <motion.div className="lg:col-span-2 relative mx-auto w-full max-w-[380px] aspect-square" initial={{opacity:0,scale:0.9,rotate:-5}} animate={{opacity:1,scale:1,rotate:0}} transition={{duration:1.1,delay:0.15,ease:[0.16,1,0.3,1]}}>
-          <div className="animate-float">
-            <KundaliChart className="h-full w-full" />
-          </div>
-        </motion.div>
+        {/* Chart */}
+        <div style={{ animation: "floatAnim 6s ease-in-out infinite", maxWidth: 420, margin: "0 auto", width: "100%", aspectRatio: "1" }}>
+          <KundaliChart className="h-full w-full" />
+        </div>
       </div>
+
+      <style>{`
+        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes floatAnim { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-14px); } }
+        @media(min-width:1024px) { .lg\\:grid-cols-hero { grid-template-columns: 3fr 2fr !important; } }
+      `}</style>
     </section>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* TRUST BAR                                                              */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Trust Bar ───────────────────────────────────────────────────────── */
 function TrustBar() {
+  const items = ["🔒 256-bit Secure","⚡ Gemini 1.5 Flash AI","🌐 Hindi & English","📄 PDF Export","♾️ Vedic Methodology","🛡️ No Data Selling"];
   return (
-    <div className="border-y border-white/10 bg-white/[0.03]">
-      <div className="mx-auto max-w-6xl px-5 py-4 flex flex-wrap justify-center gap-x-10 gap-y-3 text-xs text-white/40 font-medium">
-        {["🔒 256-bit Secure","⚡ Real Gemini AI","🌐 Hindi & English","📄 PDF Export","♾️ Vedic Methodology","🛡️ No Data Sharing"].map(t=>(
-          <span key={t} className="tracking-wide">{t}</span>
-        ))}
+    <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", padding: "14px 20px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 32px" }}>
+        {items.map(t => <span key={t} style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.38)", letterSpacing: "0.04em" }}>{t}</span>)}
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* HOW IT WORKS                                                           */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── How It Works ────────────────────────────────────────────────────── */
 const STEPS = [
-  { n:"01", icon: "🗓️", title:"Enter Birth Details", desc:"Name, date, time and place of birth — takes 30 seconds." },
-  { n:"02", icon: "🪐", title:"AI Reads Your Chart", desc:"Our Vedic AI calculates exact planetary positions and interprets your unique chart." },
-  { n:"03", icon: "📜", title:"Receive Your Reading", desc:"Get a personalised multi-page reading covering all major life areas." },
+  { n:"01", emoji:"🗓️", title:"Enter Birth Details", desc:"Name, date, time and place of birth — takes just 30 seconds to fill." },
+  { n:"02", emoji:"🪐", title:"AI Reads Your Chart", desc:"Vedic AI calculates exact planetary positions and interprets your unique birth chart." },
+  { n:"03", emoji:"📜", title:"Receive Your Reading", desc:"Get a personalised multi-page reading covering personality, career, love and health." },
 ];
 
 function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-24 relative">
-      <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FFB347] mb-3">Simple Process</p>
-          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">From birth to blueprint<br /><span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>in 3 steps</span></h2>
+    <section id="how-it-works" style={{ padding: "96px 20px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal className="text-center" style={{ textAlign: "center", marginBottom: 60 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.3em", color: "#FFB347", marginBottom: 12 }}>SIMPLE PROCESS</p>
+            <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, color: "#fff", lineHeight: 1.2, margin: "0 0 16px" }}>
+              From birth to blueprint <GradText>in 3 steps</GradText>
+            </h2>
+          </div>
         </Reveal>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {STEPS.map((s,i)=>(
-            <Reveal key={s.n} delay={i*100}>
-              <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-8 hover:border-[#FF6B2B]/40 hover:-translate-y-1 transition-all duration-300 group">
-                {/* connector line */}
-                {i < 2 && <div className="hidden md:block absolute top-14 -right-3 w-6 h-px bg-gradient-to-r from-[#FF6B2B]/50 to-transparent z-10" />}
-                <div className="text-4xl mb-4">{s.icon}</div>
-                <div className="font-mono text-xs font-bold text-[#FF6B2B]/60 mb-2">{s.n}</div>
-                <h3 className="font-display text-xl font-bold text-white mb-2">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-white/60">{s.desc}</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 24 }}>
+          {STEPS.map((s,i) => (
+            <Reveal key={s.n} delay={i*120}>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20, padding: 32, transition: "all 0.3s ease", height: "100%" }}
+                onMouseEnter={e => { (e.currentTarget).style.borderColor = "rgba(255,107,43,0.45)"; (e.currentTarget).style.transform = "translateY(-4px)"; }}
+                onMouseLeave={e => { (e.currentTarget).style.borderColor = "rgba(255,255,255,0.09)"; (e.currentTarget).style.transform = "translateY(0)"; }}>
+                <div style={{ fontSize: 40, marginBottom: 16 }}>{s.emoji}</div>
+                <div style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "rgba(255,107,43,0.6)", marginBottom: 8 }}>{s.n}</div>
+                <h3 style={{ fontFamily: "Cinzel,serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 10 }}>{s.title}</h3>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(255,255,255,0.6)" }}>{s.desc}</p>
               </div>
             </Reveal>
           ))}
         </div>
-
-        <Reveal delay={300} className="text-center mt-10">
+        <Reveal delay={400} className="text-center" style={{ textAlign: "center", marginTop: 40 }}>
           <KundaliGenerator>
-            <button className="inline-flex items-center gap-2 rounded-full border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 px-7 py-3.5 text-sm font-semibold text-[#FFB347] hover:bg-[#FF6B2B]/20 hover:border-[#FF6B2B]/70 transition-all duration-200">
+            <button style={{ background: "rgba(255,107,43,0.12)", border: "1px solid rgba(255,107,43,0.4)", borderRadius: 99, padding: "14px 32px", fontSize: 14, fontWeight: 700, color: "#FFB347", cursor: "pointer", transition: "all 0.2s" }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.background = "rgba(255,107,43,0.22)"; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.background = "rgba(255,107,43,0.12)"; }}>
               Try it free — no signup needed ✨
             </button>
           </KundaliGenerator>
@@ -264,43 +242,42 @@ function HowItWorks() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* FEATURES                                                               */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Features ────────────────────────────────────────────────────────── */
 const FEATURES = [
-  { icon: Compass, title:"Swiss Ephemeris Accuracy", desc:"Planetary positions calculated to arc-second precision — the same data trusted by professional Jyotishis." },
-  { icon: Brain, title:"Deep AI Analysis", desc:"Gemini reads your exact chart and writes flowing prose about your strengths, challenges and potential." },
-  { icon: FileDown, title:"Beautiful PDF Report", desc:"A typeset, print-ready Kundali with North Indian chart, planetary table and full interpretation." },
-  { icon: Moon, title:"Dasha Timelines", desc:"Vimshottari Mahadasha periods mapped to your life — know exactly what's coming and when." },
-  { icon: Sun, title:"Yoga Detection", desc:"Every Raj Yoga, Dhan Yoga and classical combination in your chart found and explained clearly." },
-  { icon: Heart, title:"Compatibility & Love", desc:"Detailed Ashtakoota analysis with Manglik assessment for relationship compatibility." },
+  { Icon: Compass, title:"Swiss Ephemeris Accuracy", desc:"Planetary positions calculated to arc-second precision — same as professional Jyotishis worldwide." },
+  { Icon: Brain, title:"Deep AI Personality", desc:"Gemini reads your exact chart and writes flowing prose about your strengths, challenges and potential." },
+  { Icon: FileDown, title:"Beautiful PDF Report", desc:"Typeset, print-ready Kundali with North Indian chart, planetary table and full interpretation." },
+  { Icon: Moon, title:"Dasha Timelines", desc:"Vimshottari Mahadasha periods mapped to your life — know exactly what's coming and when." },
+  { Icon: Sun, title:"Yoga Detection", desc:"Every Raj Yoga, Dhan Yoga and classical combination in your chart found and explained clearly." },
+  { Icon: Heart, title:"Compatibility & Love", desc:"Ashtakoota analysis with Manglik assessment for complete relationship compatibility." },
 ];
 
 function Features() {
   return (
-    <section id="features" className="py-24 relative">
-      <div className="absolute inset-x-0 top-0 h-px max-w-5xl mx-auto" style={{background:"linear-gradient(90deg,transparent,oklch(0.5 0.15 290 / 0.4),transparent)"}} />
-      <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FFB347] mb-3">What You Get</p>
-          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">
-            Ancient wisdom,{" "}
-            <span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-              re-engineered
-            </span>
-          </h2>
-          <p className="mt-4 text-white/60 max-w-xl mx-auto">Every feature is built on real astronomical data — no horoscope clichés, no vague predictions.</p>
+    <section id="features" style={{ padding: "96px 20px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: 60 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.3em", color: "#FFB347", marginBottom: 12 }}>WHAT YOU GET</p>
+            <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, color: "#fff", margin: "0 0 16px" }}>
+              Ancient wisdom, <GradText>re-engineered</GradText>
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: 500, margin: "0 auto", lineHeight: 1.7 }}>
+              Every feature built on real astronomical data — no horoscope clichés, no vague predictions.
+            </p>
+          </div>
         </Reveal>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f,i)=>(
-            <Reveal key={f.title} delay={i*80}>
-              <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.03] p-7 hover:border-[#FF6B2B]/40 hover:bg-[#FF6B2B]/[0.04] hover:-translate-y-1.5 transition-all duration-300">
-                <div className="grid h-11 w-11 place-items-center rounded-xl border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 text-[#FFB347] mb-5 group-hover:bg-[#FF6B2B]/20 transition">
-                  <f.icon className="h-5 w-5" />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20 }}>
+          {FEATURES.map(({ Icon, title, desc }, i) => (
+            <Reveal key={title} delay={i*80}>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20, padding: 28, transition: "all 0.3s", height: "100%" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,107,43,0.4)"; e.currentTarget.style.background = "rgba(255,107,43,0.04)"; e.currentTarget.style.transform = "translateY(-5px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "translateY(0)"; }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,107,43,0.12)", border: "1px solid rgba(255,107,43,0.3)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+                  <Icon size={20} color="#FFB347" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-white mb-2">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-white/60">{f.desc}</p>
+                <h3 style={{ fontFamily: "Cinzel,serif", fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 10 }}>{title}</h3>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(255,255,255,0.6)" }}>{desc}</p>
               </div>
             </Reveal>
           ))}
@@ -310,81 +287,60 @@ function Features() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* SAMPLE CHART / PREVIEW                                                 */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Live Preview ────────────────────────────────────────────────────── */
 const PREVIEW_TABS = [
-  { id:"personality", icon:Brain, label:"Personality", text:"With your Sun in the 10th house and Atmakaraka Saturn, you carry the weight of destiny in your work. A natural leader who succeeds through discipline rather than luck — your karma demands mastery." },
-  { id:"career", icon:Briefcase, label:"Career", text:"Mercury–Jupiter parivartana in houses 3 and 9 suggests exceptional ability in communication, publishing, or strategy. The 2026–2029 Jupiter Mahadasha is your window for rapid career ascent." },
-  { id:"love", icon:Heart, label:"Love", text:"Venus in Libra in your 7th house — you are designed for partnership. Your soul's deepest growth happens through committed relationships. A transformative love is written in your chart for age 28–32." },
-  { id:"health", icon:Activity, label:"Health", text:"Mars aspecting your Lagna gives strong vitality and recovery ability. Saturn's gaze on the 6th house asks for routine and sleep discipline. Your greatest health asset is your resilient constitution." },
+  { id:"personality", Icon:Brain, label:"Personality", text:"With your Sun in the 10th house and Atmakaraka Saturn, you carry the weight of destiny in your work. A natural leader who succeeds through discipline — your karma demands mastery." },
+  { id:"career", Icon:Briefcase, label:"Career", text:"Mercury–Jupiter parivartana in houses 3 and 9 suggests exceptional ability in communication or strategy. The 2026–2029 Jupiter Mahadasha is your window for rapid career ascent." },
+  { id:"love", Icon:Heart, label:"Love", text:"Venus in Libra in your 7th house — you are designed for deep partnership. Your soul's growth happens through committed relationships. A transformative love is written in your chart." },
+  { id:"health", Icon:Activity, label:"Health", text:"Mars aspecting your Lagna gives strong vitality and recovery ability. Saturn's gaze on the 6th house asks for routine and sleep discipline. You have a remarkably resilient constitution." },
 ];
 
 function SamplePreview() {
-  const [activeTab, setActiveTab] = useState("personality");
-  const active = PREVIEW_TABS.find(t => t.id === activeTab)!;
-
+  const [tab, setTab] = useState("personality");
+  const active = PREVIEW_TABS.find(t => t.id === tab)!;
   return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 50%, oklch(0.55 0.22 290 / 0.08) 0%, transparent 65%)"}} />
-      <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="text-center mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FFB347] mb-3">Live Preview</p>
-          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">
-            Every reading is{" "}
-            <span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-              uniquely yours
-            </span>
-          </h2>
+    <section style={{ padding: "96px 20px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.3em", color: "#FFB347", marginBottom: 12 }}>LIVE PREVIEW</p>
+            <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, color: "#fff", margin: 0 }}>
+              Every reading is <GradText>uniquely yours</GradText>
+            </h2>
+          </div>
         </Reveal>
-
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          {/* Chart */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 48, alignItems: "center" }}>
           <Reveal>
-            <div className="relative mx-auto max-w-[360px] aspect-square">
+            <div style={{ maxWidth: 380, margin: "0 auto", aspectRatio: "1", width: "100%" }}>
               <KundaliChart className="h-full w-full" />
             </div>
           </Reveal>
-
-          {/* Reading preview */}
           <Reveal delay={150}>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden">
+            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, overflow: "hidden" }}>
               {/* Tabs */}
-              <div className="flex border-b border-white/10 overflow-x-auto">
-                {PREVIEW_TABS.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 whitespace-nowrap px-4 py-3.5 text-xs font-semibold border-b-2 transition-all duration-200 ${
-                      activeTab === tab.id
-                        ? "border-[#FF6B2B] text-[#FFB347] bg-[#FF6B2B]/10"
-                        : "border-transparent text-white/50 hover:text-white/80"
-                    }`}
-                  >
-                    <tab.icon className="h-3.5 w-3.5" />
-                    {tab.label}
+              <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.08)", overflowX: "auto" }}>
+                {PREVIEW_TABS.map(t => (
+                  <button key={t.id} onClick={() => setTab(t.id)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "14px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", borderBottom: tab === t.id ? "2px solid #FF6B2B" : "2px solid transparent", background: tab === t.id ? "rgba(255,107,43,0.1)" : "transparent", color: tab === t.id ? "#FFB347" : "rgba(255,255,255,0.5)", whiteSpace: "nowrap", transition: "all 0.2s" }}>
+                    <t.Icon size={14} />{t.label}
                   </button>
                 ))}
               </div>
-
-              {/* Content */}
-              <div className="p-7">
-                <div className="flex items-center gap-2 mb-4">
-                  <active.icon className="h-5 w-5 text-[#FFB347]" />
-                  <h3 className="font-display text-lg font-bold text-white">{active.label} Reading</h3>
+              <div style={{ padding: 28 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <active.Icon size={18} color="#FFB347" />
+                  <h3 style={{ fontFamily: "Cinzel,serif", fontSize: 17, fontWeight: 700, color: "#fff", margin: 0 }}>{active.label} Reading</h3>
                 </div>
-                <p className="text-sm leading-relaxed text-white/75 italic border-l-2 border-[#FF6B2B]/40 pl-4">
+                <p style={{ fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.78)", fontStyle: "italic", borderLeft: "2px solid rgba(255,107,43,0.4)", paddingLeft: 16, margin: "0 0 24px" }}>
                   &ldquo;{active.text}&rdquo;
                 </p>
-                <div className="mt-6 flex items-center gap-2 text-xs text-white/40">
-                  <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 20 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", animation: "pulse 2s infinite" }} />
                   Generated by Gemini AI from your exact chart
                 </div>
-              </div>
-
-              <div className="px-7 pb-6">
                 <KundaliGenerator>
-                  <button className="w-full rounded-xl bg-gradient-to-r from-[#FF6B2B] to-[#FFD700] py-3 text-sm font-bold text-white hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 shadow-[0_0_20px_#FF6B2B44]">
+                  <button style={{ width: "100%", background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 12, padding: "14px 0", fontSize: 14, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 20px #FF6B2B44", transition: "all 0.2s" }}
+                    onMouseEnter={e => { (e.target as HTMLElement).style.opacity = "0.9"; (e.target as HTMLElement).style.transform = "scale(1.01)"; }}
+                    onMouseLeave={e => { (e.target as HTMLElement).style.opacity = "1"; (e.target as HTMLElement).style.transform = "scale(1)"; }}>
                     Get Your Personalised Reading ✨
                   </button>
                 </KundaliGenerator>
@@ -397,99 +353,58 @@ function SamplePreview() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* PRICING                                                                */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Pricing ─────────────────────────────────────────────────────────── */
 const PLANS_UI = [
-  {
-    id: "starter" as PlanId, icon:"⚡",
-    name:"Starter", price:"₹99", note:"One-time",
-    tagline:"Perfect for a personal reading",
-    credits:"3 Kundali Readings",
-    features:["Full Vedic birth chart","AI personality analysis","Career & love reading","PDF export","Lifetime access"],
-    featured: false, cta:"Get Started",
-  },
-  {
-    id: "pro_monthly" as PlanId, icon:"🌟",
-    name:"Pro Monthly", price:"₹499", note:"/month",
-    tagline:"For serious seekers",
-    credits:"Unlimited Readings",
-    features:["Everything in Starter","Compatibility matching","Dasha forecasts","Priority AI processing","Premium PDF design","Email support"],
-    featured: true, cta:"Start Pro",
-  },
-  {
-    id: "pro_yearly" as PlanId, icon:"👑",
-    name:"Yearly Pro", price:"₹3,999", note:"/year",
-    tagline:"Save 33% — most value",
-    credits:"Unlimited + API Access",
-    features:["Everything in Pro Monthly","White-label PDF export","API access (coming soon)","Early feature access","Priority support"],
-    featured: false, cta:"Get Best Value",
-  },
+  { id:"starter" as PlanId, emoji:"⚡", name:"Starter", price:"₹99", note:"One-time", tag:"Perfect for a personal reading", credits:"3 Kundali Readings", features:["Full Vedic birth chart","AI personality analysis","Career & love reading","PDF export","Lifetime access"], featured:false, cta:"Get Started" },
+  { id:"pro_monthly" as PlanId, emoji:"🌟", name:"Pro Monthly", price:"₹499", note:"/month", tag:"For serious seekers", credits:"Unlimited Readings", features:["Everything in Starter","Compatibility matching","Dasha forecasts","Priority AI","Premium PDF","Email support"], featured:true, cta:"Start Pro" },
+  { id:"pro_yearly" as PlanId, emoji:"👑", name:"Yearly Pro", price:"₹3,999", note:"/year", tag:"Save 33% — best value", credits:"Unlimited + API Access", features:["Everything in Pro Monthly","White-label PDFs","API access (soon)","Early features","Priority support"], featured:false, cta:"Get Best Value" },
 ];
 
 function Pricing({ ownerMode }: { ownerMode: boolean }) {
   const [activePlan, setActivePlan] = useState<PlanId | null>(null);
   const [storedPlan, setStoredPlan] = useState<string | null>(null);
-
-  useEffect(() => {
-    try { setStoredPlan(localStorage.getItem("kundali_plan")); } catch { /**/ }
-  }, [activePlan]);
+  useEffect(() => { try { setStoredPlan(localStorage.getItem("kundali_plan")); } catch{} }, [activePlan]);
 
   return (
-    <section id="pricing" className="py-24 relative">
-      <div className="absolute inset-x-0 top-0 h-px max-w-5xl mx-auto" style={{background:"linear-gradient(90deg,transparent,oklch(0.5 0.15 290 / 0.4),transparent)"}} />
-      <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FFB347] mb-3">Pricing</p>
-          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">
-            Choose your{" "}
-            <span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-              cosmic plan
-            </span>
-          </h2>
-          <p className="mt-4 text-white/60">Start free. Upgrade when you're ready. Cancel anytime.</p>
+    <section id="pricing" style={{ padding: "96px 20px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.3em", color: "#FFB347", marginBottom: 12 }}>PRICING</p>
+            <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, color: "#fff", margin: "0 0 14px" }}>
+              Choose your <GradText>cosmic plan</GradText>
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.6)" }}>Start free. Upgrade when ready. Cancel anytime.</p>
+          </div>
         </Reveal>
 
-        <div className="grid gap-6 lg:grid-cols-3 items-start">
-          {PLANS_UI.map((p, i)=>{
-            const isPurchased = storedPlan === p.id || ownerMode;
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 24, alignItems: "start" }}>
+          {PLANS_UI.map((p, i) => {
+            const purchased = storedPlan === p.id || ownerMode;
             return (
               <Reveal key={p.id} delay={i*100}>
-                <div className={`relative rounded-2xl border p-8 transition-all duration-300 ${p.featured ? "border-[#FF6B2B]/70 bg-gradient-to-b from-[#FF6B2B]/10 to-[#FF6B2B]/5 shadow-[0_0_60px_#FF6B2B22] scale-[1.02]" : "border-white/10 bg-white/[0.03] hover:border-white/25"}`}>
-                  {p.featured && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#FF6B2B] to-[#FFD700] px-4 py-1 text-[11px] font-bold text-white whitespace-nowrap">
-                      ✦ MOST POPULAR
-                    </div>
-                  )}
-
-                  <div className="text-3xl mb-4">{p.icon}</div>
-                  <h3 className="font-display text-xl font-bold text-white">{p.name}</h3>
-                  <p className="text-xs text-white/50 mt-1 mb-5">{p.tagline}</p>
-
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="font-display text-4xl font-bold text-white">{p.price}</span>
-                    <span className="text-sm text-white/50">{p.note}</span>
+                <div style={{ position: "relative", borderRadius: 22, border: p.featured ? "1px solid rgba(255,107,43,0.65)" : "1px solid rgba(255,255,255,0.1)", background: p.featured ? "linear-gradient(160deg,rgba(255,107,43,0.1),rgba(255,107,43,0.04))" : "rgba(255,255,255,0.03)", padding: 32, transform: p.featured ? "scale(1.02)" : "scale(1)", boxShadow: p.featured ? "0 0 60px rgba(255,107,43,0.15)" : "none", transition: "all 0.3s" }}>
+                  {p.featured && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "linear-gradient(135deg,#FF6B2B,#FFD700)", borderRadius: 99, padding: "5px 18px", fontSize: 11, fontWeight: 800, color: "#fff", whiteSpace: "nowrap" }}>✦ MOST POPULAR</div>}
+                  {purchased && <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)", borderRadius: 99, padding: "3px 12px", fontSize: 11, fontWeight: 700, color: "#4ade80" }}>✓ Active</div>}
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>{p.emoji}</div>
+                  <h3 style={{ fontFamily: "Cinzel,serif", fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{p.name}</h3>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 20 }}>{p.tag}</p>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 6 }}>
+                    <span style={{ fontFamily: "Cinzel,serif", fontSize: 42, fontWeight: 800, color: "#fff" }}>{p.price}</span>
+                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>{p.note}</span>
                   </div>
-                  <div className="font-mono text-xs text-[#FFB347] mb-7">{p.credits}</div>
-
-                  <button
-                    id={`plan-${p.id}`}
-                    onClick={() => !ownerMode && !isPurchased && setActivePlan(p.id)}
-                    className={`w-full rounded-xl py-3.5 text-sm font-bold transition-all duration-200 mb-7 ${
-                      ownerMode ? "bg-gradient-to-r from-green-500 to-emerald-400 text-white cursor-default" :
-                      isPurchased ? "bg-green-500/20 border border-green-500/30 text-emerald-400" :
-                      p.featured ? "bg-gradient-to-r from-[#FF6B2B] to-[#FFD700] text-white shadow-[0_0_25px_#FF6B2B44] hover:shadow-[0_0_35px_#FF6B2B66] hover:scale-[1.02] active:scale-[0.98]" :
-                      "border border-white/20 text-white hover:border-[#FF6B2B]/50 hover:bg-[#FF6B2B]/10"
-                    }`}
-                  >
-                    {ownerMode ? "★ Owner Access" : isPurchased ? "✓ Active" : p.cta}
+                  <div style={{ fontFamily: "monospace", fontSize: 12, color: "#FFB347", marginBottom: 28 }}>{p.credits}</div>
+                  <button id={`plan-${p.id}`} onClick={() => !ownerMode && !purchased && setActivePlan(p.id)}
+                    style={{ width: "100%", borderRadius: 14, border: p.featured && !purchased && !ownerMode ? "none" : "1px solid rgba(255,255,255,0.2)", padding: "15px 0", fontSize: 15, fontWeight: 800, cursor: ownerMode ? "default" : purchased ? "default" : "pointer", marginBottom: 28, transition: "all 0.2s",
+                      background: ownerMode ? "linear-gradient(135deg,#22c55e,#4ade80)" : purchased ? "rgba(74,222,128,0.15)" : p.featured ? "linear-gradient(135deg,#FF6B2B,#FFD700)" : "rgba(255,255,255,0.06)",
+                      color: ownerMode ? "#fff" : purchased ? "#4ade80" : "#fff",
+                      boxShadow: p.featured && !purchased && !ownerMode ? "0 0 25px rgba(255,107,43,0.4)" : "none" }}>
+                    {ownerMode ? "★ Owner Access" : purchased ? "✓ Active Plan" : p.cta}
                   </button>
-
-                  <ul className="space-y-3 border-t border-white/10 pt-6">
-                    {p.features.map(f=>(
-                      <li key={f} className="flex items-center gap-2.5 text-sm text-white/70">
-                        <Check className="h-4 w-4 shrink-0 text-[#FFB347]" />
-                        {f}
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0, borderTop: "1px solid rgba(255,255,255,0.09)", paddingTop: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+                    {p.features.map(f => (
+                      <li key={f} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "rgba(255,255,255,0.72)" }}>
+                        <Check size={15} color="#FFB347" />{f}
                       </li>
                     ))}
                   </ul>
@@ -498,93 +413,68 @@ function Pricing({ ownerMode }: { ownerMode: boolean }) {
             );
           })}
         </div>
-
-        <Reveal delay={300} className="mt-10 text-center text-sm text-white/40">
-          🔒 Secured by Razorpay · UPI, Cards, NetBanking, Wallets accepted
+        <Reveal delay={300} style={{ textAlign: "center", marginTop: 32, fontSize: 13, color: "rgba(255,255,255,0.38)" }}>
+          🔒 Secured by Razorpay · UPI, Cards, NetBanking, Wallets
         </Reveal>
       </div>
-
-      {activePlan && (
-        <PaymentModal
-          planId={activePlan}
-          onClose={() => setActivePlan(null)}
-          onSuccess={() => {
-            setActivePlan(null);
-            try { setStoredPlan(localStorage.getItem("kundali_plan")); } catch {/**/ }
-          }}
-        />
-      )}
+      {activePlan && <PaymentModal planId={activePlan} onClose={() => setActivePlan(null)} onSuccess={() => { setActivePlan(null); try { setStoredPlan(localStorage.getItem("kundali_plan")); } catch{} }} />}
     </section>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* TESTIMONIALS                                                           */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Reviews ─────────────────────────────────────────────────────────── */
 const REVIEWS = [
-  { name:"Priya Sharma", role:"Yoga Teacher, Pune", initial:"P", color:"from-[#FF6B2B] to-[#FF9A3C]", quote:"I've consulted three astrologers. KundaliAI was sharper and more specific than any of them — and it took 30 seconds.", stars:5 },
-  { name:"Aarav Mehta", role:"Startup Founder, Bengaluru", initial:"A", color:"from-[#7C3AED] to-[#9B59B6]", quote:"The career section called out my Mercury–Jupiter exchange with eerie accuracy. Finally an astrology product built for our generation.", stars:5 },
-  { name:"Sneha Iyer", role:"Product Designer, Mumbai", initial:"S", color:"from-[#0EA5E9] to-[#38BDF8]", quote:"The PDF is gorgeous. I printed it and framed it. KundaliAI made something deeply personal feel like art.", stars:5 },
-  { name:"Rajesh Nair", role:"Finance Manager, Chennai", initial:"R", color:"from-[#10B981] to-[#34D399]", quote:"Skeptic turned believer. The Dasha forecast accurately described my career shift last year. I'm a subscriber for life.", stars:5 },
-  { name:"Ananya Kapoor", role:"Freelancer, Delhi", initial:"A", color:"from-[#F59E0B] to-[#FCD34D]", quote:"Hindi mein jo reading mili, woh bilkul desi feel thi. Mere nani bhi samajh payin! Kisi ne socha bhi nahi hoga aisa.", stars:5 },
-  { name:"Vikram Singh", role:"Teacher, Jaipur", initial:"V", color:"from-[#EC4899] to-[#F472B6]", quote:"My students kept asking about astrology so I tried this. The accuracy shocked me. Now I recommend it to everyone.", stars:5 },
+  { name:"Priya Sharma", role:"Yoga Teacher, Pune", i:"P", color:"#FF6B2B", quote:"I've consulted three astrologers. KundaliAI was sharper and more specific than any of them — and it took 30 seconds." },
+  { name:"Aarav Mehta", role:"Startup Founder, Bengaluru", i:"A", color:"#7C3AED", quote:"The career section called out my Mercury–Jupiter exchange with eerie accuracy. Finally an astrology product for our generation." },
+  { name:"Sneha Iyer", role:"Product Designer, Mumbai", i:"S", color:"#0EA5E9", quote:"The PDF is gorgeous. I printed it and framed it. KundaliAI made something deeply personal feel like art." },
+  { name:"Rajesh Nair", role:"Finance Manager, Chennai", i:"R", color:"#10B981", quote:"Skeptic turned believer. The Dasha forecast accurately described my career shift last year. I'm a subscriber for life." },
+  { name:"Ananya Kapoor", role:"Freelancer, Delhi", i:"A", color:"#F59E0B", quote:"Hindi mein jo reading mili, woh bilkul desi feel thi. Mere nani bhi samajh payin! Bahut achha kaam kiya." },
+  { name:"Vikram Singh", role:"Teacher, Jaipur", i:"V", color:"#EC4899", quote:"My students kept asking about astrology so I tried this. The accuracy shocked me. Now I recommend it to everyone." },
 ];
 
-function Testimonials() {
+function Reviews() {
   return (
-    <section id="reviews" className="py-24 relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px max-w-5xl mx-auto" style={{background:"linear-gradient(90deg,transparent,oklch(0.5 0.15 290 / 0.4),transparent)"}} />
-      <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="text-center mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FFB347] mb-3">Social Proof</p>
-          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">
-            Loved by{" "}
-            <span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-              12,400+ seekers
-            </span>
-          </h2>
+    <section id="reviews" style={{ padding: "96px 20px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.3em", color: "#FFB347", marginBottom: 12 }}>SOCIAL PROOF</p>
+            <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, color: "#fff", margin: 0 }}>
+              Loved by <GradText>12,400+ seekers</GradText>
+            </h2>
+          </div>
         </Reveal>
-
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {REVIEWS.map((r,i)=>(
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20 }}>
+          {REVIEWS.map((r, i) => (
             <Reveal key={r.name} delay={i*70}>
-              <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-white/25 hover:-translate-y-1 transition-all duration-300">
-                <div className="flex gap-0.5 mb-4">
-                  {"★★★★★".split("").map((s,j)=>(
-                    <span key={j} className="text-[#FFB347] text-sm">{s}</span>
-                  ))}
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20, padding: 24, transition: "all 0.3s", height: "100%" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; e.currentTarget.style.transform = "translateY(0)"; }}>
+                <div style={{ color: "#FFB347", fontSize: 14, marginBottom: 14, letterSpacing: 2 }}>★★★★★</div>
+                <div style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "flex-start" }}>
+                  <Quote size={14} color="rgba(255,255,255,0.2)" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(255,255,255,0.8)", margin: 0 }}>{r.quote}</p>
                 </div>
-                <div className="flex items-start gap-1.5 mb-1">
-                  <Quote className="h-4 w-4 text-white/20 shrink-0 mt-0.5" />
-                  <p className="text-sm leading-relaxed text-white/80">{r.quote}</p>
-                </div>
-                <div className="mt-5 flex items-center gap-3">
-                  <div className={`grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br ${r.color} text-white text-sm font-bold font-display shrink-0`}>
-                    {r.initial}
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 18 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: r.color, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Cinzel,serif", fontWeight: 700, color: "#fff", fontSize: 14, flexShrink: 0 }}>{r.i}</div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{r.name}</p>
-                    <p className="text-xs text-white/50">{r.role}</p>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{r.name}</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>{r.role}</div>
                   </div>
                 </div>
               </div>
             </Reveal>
           ))}
         </div>
-
         {/* Stats */}
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-5">
-          {[
-            {icon:Users, num:"12,400+", label:"Happy Users"},
-            {icon:TrendingUp, num:"98%", label:"Satisfaction Rate"},
-            {icon:Stars, num:"4.9★", label:"Average Rating"},
-            {icon:Shield, num:"100%", label:"Privacy Secured"},
-          ].map((s,i)=>(
-            <Reveal key={s.label} delay={i*80}>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center">
-                <s.icon className="h-6 w-6 text-[#FFB347] mx-auto mb-3" />
-                <div className="font-display text-2xl font-bold text-white">{s.num}</div>
-                <div className="text-xs text-white/50 mt-1">{s.label}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 20, marginTop: 48 }}>
+          {[[Users,"12,400+","Happy Users"],[TrendingUp,"98%","Satisfaction Rate"],[Stars,"4.9★","Average Rating"],[Shield,"100%","Privacy Secured"]].map(([Icon, n, l]) => (
+            <Reveal key={l as string} delay={100}>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20, padding: "28px 20px", textAlign: "center" }}>
+                {/* @ts-ignore */}
+                <Icon size={24} color="#FFB347" style={{ margin: "0 auto 12px" }} />
+                <div style={{ fontFamily: "Cinzel,serif", fontSize: 28, fontWeight: 800, color: "#fff" }}>{n as string}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{l as string}</div>
               </div>
             </Reveal>
           ))}
@@ -594,36 +484,30 @@ function Testimonials() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* URGENCY / FINAL CTA                                                    */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Final CTA ───────────────────────────────────────────────────────── */
 function FinalCTA() {
   return (
-    <section className="py-24 relative">
-      <div className="mx-auto max-w-6xl px-5">
+    <section style={{ padding: "96px 20px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl border border-[#FF6B2B]/30 text-center px-8 py-16 sm:px-16" style={{background:"linear-gradient(135deg, oklch(0.2 0.1 290 / 0.9), oklch(0.15 0.07 290))", boxShadow:"0 0 80px #FF6B2B22"}}>
+          <div style={{ position: "relative", borderRadius: 28, border: "1px solid rgba(255,107,43,0.3)", background: "linear-gradient(135deg,rgba(30,15,60,0.95),rgba(20,10,45,0.95))", padding: "80px 40px", textAlign: "center", overflow: "hidden", boxShadow: "0 0 80px rgba(255,107,43,0.1)" }}>
             <StarField density={50} />
-            <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 0%, #FF6B2B12 0%, transparent 60%)"}} />
-            <div className="relative">
-              <div className="text-5xl mb-6">🌌</div>
-              <h2 className="font-display text-4xl font-bold text-white sm:text-5xl mb-4">
-                Your destiny is written.
-                <br />
-                <span style={{background:"linear-gradient(90deg,#FF6B2B,#FFD700)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
-                  Time to read it.
-                </span>
+            <div style={{ position: "relative" }}>
+              <div style={{ fontSize: 56, marginBottom: 24 }}>🌌</div>
+              <h2 style={{ fontFamily: "Cinzel,serif", fontSize: "clamp(32px,4vw,54px)", fontWeight: 800, color: "#fff", lineHeight: 1.2, margin: "0 0 20px" }}>
+                Your destiny is written.<br /><GradText>Time to read it.</GradText>
               </h2>
-              <p className="text-white/65 max-w-xl mx-auto mb-9 text-lg">
-                Over 12,400 people have already decoded their cosmic blueprint. Your first 3 readings are free — no credit card needed.
+              <p style={{ fontSize: 18, color: "rgba(255,255,255,0.65)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.7 }}>
+                Over 12,400 people have decoded their cosmic blueprint. Your first 3 readings are free — no credit card needed.
               </p>
               <KundaliGenerator>
-                <button id="final-cta" className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#FF6B2B] to-[#FFD700] px-10 py-4.5 text-base font-bold text-white shadow-[0_0_50px_#FF6B2B55] hover:shadow-[0_0_70px_#FF6B2B88] hover:scale-105 active:scale-95 transition-all duration-200">
-                  ✨ Generate My Free Kundali
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <button id="final-cta" style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "18px 44px", fontSize: 17, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 50px rgba(255,107,43,0.5)", transition: "all 0.2s" }}
+                  onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.05)"; (e.target as HTMLElement).style.boxShadow = "0 0 70px rgba(255,107,43,0.75)"; }}
+                  onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 50px rgba(255,107,43,0.5)"; }}>
+                  ✨ Generate My Free Kundali <ArrowRight size={20} />
                 </button>
               </KundaliGenerator>
-              <p className="mt-5 text-sm text-white/40">Free forever · No signup · Instant results</p>
+              <p style={{ marginTop: 18, fontSize: 13, color: "rgba(255,255,255,0.35)" }}>Free forever · No signup · Instant results</p>
             </div>
           </div>
         </Reveal>
@@ -632,40 +516,42 @@ function FinalCTA() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* FOOTER                                                                 */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Footer ──────────────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="border-t border-white/10 py-12">
-      <div className="mx-auto max-w-6xl px-5 grid gap-8 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-4">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[#FF6B2B] to-[#FFB347]">
-              <Sparkles className="h-4 w-4 text-white" />
+    <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "60px 20px 32px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 40 }}>
+        <div style={{ gridColumn: "span 2" }}>
+          <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: 16 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg,#FF6B2B,#FFB347)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={15} color="#fff" />
             </div>
-            <span className="font-display text-lg font-bold text-white">KundaliAI</span>
+            <span style={{ fontFamily: "Cinzel,serif", fontSize: 18, fontWeight: 700, color: "#fff" }}>KundaliAI</span>
           </Link>
-          <p className="text-sm text-white/50 max-w-xs">Vedic astrology reimagined with AI. Your stars, your story, your future.</p>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", maxWidth: 280, lineHeight: 1.7 }}>Vedic astrology reimagined with AI. Your stars, your story, your future.</p>
         </div>
         <div>
-          <p className="text-sm font-semibold text-white mb-3">Product</p>
-          <ul className="space-y-2 text-sm text-white/50">
-            {[["#features","Features"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([h,l])=>(
-              <li key={l}><a href={h} className="hover:text-white transition">{l}</a></li>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Product</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[["#features","Features"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([h,l]) => (
+              <a key={l} href={h} style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+                onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+                onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>{l}</a>
             ))}
-          </ul>
+          </div>
         </div>
         <div>
-          <p className="text-sm font-semibold text-white mb-3">Company</p>
-          <ul className="space-y-2 text-sm text-white/50">
-            {["About","Privacy Policy","Terms","Contact"].map(i=>(
-              <li key={i}><a href="#" className="hover:text-white transition">{i}</a></li>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Company</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {["About","Privacy Policy","Terms","Contact"].map(l => (
+              <a key={l} href="#" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+                onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
+                onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>{l}</a>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
-      <div className="mx-auto max-w-6xl px-5 mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-white/30">
+      <div style={{ maxWidth: 1200, margin: "40px auto 0", paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12, fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
         <span>© {new Date().getFullYear()} KundaliAI · Made with ♥ in India</span>
         <span>🔒 Payments secured by Razorpay</span>
       </div>
@@ -673,34 +559,23 @@ function Footer() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* ROOT                                                                   */
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ─── Root ────────────────────────────────────────────────────────────── */
 function Landing() {
   const [ownerMode, setOwnerMode] = useState(false);
-
   useEffect(() => {
-    // Restore owner session
-    try {
-      if (sessionStorage.getItem("kundali_owner") === "1") setOwnerMode(true);
-    } catch {/**/ }
-
-    // Check ?ownerKey= param
+    try { if (sessionStorage.getItem("kundali_owner") === "1") setOwnerMode(true); } catch{}
     const params = new URLSearchParams(window.location.search);
     const token = params.get("ownerKey");
     if (token) {
       window.history.replaceState({}, "", window.location.pathname);
-      verifyOwnerBypass({ data: { token } }).then(res => {
-        if (res.valid) {
-          setOwnerMode(true);
-          try { sessionStorage.setItem("kundali_owner", "1"); } catch {/**/}
-        }
-      }).catch(() => {/**/});
+      verifyOwnerBypass({ data: { token } }).then(r => {
+        if (r.valid) { setOwnerMode(true); try { sessionStorage.setItem("kundali_owner","1"); } catch{} }
+      }).catch(() => {});
     }
   }, []);
 
   return (
-    <div className="relative bg-[oklch(0.1_0.05_290)] min-h-screen overflow-x-hidden">
+    <div style={{ background: "#0A0518", minHeight: "100vh", color: "#fff", fontFamily: "Inter,system-ui,sans-serif" }}>
       <Nav ownerMode={ownerMode} />
       <main>
         <Hero />
@@ -709,7 +584,7 @@ function Landing() {
         <Features />
         <SamplePreview />
         <Pricing ownerMode={ownerMode} />
-        <Testimonials />
+        <Reviews />
         <FinalCTA />
       </main>
       <Footer />
