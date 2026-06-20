@@ -204,7 +204,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
     setResult(null);
 
     try {
-      const res = await generateKundali({ data: formData });
+      const res = await generateKundali({ data: { ...formData } });
       if (res.success && res.reading) {
         setResult(res.reading);
         setActiveTab("all");
