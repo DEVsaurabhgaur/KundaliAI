@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getRequest } from "@tanstack/react-start/server";
+import { isRateLimited } from "../rate-limiter";
+
+const RATE_LIMIT_WINDOW = 2 * 60 * 1000;
+const RATE_LIMIT_MAX = 5;
 
 export const generateKundali = createServerFn({ method: "POST" })
   .validator(
@@ -25,6 +30,23 @@ export const generateKundali = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     try {
+      const req = getRequest();
+      const clientIp = req
+        ? req.headers.get("cf-connecting-ip") ||
+          req.headers.get("x-real-ip") ||
+          req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+          "127.0.0.1"
+        : "127.0.0.1";
+
+      const limit = isRateLimited(clientIp, {
+        windowMs: RATE_LIMIT_WINDOW,
+        maxRequests: RATE_LIMIT_MAX,
+      });
+
+      if (limit.limited) {
+        throw new Error(`Too many requests from this IP. Please try again in ${limit.retryAfter} seconds.`);
+      }
+
       if (!process.env.GEMINI_API_KEY) {
         throw new Error("Gemini API key is not configured.");
       }
