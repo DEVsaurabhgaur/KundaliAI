@@ -40,6 +40,10 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
       const res = await generateKundali({ data: formData });
       if (res.success) {
         setResult(res.reading);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("kundali_cached_reading", res.reading);
+          localStorage.setItem("kundali_cached_form", JSON.stringify(formData));
+        }
       } else {
         setError(res.error || "Failed to generate Kundali");
       }
