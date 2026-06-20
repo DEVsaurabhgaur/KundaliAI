@@ -64,6 +64,30 @@ export const generateKundali = createServerFn({ method: "POST" })
       const result = await model.generateContent(prompt);
       const aiReading = result.response.text();
 
+      // Conditional save to Supabase database if config is active
+      const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
+
+      if (supabaseUrl && supabaseServiceKey) {
+        try {
+          const { createClient } = await import("@supabase/supabase-js");
+          const client = createClient(supabaseUrl, supabaseServiceKey);
+          
+          await client.from("kundalis").insert({
+            name: data.name,
+            date_of_birth: data.dateOfBirth,
+            time_of_birth: data.timeOfBirth,
+            place_of_birth: data.placeOfBirth,
+            latitude: 0.0, // Default coordinates for fallback
+            longitude: 0.0,
+            ai_reading: aiReading,
+          });
+          console.log("Kundali reading successfully saved to database.");
+        } catch (dbErr) {
+          console.error("Supabase Save Warning (skipped):", dbErr);
+        }
+      }
+
       return { success: true, reading: aiReading };
     } catch (err: unknown) {
       const error = err as Error;
