@@ -17,10 +17,12 @@ import process from "node:process";
 //     VITE_ prefix. Never put secrets here — they ship to the browser.
 
 export function getServerConfig() {
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  if (!geminiApiKey) {
+    console.warn("Security Alert: GEMINI_API_KEY environment variable is missing.");
+  }
   return {
-    nodeEnv: process.env.NODE_ENV,
-    // Add server-only values here, e.g.:
-    //   databaseUrl: process.env.DATABASE_URL,
-    //   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    nodeEnv: process.env.NODE_ENV ?? "development",
+    geminiApiKey,
   };
 }
