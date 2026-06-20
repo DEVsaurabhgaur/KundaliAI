@@ -11,6 +11,7 @@ import { generateKundali } from "../lib/api/kundali";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { SafeMarkdown } from "./ui/markdown";
+import { KundaliChart } from "./KundaliChart";
 
 export function KundaliGenerator({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -188,6 +189,10 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
             animate={{ opacity: 1, y: 0 }}
             className="mt-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar space-y-4"
           >
+            <div className="mx-auto w-full max-w-[280px] aspect-square py-2">
+              <KundaliChart dateOfBirth={formData.dateOfBirth} timeOfBirth={formData.timeOfBirth} />
+            </div>
+
             <div className="prose prose-invert prose-sm max-w-none text-lavender">
               <SafeMarkdown text={result} />
             </div>
