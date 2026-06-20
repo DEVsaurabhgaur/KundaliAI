@@ -196,7 +196,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
             <div className="prose prose-invert prose-sm max-w-none text-lavender">
               <SafeMarkdown text={result} />
             </div>
-            <div className="flex gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 no-print">
               <button
                 type="button"
                 onClick={() => {
@@ -208,6 +208,17 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
                 className="flex-1 flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2.5 text-sm font-semibold text-starlight transition hover:bg-surface"
               >
                 New Reading
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.print();
+                  }
+                }}
+                className="flex-1 flex items-center justify-center gap-2 rounded-md border border-cosmic/40 bg-surface/50 px-4 py-2.5 text-sm font-semibold text-amber-gold transition hover:bg-surface"
+              >
+                Download PDF
               </button>
               <button
                 type="button"
