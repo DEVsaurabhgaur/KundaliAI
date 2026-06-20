@@ -26,6 +26,7 @@ export const generateKundali = createServerFn({ method: "POST" })
         .min(1, "Place of birth is required")
         .max(150, "Place of birth must be under 150 characters")
         .transform((val) => val.replace(/[<>'"/;`%]/g, "").trim()),
+      language: z.enum(["en", "hi"]).default("en"),
     }),
   )
   .handler(async ({ data }) => {
