@@ -16,6 +16,60 @@ const SAMPLE = [
   { house: 12, sign: "Pis", planets: ["Ke"] },
 ];
 
+const SIGNS = ["Ari", "Tau", "Gem", "Can", "Leo", "Vir", "Lib", "Sco", "Sag", "Cap", "Aqu", "Pis"];
+
+function getCalculatedPlacements(dateStr: string, timeStr?: string) {
+  const dateParts = dateStr.split("-");
+  const year = parseInt(dateParts[0], 10) || 2026;
+  const month = parseInt(dateParts[1], 10) || 6;
+  const day = parseInt(dateParts[2], 10) || 20;
+
+  let hour = 12;
+  if (timeStr) {
+    const timeParts = timeStr.split(":");
+    hour = parseInt(timeParts[0], 10) || 12;
+  }
+
+  // Vedic Lagna (Ascendant) approximation based on hour & month
+  const lagnaIndex = (Math.floor(hour / 2) + month) % 12;
+
+  // Planetary sign positions calculations (approx)
+  const sunIndex = (month - 1 + (day >= 15 ? 1 : 0)) % 12;
+  const moonIndex = (day + month * 2) % 12;
+  const mercuryIndex = (sunIndex + (day % 3) - 1 + 12) % 12;
+  const venusIndex = (sunIndex + (year % 3) - 1 + 12) % 12;
+  const marsIndex = (year + month + day) % 12;
+  const jupiterIndex = (year - 1980) % 12;
+  const saturnIndex = Math.floor((year - 1980) / 2) % 12;
+  const rahuIndex = (year + day) % 12;
+  const ketuIndex = (rahuIndex + 6) % 12;
+
+  const placements = [];
+  for (let house = 1; house <= 12; house++) {
+    const houseSignIndex = (lagnaIndex + house - 1) % 12;
+    const sign = SIGNS[houseSignIndex];
+    const planets: string[] = [];
+
+    if (sunIndex === houseSignIndex) planets.push("Su");
+    if (moonIndex === houseSignIndex) planets.push("Mo");
+    if (mercuryIndex === houseSignIndex) planets.push("Me");
+    if (venusIndex === houseSignIndex) planets.push("Ve");
+    if (marsIndex === houseSignIndex) planets.push("Ma");
+    if (jupiterIndex === houseSignIndex) planets.push("Ju");
+    if (saturnIndex === houseSignIndex) planets.push("Sa");
+    if (rahuIndex === houseSignIndex) planets.push("Ra");
+    if (ketuIndex === houseSignIndex) planets.push("Ke");
+
+    placements.push({
+      house,
+      sign,
+      planets,
+    });
+  }
+
+  return placements;
+}
+
 // Label position per house (x, y) on a 400x400 viewbox
 const HOUSE_POS: Record<number, { x: number; y: number }> = {
   1: { x: 200, y: 130 },
