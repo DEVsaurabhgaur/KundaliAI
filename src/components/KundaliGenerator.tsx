@@ -18,6 +18,21 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const cachedReading = localStorage.getItem("kundali_cached_reading");
+      const cachedForm = localStorage.getItem("kundali_cached_form");
+      if (cachedReading && cachedForm) {
+        setResult(cachedReading);
+        try {
+          setFormData(JSON.parse(cachedForm));
+        } catch (e) {
+          // Ignore json parse issues
+        }
+      }
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     name: "",
     dateOfBirth: "",
@@ -176,15 +191,29 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
             <div className="prose prose-invert prose-sm max-w-none text-lavender">
               <SafeMarkdown text={result} />
             </div>
-            <button
-              onClick={() => {
-                setResult(null);
-                setOpen(false);
-              }}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-cosmic/50 bg-transparent px-4 py-2.5 text-sm font-semibold text-starlight transition hover:bg-surface"
-            >
-              Close Reading
-            </button>
+            <div className="flex gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setResult(null);
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem("kundali_cached_reading");
+                  }
+                }}
+                className="flex-1 flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2.5 text-sm font-semibold text-starlight transition hover:bg-surface"
+              >
+                New Reading
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-cosmic to-amber-gold px-4 py-2.5 text-sm font-semibold text-background transition hover:opacity-90"
+              >
+                Close
+              </button>
+            </div>
           </motion.div>
         )}
       </DialogContent>
