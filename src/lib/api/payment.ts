@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createHmac } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 /* ─── Plans config (server-side source of truth) ──────────────────────── */
 export const PLANS = {
@@ -81,13 +81,19 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
         return { success: false, error: "Payment gateway not configured." };
       }
 
-      // Verify HMAC-SHA256 signature
+      // Verify HMAC-SHA256 signature in constant-time
       const body = `${data.razorpay_order_id}|${data.razorpay_payment_id}`;
       const expectedSig = createHmac("sha256", keySecret)
         .update(body)
         .digest("hex");
 
-      if (expectedSig !== data.razorpay_signature) {
+      const expectedBuffer = Buffer.from(expectedSig);
+      const signatureBuffer = Buffer.from(data.razorpay_signature);
+      const isSignatureValid =
+        expectedBuffer.length === signatureBuffer.length &&
+        timingSafeEqual(expectedBuffer, signatureBuffer);
+
+      if (!isSignatureValid) {
         console.error("Razorpay signature mismatch! Possible tampering.");
         return { success: false, error: "Payment verification failed. Please contact support." };
       }

@@ -19,13 +19,13 @@ Your goals:
 export const chatSupport = createServerFn({ method: "POST" })
   .validator(
     z.object({
-      message: z.string().min(1, "Message is required"),
+      message: z.string().min(1, "Message is required").max(2000, "Message must not exceed 2000 characters"),
       history: z.array(
         z.object({
           role: z.enum(["user", "model"]),
-          text: z.string(),
+          text: z.string().max(2000, "Text must not exceed 2000 characters"),
         })
-      ).default([]),
+      ).max(30, "History cannot exceed 30 messages").default([]),
     })
   )
   .handler(async ({ data }) => {
