@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 /* ─── Plans config (server-side source of truth) ──────────────────────── */
+// PLANS config defines credits, naming patterns, and values in paises (₹1 = 100 paise)
 export const PLANS = {
   starter: { name: "Starter", amount: 9900, credits: 3 },       // ₹99
   pro_monthly: { name: "Pro Monthly", amount: 49900, credits: -1 }, // ₹499 unlimited
