@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Cosmic guide instruction guidelines: handles refunds, pricing details, and redirect links
 const systemInstruction = `
 You are the KundaliAI Cosmic Support Guide, a helpful and polite virtual assistant for KundaliAI (an AI-powered Vedic astrology platform).
 Your goals:
