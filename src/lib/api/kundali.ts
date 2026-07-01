@@ -73,6 +73,7 @@ export const generateKundali = createServerFn({ method: "POST" })
           const { createClient } = await import("@supabase/supabase-js");
           const client = createClient(supabaseUrl, supabaseServiceKey);
           
+          // Store chart details with default location coordinates fallback
           await client.from("kundalis").insert({
             name: data.name,
             date_of_birth: data.dateOfBirth,
