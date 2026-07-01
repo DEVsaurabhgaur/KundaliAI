@@ -57,6 +57,7 @@ export const generateKundali = createServerFn({ method: "POST" })
         ? "IMPORTANT: You must write the entire analysis and prediction in elegant, standard, and deep Hindi (हिंदी) language using traditional Vedic astrological terms. Keep the tone inspiring and native."
         : "Please write the reading in English.";
 
+      // Format prompt directives depending on user requested translation index
       const prompt = `Act as an expert Vedic astrologer. Generate a detailed, mystical, and personalized personality, career, love, and health reading for a person named ${data.name} born on ${data.dateOfBirth} at ${data.timeOfBirth} in ${data.placeOfBirth}. Use standard astrological associations for this date and time. Keep the tone encouraging but deeply insightful, avoiding cliché. Output in clean Markdown format with headers. ${languageInstruction}`;
 
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
