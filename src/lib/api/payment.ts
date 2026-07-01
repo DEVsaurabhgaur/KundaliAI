@@ -23,6 +23,7 @@ export const createRazorpayOrder = createServerFn({ method: "POST" })
         return { success: false, error: "Payment gateway is not configured." };
       }
 
+      // Define basic Razorpay order options with currency index
       const plan = PLANS[data.planId];
       const orderPayload = {
         amount: plan.amount,
