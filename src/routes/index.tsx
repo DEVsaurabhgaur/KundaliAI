@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-/* ─── Scroll reveal (pure IntersectionObserver) ──────────────────────── */
+// Scroll reveal component using IntersectionObserver
 function Reveal({ children, delay = 0, className = "" }: {
   children: React.ReactNode; delay?: number; className?: string;
 }) {
