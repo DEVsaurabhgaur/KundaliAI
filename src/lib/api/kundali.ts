@@ -17,7 +17,12 @@ export const generateKundali = createServerFn({ method: "POST" })
         .transform((val) => val.replace(/[<>'"/;`%]/g, "").trim()),
       dateOfBirth: z
         .string()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD"),
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+        .refine((val) => {
+          const year = parseInt(val.split("-")[0], 10);
+          const currentYear = new Date().getFullYear();
+          return year >= 1800 && year <= currentYear + 1;
+        }, "Date of birth must be between year 1800 and the present"),
       timeOfBirth: z
         .string()
         .regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format. Expected HH:MM or HH:MM:SS"),
