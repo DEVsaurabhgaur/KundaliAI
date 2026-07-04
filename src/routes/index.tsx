@@ -84,9 +84,7 @@ function Nav({ ownerMode }: { ownerMode: boolean }) {
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <KundaliGenerator>
-            <button id="nav-cta" style={{ background: "linear-gradient(135deg,#FF6B2B,#FFB347)", border: "none", borderRadius: 99, padding: "10px 22px", fontSize: 14, fontWeight: 700, color: "#fff", cursor: "pointer", boxShadow: "0 0 20px #FF6B2B55", transition: "all 0.2s" }}
-              onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.05)"; (e.target as HTMLElement).style.boxShadow = "0 0 32px #FF6B2B88"; }}
-              onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 20px #FF6B2B55"; }}>
+            <button id="nav-cta" className="btn-cosmic-glow" style={{ background: "linear-gradient(135deg,#FF6B2B,#FFB347)", border: "none", borderRadius: 99, padding: "10px 22px", fontSize: 14, fontWeight: 700, color: "#fff", cursor: "pointer", boxShadow: "0 0 20px #FF6B2B55" }}>
               Free Kundali ✨
             </button>
           </KundaliGenerator>
@@ -142,9 +140,7 @@ function Hero() {
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", marginBottom: 40 }}>
             <KundaliGenerator>
-              <button id="hero-cta" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "16px 36px", fontSize: 16, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 40px #FF6B2B55", transition: "all 0.2s" }}
-                onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.04)"; (e.target as HTMLElement).style.boxShadow = "0 0 60px #FF6B2B88"; }}
-                onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 40px #FF6B2B55"; }}>
+              <button id="hero-cta" className="btn-cosmic-glow" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "16px 36px", fontSize: 16, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 40px #FF6B2B55" }}>
                 ✨ Get Free Kundali <ArrowRight size={18} />
               </button>
             </KundaliGenerator>
@@ -502,9 +498,7 @@ function FinalCTA() {
                 Over 12,400 people have decoded their cosmic blueprint. Your first 3 readings are free — no credit card needed.
               </p>
               <KundaliGenerator>
-                <button id="final-cta" style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "18px 44px", fontSize: 17, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 50px rgba(255,107,43,0.5)", transition: "all 0.2s" }}
-                  onMouseEnter={e => { (e.target as HTMLElement).style.transform = "scale(1.05)"; (e.target as HTMLElement).style.boxShadow = "0 0 70px rgba(255,107,43,0.75)"; }}
-                  onMouseLeave={e => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 0 50px rgba(255,107,43,0.5)"; }}>
+                <button id="final-cta" className="btn-cosmic-glow" style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "linear-gradient(135deg,#FF6B2B,#FFD700)", border: "none", borderRadius: 99, padding: "18px 44px", fontSize: 17, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: "0 0 50px rgba(255,107,43,0.5)" }}>
                   ✨ Generate My Free Kundali <ArrowRight size={20} />
                 </button>
               </KundaliGenerator>

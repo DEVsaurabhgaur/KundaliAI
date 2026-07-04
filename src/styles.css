@@ -175,6 +175,18 @@
   }
 }
 
+@utility btn-cosmic-glow {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  will-change: transform, box-shadow;
+  &:hover {
+    transform: scale(1.04) translateY(-1px);
+    box-shadow: 0 0 32px oklch(0.7 0.2 40 / 0.6);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
 @utility text-gradient-cosmic {
   background: var(--gradient-cosmic);
   -webkit-background-clip: text;
