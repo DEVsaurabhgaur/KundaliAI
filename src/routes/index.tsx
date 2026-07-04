@@ -184,8 +184,8 @@ function Hero() {
 function TrustBar() {
   const items = ["🔒 256-bit Secure","⚡ Gemini 2.0 Flash AI","🌐 Hindi & English","📄 PDF Export","♾️ Vedic Methodology","🛡️ No Data Selling"];
   return (
-    <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", padding: "14px 20px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 32px" }}>
+    <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", padding: "14px 20px", minHeight: 52, display: "flex", alignItems: "center" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: "8px 32px", width: "100%" }}>
         {items.map(t => <span key={t} style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.38)", letterSpacing: "0.04em" }}>{t}</span>)}
       </div>
     </div>
