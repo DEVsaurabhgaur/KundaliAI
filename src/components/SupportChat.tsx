@@ -34,6 +34,13 @@ export function SupportChat() {
 
   const handleSend = async (textToSend: string) => {
     if (!textToSend.trim() || loading) return;
+    if (textToSend.length > 500) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: "Cosmic guidance requests must be under 500 characters." },
+      ]);
+      return;
+    }
 
     const userMessage = textToSend.trim();
     setInput("");
