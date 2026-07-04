@@ -31,23 +31,23 @@ function ConstellationLoader() {
             key={i}
             x1={nodes[a].cx} y1={nodes[a].cy}
             x2={nodes[b].cx} y2={nodes[b].cy}
-            stroke="oklch(0.7 0.2 40 / 0.4)"
-            strokeWidth="1"
+            stroke="oklch(0.78 0.17 50 / 0.6)"
+            strokeWidth="1.2"
             strokeDasharray="4 4"
           >
-            <animate attributeName="opacity" values="0.2;0.8;0.2"
-              dur={`${1.2 + i * 0.15}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.2;0.9;0.2"
+              dur={`${1.0 + i * 0.12}s`} repeatCount="indefinite" />
           </line>
         ))}
         {nodes.map((n, i) => (
           <circle key={i} cx={n.cx} cy={n.cy} r="3.5"
-            fill="oklch(0.83 0.15 75)"
-            opacity="0.8"
+            fill="oklch(0.88 0.16 90)"
+            opacity="0.9"
           >
-            <animate attributeName="r" values="2.5;5;2.5"
-              dur={`${1.5 + i * 0.2}s`} repeatCount="indefinite" />
+            <animate attributeName="r" values="2.5;5.5;2.5"
+              dur={`${1.2 + i * 0.15}s`} repeatCount="indefinite" />
             <animate attributeName="opacity" values="0.4;1;0.4"
-              dur={`${1.5 + i * 0.2}s`} repeatCount="indefinite" />
+              dur={`${1.2 + i * 0.15}s`} repeatCount="indefinite" />
           </circle>
         ))}
       </svg>
