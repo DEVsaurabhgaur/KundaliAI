@@ -56,26 +56,29 @@ interface PaymentModalProps {
 function SuccessScreen({ planName, onClose }: { planName: string; onClose: () => void }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center justify-center gap-5 py-10 px-6 text-center"
+      className="flex flex-col items-center justify-center gap-6 py-12 px-6 text-center bg-gradient-to-b from-cosmic/10 to-transparent"
     >
-      <div className="grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-green-500/20 to-emerald-400/10 ring-1 ring-green-500/30">
-        <ShieldCheck className="h-10 w-10 text-emerald-400" />
+      <div className="relative">
+        <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl animate-pulse" />
+        <div className="relative grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-green-500/20 to-emerald-400/10 ring-1 ring-green-500/40 shadow-[0_0_30px_rgba(74,222,128,0.25)]">
+          <ShieldCheck className="h-11 w-11 text-emerald-400" />
+        </div>
       </div>
-      <div>
-        <h3 className="font-display text-2xl font-bold text-starlight">Payment Successful!</h3>
-        <p className="mt-2 text-lavender text-sm">
+      <div className="space-y-2">
+        <h3 className="font-display text-2xl font-bold text-gradient-cosmic">Access Activated</h3>
+        <p className="text-lavender/90 text-sm max-w-sm mx-auto leading-relaxed">
           Welcome to <span className="text-amber-gold font-semibold">{planName}</span>. <br />
-          Your access has been activated.
+          Your cosmic blueprint channels are now open.
         </p>
       </div>
-      <div className="flex flex-col gap-2 w-full max-w-xs">
+      <div className="w-full max-w-xs pt-2">
         <button
           onClick={onClose}
-          className="w-full rounded-lg bg-gradient-to-r from-cosmic to-amber-gold py-2.5 text-sm font-semibold text-[oklch(0.12_0.05_290)] transition hover:opacity-90"
+          className="w-full rounded-lg bg-gradient-to-r from-cosmic to-amber-gold py-3 text-sm font-bold text-[oklch(0.12_0.05_290)] transition-all hover:scale-[1.02] hover:opacity-95 shadow-cosmic"
         >
-          Start Generating Kundalis
+          Begin Readings ✨
         </button>
       </div>
     </motion.div>
