@@ -501,8 +501,9 @@
   }
 
   /* Page break helpers */
-  .page-break { page-break-before: always !important; }
-  blockquote, pre, table, figure { page-break-inside: avoid !important; }
+  .page-break { page-break-before: always !important; break-before: always !important; }
+  blockquote, pre, table, figure, p, li { page-break-inside: avoid !important; break-inside: avoid !important; }
+  h1, h2, h3, h4, h5, h6 { page-break-after: avoid !important; break-after: avoid !important; }
 
   /* KundaliAI footer watermark on last page */
   body::after {
