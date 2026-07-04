@@ -122,7 +122,7 @@ function Hero() {
       {/* Glow blobs */}
       <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(100,40,180,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 20px", display: "grid", gridTemplateColumns: "1fr", gap: 48, alignItems: "center", width: "100%" }} className="lg:grid-cols-hero">
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr", gap: 48, alignItems: "center", width: "100%" }} className="py-12 px-4 md:px-6 lg:py-20 lg:grid-cols-hero">
 
         {/* Text */}
         <div style={{ animation: "fadeSlideUp 0.7s ease both" }}>
