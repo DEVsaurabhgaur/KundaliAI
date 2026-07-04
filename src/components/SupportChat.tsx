@@ -90,7 +90,7 @@ export function SupportChat() {
               </div>
               <div>
                 <h4 className="font-display text-sm font-bold text-amber-gold">Cosmic Support</h4>
-                <p className="text-[10px] text-lavender/60">Powered by Gemini 2.5 Flash</p>
+                <p className="text-[10px] text-lavender/60">Powered by Gemini 2.0 Flash</p>
               </div>
             </div>
             <button
