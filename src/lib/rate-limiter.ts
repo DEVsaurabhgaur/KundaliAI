@@ -10,12 +10,16 @@ export interface RateLimitOptions {
   maxRequests: number;
 }
 
+let lastCleanup = 0;
+const CLEANUP_INTERVAL = 30 * 1000; // 30 seconds
+
 export function isRateLimited(key: string, options: RateLimitOptions): { limited: boolean; retryAfter: number } {
   const now = Date.now();
   const current = store.get(key);
 
-  // Periodic inline cleanup when database gets large to prevent memory leaks
-  if (store.size > 1000) {
+  // Periodic inline cleanup when database gets large to prevent memory leaks, throttled to avoid overhead on every request
+  if (store.size > 1000 && now - lastCleanup > CLEANUP_INTERVAL) {
+    lastCleanup = now;
     for (const [k, val] of store.entries()) {
       if (now > val.resetTime) {
         store.delete(k);
