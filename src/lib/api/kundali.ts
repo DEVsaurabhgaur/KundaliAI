@@ -25,7 +25,13 @@ export const generateKundali = createServerFn({ method: "POST" })
         }, "Date of birth must be between year 1800 and the present"),
       timeOfBirth: z
         .string()
-        .regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format. Expected HH:MM or HH:MM:SS"),
+        .regex(/^\d{2}:\d{2}(:\d{2})?$/, "Invalid time format. Expected HH:MM or HH:MM:SS")
+        .refine((val) => {
+          const parts = val.split(":");
+          const h = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10);
+          return h >= 0 && h < 24 && m >= 0 && m < 60;
+        }, "Time of birth must be a valid 24-hour time representation"),
       placeOfBirth: z
         .string()
         .min(1, "Place of birth is required")
