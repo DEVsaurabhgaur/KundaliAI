@@ -379,12 +379,12 @@ function Pricing({ ownerMode }: { ownerMode: boolean }) {
           </div>
         </Reveal>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 24, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 24, alignItems: "stretch" }}>
           {PLANS_UI.map((p, i) => {
             const purchased = storedPlan === p.id || ownerMode;
             return (
-              <Reveal key={p.id} delay={i*100}>
-                <div style={{ position: "relative", borderRadius: 22, border: p.featured ? "1px solid rgba(255,107,43,0.65)" : "1px solid rgba(255,255,255,0.1)", background: p.featured ? "linear-gradient(160deg,rgba(255,107,43,0.1),rgba(255,107,43,0.04))" : "rgba(255,255,255,0.03)", padding: 32, transform: p.featured ? "scale(1.02)" : "scale(1)", boxShadow: p.featured ? "0 0 60px rgba(255,107,43,0.15)" : "none", transition: "all 0.3s" }}>
+              <Reveal key={p.id} delay={i*100} style={{ height: "100%" }}>
+                <div style={{ position: "relative", borderRadius: 22, border: p.featured ? "1px solid rgba(255,107,43,0.65)" : "1px solid rgba(255,255,255,0.1)", background: p.featured ? "linear-gradient(160deg,rgba(255,107,43,0.1),rgba(255,107,43,0.04))" : "rgba(255,255,255,0.03)", padding: "32px 24px", transform: p.featured ? "scale(1.02)" : "scale(1)", boxShadow: p.featured ? "0 0 60px rgba(255,107,43,0.15)" : "none", transition: "all 0.3s", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   {p.featured && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "linear-gradient(135deg,#FF6B2B,#FFD700)", borderRadius: 99, padding: "5px 18px", fontSize: 11, fontWeight: 800, color: "#fff", whiteSpace: "nowrap" }}>✦ MOST POPULAR</div>}
                   {purchased && <div style={{ position: "absolute", top: 14, right: 14, background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)", borderRadius: 99, padding: "3px 12px", fontSize: 11, fontWeight: 700, color: "#4ade80" }}>✓ Active</div>}
                   <div style={{ fontSize: 36, marginBottom: 12 }}>{p.emoji}</div>
