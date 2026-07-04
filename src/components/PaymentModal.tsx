@@ -130,10 +130,12 @@ export function PaymentModal({ planId, onClose, onSuccess }: PaymentModalProps) 
         if (verified.success) {
           // Store access in localStorage
           try {
-            localStorage.setItem("kundali_plan", planId);
-            localStorage.setItem("kundali_payment_id", verified.paymentId!);
-            localStorage.setItem("kundali_credits", String(verified.credits));
-            localStorage.setItem("kundali_plan_name", verified.planName!);
+            if (typeof window !== "undefined" && window.localStorage) {
+              if (verified.paymentId) localStorage.setItem("kundali_payment_id", verified.paymentId);
+              if (verified.credits !== undefined) localStorage.setItem("kundali_credits", String(verified.credits));
+              if (verified.planName) localStorage.setItem("kundali_plan_name", verified.planName);
+              localStorage.setItem("kundali_plan", planId);
+            }
           } catch { /* ignore */ }
           setStep("success");
           onSuccess?.(planId);
