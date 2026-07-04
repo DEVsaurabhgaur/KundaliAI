@@ -157,12 +157,21 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [touched, setTouched] = useState<Partial<Record<keyof FormErrors, boolean>>>({});
 
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    dateOfBirth: "",
-    timeOfBirth: "",
-    placeOfBirth: "",
-    language: "en",
+  const [formData, setFormData] = useState<FormData>(() => {
+    let initialLang: "en" | "hi" = "en";
+    try {
+      if (typeof window !== "undefined") {
+        const persisted = localStorage.getItem("kundali_preferred_language");
+        if (persisted === "hi" || persisted === "en") initialLang = persisted;
+      }
+    } catch {}
+    return {
+      name: "",
+      dateOfBirth: "",
+      timeOfBirth: "",
+      placeOfBirth: "",
+      language: initialLang,
+    };
   });
 
   // Restore cached reading on open
@@ -367,7 +376,10 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
                       <button
                         key={lang}
                         type="button"
-                        onClick={() => setFormData((p) => ({ ...p, language: lang }))}
+                        onClick={() => {
+                          setFormData((p) => ({ ...p, language: lang }));
+                          try { localStorage.setItem("kundali_preferred_language", lang); } catch {}
+                        }}
                         className={`py-2.5 text-sm rounded-lg border font-semibold transition-all duration-200 ${
                           formData.language === lang
                             ? "bg-gradient-to-r from-cosmic to-amber-gold border-transparent text-[oklch(0.12_0.05_290)]"
