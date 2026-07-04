@@ -139,7 +139,7 @@ export function SupportChat() {
 
           {/* Quick suggestions */}
           <div className="px-4 py-2 border-t border-border/20 shrink-0">
-            <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar-horizontal pb-1.5">
               {QUICK_QUERIES.map((q) => (
                 <button
                   key={q}

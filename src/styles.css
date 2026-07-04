@@ -159,6 +159,22 @@
 
 /* ── Utility classes ──────────────────────────────────────────────────── */
 
+@utility custom-scrollbar-horizontal {
+  &::-webkit-scrollbar {
+    height: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: oklch(0.55 0.22 290 / 0.4);
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.83 0.15 75 / 0.6);
+  }
+}
+
 @utility text-gradient-cosmic {
   background: var(--gradient-cosmic);
   -webkit-background-clip: text;
