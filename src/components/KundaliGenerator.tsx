@@ -214,6 +214,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
 
     const sanitizedData = {
       ...formData,
+      name: formData.name.replace(/[<>'"/;`%]/g, "").trim(),
       placeOfBirth: formData.placeOfBirth.replace(/[<>'"/;`%]/g, "").trim(),
     };
 
