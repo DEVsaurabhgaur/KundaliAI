@@ -216,6 +216,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
       ...formData,
       name: formData.name.replace(/[<>'"/;`%]/g, "").trim(),
       placeOfBirth: formData.placeOfBirth.replace(/[<>'"/;`%]/g, "").trim(),
+      language: (formData.language === "en" || formData.language === "hi") ? formData.language : "en",
     };
 
     try {
