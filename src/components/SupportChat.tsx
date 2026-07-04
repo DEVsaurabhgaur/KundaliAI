@@ -27,8 +27,9 @@ export function SupportChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    const el = messagesEndRef.current;
+    if (el && typeof el.scrollIntoView === "function") {
+      el.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isOpen]);
 
@@ -56,7 +57,7 @@ export function SupportChat() {
         },
       });
 
-      setMessages((prev) => [...prev, { role: "model", text: res.reply }]);
+      setMessages((prev) => [...prev, { role: "model", text: res?.reply || "The guide is offline." }]);
     } catch {
       setMessages((prev) => [
         ...prev,
