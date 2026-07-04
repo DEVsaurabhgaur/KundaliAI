@@ -1,9 +1,17 @@
+const ERROR_PAGE_CONFIG = {
+  title: "This page didn't load",
+  heading: "This page didn't load",
+  description: "Something went wrong on our end. You can try refreshing or head back home.",
+  primaryButtonText: "Try again",
+  secondaryButtonText: "Go home",
+};
+
 export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>This page didn't load</title>
+    <title>${ERROR_PAGE_CONFIG.title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
@@ -18,11 +26,11 @@ export function renderErrorPage(): string {
   </head>
   <body>
     <div class="card">
-      <h1>This page didn't load</h1>
-      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
+      <h1>${ERROR_PAGE_CONFIG.heading}</h1>
+      <p>${ERROR_PAGE_CONFIG.description}</p>
       <div class="actions">
-        <button class="primary" onclick="location.reload()">Try again</button>
-        <a class="secondary" href="/">Go home</a>
+        <button class="primary" onclick="location.reload()">${ERROR_PAGE_CONFIG.primaryButtonText}</button>
+        <a class="secondary" href="/">${ERROR_PAGE_CONFIG.secondaryButtonText}</a>
       </div>
     </div>
   </body>
