@@ -19,6 +19,18 @@ const SAMPLE = [
 
 const SIGNS = ["Ari", "Tau", "Gem", "Can", "Leo", "Vir", "Lib", "Sco", "Sag", "Cap", "Aqu", "Pis"];
 
+const PLANET_NAMES: Record<string, string> = {
+  Su: "Sun (Surya)",
+  Mo: "Moon (Chandra)",
+  Ma: "Mars (Mangal)",
+  Me: "Mercury (Budha)",
+  Ju: "Jupiter (Guru)",
+  Ve: "Venus (Shukra)",
+  Sa: "Saturn (Shani)",
+  Ra: "Rahu (North Node)",
+  Ke: "Ketu (South Node)",
+};
+
 function getCalculatedPlacements(dateStr: string, timeStr?: string) {
   const dateParts = dateStr.split("-");
   const year = parseInt(dateParts[0], 10) || 2026;
@@ -212,17 +224,27 @@ export function KundaliChart({
                 {h.house}
               </text>
               {h.planets.length > 0 && (
-                <text
-                  x={p.x}
-                  y={p.y + 14}
-                  textAnchor="middle"
-                  fontFamily="Cinzel, serif"
-                  fontSize="11"
-                  fontWeight="600"
-                  fill="oklch(0.88 0.16 90)"
-                >
-                  {h.planets.join(" ")}
-                </text>
+                <g>
+                  {h.planets.map((pl, idx) => {
+                    const offset = idx * 16 - ((h.planets.length - 1) * 16) / 2;
+                    return (
+                      <text
+                        key={pl}
+                        x={p.x + offset}
+                        y={p.y + 14}
+                        textAnchor="middle"
+                        fontFamily="Cinzel, serif"
+                        fontSize="11"
+                        fontWeight="600"
+                        fill="oklch(0.88 0.16 90)"
+                        className="cursor-help"
+                      >
+                        <title>{PLANET_NAMES[pl] || pl}</title>
+                        {pl}
+                      </text>
+                    );
+                  })}
+                </g>
               )}
             </g>
           );
