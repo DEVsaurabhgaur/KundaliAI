@@ -24,14 +24,9 @@ export function SafeMarkdown({ text }: SafeMarkdownProps) {
   };
 
   const parseInlineStyles = (content: string): React.ReactNode[] => {
-    // Simple HTML entities escape to prevent raw markup injection
-    const escaped = content
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-
-    // Split by ** for bold
-    const parts = escaped.split(/\*\*([\s\S]*?)\*\*/g);
+    // React text nodes automatically escape raw characters, so we don't manually replace HTML entities
+    // to prevent double-escaping rendering issues on screen.
+    const parts = content.split(/\*\*([\s\S]*?)\*\*/g);
     return parts.map((part, i) => {
       if (i % 2 === 1) {
         return (
