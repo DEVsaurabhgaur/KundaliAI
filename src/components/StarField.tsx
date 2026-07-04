@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 // SSR-safe StarField using a seeded pseudo-random to avoid hydration mismatch
 function seededRand(seed: number) {
@@ -9,7 +9,7 @@ function seededRand(seed: number) {
   };
 }
 
-export function StarField({ density = 80 }: { density?: number }) {
+export const StarField = React.memo(function StarField({ density = 80 }: { density?: number }) {
   const stars = useMemo(() => {
     const rand = seededRand(density * 13 + 7);
     return Array.from({ length: density }, (_, i) => ({
@@ -42,4 +42,4 @@ export function StarField({ density = 80 }: { density?: number }) {
       ))}
     </div>
   );
-}
+});
