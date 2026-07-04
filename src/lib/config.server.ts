@@ -18,7 +18,8 @@ import process from "node:process";
 
 export function getServerConfig() {
   const geminiApiKey = process.env.GEMINI_API_KEY;
-  if (!geminiApiKey) {
+  const isDev = (process.env.NODE_ENV ?? "development") === "development";
+  if (!geminiApiKey && isDev) {
     console.warn("Security Alert: GEMINI_API_KEY environment variable is missing.");
   }
   return {
