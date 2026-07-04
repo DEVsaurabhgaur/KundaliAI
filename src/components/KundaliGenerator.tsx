@@ -204,6 +204,7 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     // Touch all fields
     setTouched({ name: true, dateOfBirth: true, timeOfBirth: true, placeOfBirth: true });
     if (hasErrors) return;
