@@ -203,8 +203,13 @@ export function KundaliGenerator({ children }: { children: React.ReactNode }) {
     setError(null);
     setResult(null);
 
+    const sanitizedData = {
+      ...formData,
+      placeOfBirth: formData.placeOfBirth.replace(/[<>'"/;`%]/g, "").trim(),
+    };
+
     try {
-      const res = await generateKundali({ data: { ...formData } });
+      const res = await generateKundali({ data: sanitizedData });
       if (res.success && res.reading) {
         setResult(res.reading);
         setActiveTab("all");
