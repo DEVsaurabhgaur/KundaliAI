@@ -14,14 +14,16 @@ export function renderErrorPage(): string {
     <title>${ERROR_PAGE_CONFIG.title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
-      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem; }
-      h1 { font-size: 1.25rem; margin: 0 0 0.5rem; }
-      p { color: #4b5563; margin: 0 0 1.5rem; }
-      .actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-      a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
-      .primary { background: #111; color: #fff; }
-      .secondary { background: #fff; color: #111; border-color: #d1d5db; }
+      body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #0A0518; color: #F8F9FA; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
+      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; box-shadow: 0 0 40px rgba(107,33,168,0.15); }
+      h1 { font-size: 1.5rem; margin: 0 0 0.75rem; font-family: Cinzel, serif; color: #FFB347; }
+      p { color: rgba(255,255,255,0.65); margin: 0 0 1.75rem; font-size: 14px; }
+      .actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+      a, button { padding: 0.65rem 1.25rem; border-radius: 99px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1px solid transparent; transition: all 0.2s ease; }
+      .primary { background: linear-gradient(135deg,#FF6B2B,#FFB347); color: #fff; box-shadow: 0 0 20px rgba(255,107,43,0.3); }
+      .primary:hover { opacity: 0.9; transform: scale(1.03); }
+      .secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.14); }
+      .secondary:hover { color: #fff; border-color: rgba(255,107,43,0.4); }
     </style>
   </head>
   <body>
