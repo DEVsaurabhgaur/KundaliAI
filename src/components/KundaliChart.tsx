@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 // North Indian style Kundali chart — diamond with 12 houses
 // Decorative for the landing hero; numbers are sample data.
 
@@ -98,6 +99,33 @@ export function KundaliChart({
   const chartData = dateOfBirth
     ? getCalculatedPlacements(dateOfBirth, timeOfBirth)
     : SAMPLE;
+
+  const staticPaths = useMemo(() => (
+    <>
+      {/* Outer square */}
+      <rect
+        x="40"
+        y="40"
+        width="320"
+        height="320"
+        fill="url(#bgGrad)"
+        stroke="url(#lineGrad)"
+        strokeWidth="1.5"
+        rx="6"
+      />
+      {/* Diagonals */}
+      <line x1="40" y1="40" x2="360" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
+      <line x1="360" y1="40" x2="40" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
+      {/* Inner diamond */}
+      <polygon
+        points="200,40 360,200 200,360 40,200"
+        fill="none"
+        stroke="url(#lineGrad)"
+        strokeWidth="1.5"
+      />
+    </>
+  ), []);
+
   return (
     <div className={`relative ${className}`}>
       {/* Halo */}
@@ -166,27 +194,7 @@ export function KundaliChart({
           </linearGradient>
         </defs>
 
-        {/* Outer square */}
-        <rect
-          x="40"
-          y="40"
-          width="320"
-          height="320"
-          fill="url(#bgGrad)"
-          stroke="url(#lineGrad)"
-          strokeWidth="1.5"
-          rx="6"
-        />
-        {/* Diagonals */}
-        <line x1="40" y1="40" x2="360" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
-        <line x1="360" y1="40" x2="40" y2="360" stroke="url(#lineGrad)" strokeWidth="1.2" />
-        {/* Inner diamond */}
-        <polygon
-          points="200,40 360,200 200,360 40,200"
-          fill="none"
-          stroke="url(#lineGrad)"
-          strokeWidth="1.5"
-        />
+        {staticPaths}
 
         {/* House labels & planets */}
         {chartData.map((h) => {
