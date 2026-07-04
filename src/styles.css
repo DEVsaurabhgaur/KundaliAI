@@ -187,6 +187,19 @@
   }
 }
 
+@utility footer-link {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+  align-self: flex-start;
+  &:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+}
+
 @utility text-gradient-cosmic {
   background: var(--gradient-cosmic);
   -webkit-background-clip: text;

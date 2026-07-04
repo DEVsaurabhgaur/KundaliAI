@@ -529,27 +529,17 @@ function Footer() {
           <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Product</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {[["#features","Features"],["#pricing","Pricing"],["#reviews","Reviews"]].map(([h,l]) => (
-              <a key={l} href={h} style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-                onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-                onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>{l}</a>
+              <a key={l} href={h} className="footer-link">{l}</a>
             ))}
           </div>
         </div>
         <div>
           <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Legal</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <Link to="/terms" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Terms & Conditions</Link>
-            <Link to="/privacy" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Privacy Policy</Link>
-            <Link to="/refund" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>No Refund Policy</Link>
-            <a href="mailto:devsaurabhgaur@gmail.com" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = "#fff"}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)"}>Contact Support</a>
+            <Link to="/terms" className="footer-link">Terms & Conditions</Link>
+            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+            <Link to="/refund" className="footer-link">No Refund Policy</Link>
+            <a href="mailto:devsaurabhgaur@gmail.com" className="footer-link">Contact Support</a>
           </div>
         </div>
       </div>
