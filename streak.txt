@@ -116,3 +116,5 @@ Streak update 86 at 07-06-2026 14:34:47
 [07-07-2026 37] Perf: Lazy-load SupportChat component to reduce initial JS bundle
 
 [07-07-2026 38] Fix: Corrected Ascendant sign label for births at sign cusp boundary
+
+[07-07-2026 39] UI: Add copy-to-clipboard button for kundali interpretation text
