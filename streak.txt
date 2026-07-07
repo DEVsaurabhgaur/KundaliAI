@@ -104,3 +104,5 @@ Streak update 86 at 07-06-2026 14:34:47
 [07-07-2026 31] A11y: Added keyboard navigation support for house grid selection
 
 [07-07-2026 32] UI: Added smooth fade-in transition for AI interpretation text
+
+[07-07-2026 33] Sec: Enforce rate limiting per session to prevent API abuse
