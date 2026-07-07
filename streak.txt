@@ -110,3 +110,5 @@ Streak update 86 at 07-06-2026 14:34:47
 [07-07-2026 34] Fix: Handle edge case when birth time is exactly midnight 00:00
 
 [07-07-2026 35] Perf: Debounce geocoding API calls in place input field
+
+[07-07-2026 36] UI: Improve loading skeleton for kundali chart placeholder
