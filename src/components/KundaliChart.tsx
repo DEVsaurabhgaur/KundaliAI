@@ -1,3 +1,4 @@
+/** KundaliChart - Renders a South Indian style kundali grid with planetary positions */
 import React, { useMemo } from "react";
 // North Indian style Kundali chart — diamond with 12 houses
 // Decorative for the landing hero; numbers are sample data.
