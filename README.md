@@ -188,3 +188,13 @@ If KundaliAI aligned with your stars, consider giving the repo one too.
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:F4C430,30:FF477E,65:6B21A8,100:0B0C2A&height=150&section=footer" width="100%" alt="footer"/>
 
 </div>
+
+## Project Structure
+
+src/
+- components/ - React UI components
+- hooks/ - Custom React hooks (useDebounce, useLocalStorage, etc.)
+- lib/ - Utility functions and constants
+- routes/ - TanStack Router pages
+- styles.css - Global styles and design tokens
+
