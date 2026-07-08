@@ -1,48 +1,81 @@
-type RateLimitInfo = {
-  count: number;
-  resetTime: number;
-};
+﻿/** Per-session rate limiter for KundaliAI API calls */
 
-const store = new Map<string, RateLimitInfo>();
-
-export interface RateLimitOptions {
-  windowMs: number;
+interface RateLimiterOptions {
   maxRequests: number;
+  windowMs: number;
+  storageKey?: string;
 }
 
-let lastCleanup = 0;
-const CLEANUP_INTERVAL = 30 * 1000; // 30 seconds
+interface RateLimiterState {
+  count: number;
+  windowStart: number;
+}
 
-export function isRateLimited(key: string, options: RateLimitOptions): { limited: boolean; retryAfter: number } {
-  const now = Date.now();
-  const current = store.get(key);
+export class RateLimiter {
+  private maxRequests: number;
+  private windowMs: number;
+  private storageKey: string;
 
-  // Periodic inline cleanup when database gets large to prevent memory leaks, throttled to avoid overhead on every request
-  if (store.size > 1000 && now - lastCleanup > CLEANUP_INTERVAL) {
-    lastCleanup = now;
-    for (const [k, val] of store.entries()) {
-      if (now > val.resetTime) {
-        store.delete(k);
-      }
+  constructor(options: RateLimiterOptions) {
+    this.maxRequests = options.maxRequests;
+    this.windowMs = options.windowMs;
+    this.storageKey = options.storageKey ?? 'kundali_rate_limit';
+  }
+
+  private getState(): RateLimiterState {
+    try {
+      const raw = sessionStorage.getItem(this.storageKey);
+      if (raw) return JSON.parse(raw) as RateLimiterState;
+    } catch { /* ignore */ }
+    return { count: 0, windowStart: Date.now() };
+  }
+
+  private setState(state: RateLimiterState): void {
+    try {
+      sessionStorage.setItem(this.storageKey, JSON.stringify(state));
+    } catch { /* ignore */ }
+  }
+
+  /**
+   * Check if a new request is allowed.
+   * @returns true if allowed, false if rate limit exceeded
+   */
+  isAllowed(): boolean {
+    const now = Date.now();
+    const state = this.getState();
+
+    if (now - state.windowStart > this.windowMs) {
+      this.setState({ count: 1, windowStart: now });
+      return true;
     }
+
+    if (state.count >= this.maxRequests) return false;
+
+    this.setState({ count: state.count + 1, windowStart: state.windowStart });
+    return true;
   }
 
-  if (!current) {
-    store.set(key, { count: 1, resetTime: now + options.windowMs });
-    return { limited: false, retryAfter: 0 };
+  /** Returns remaining requests in the current window. */
+  getRemainingRequests(): number {
+    const now = Date.now();
+    const state = this.getState();
+    if (now - state.windowStart > this.windowMs) return this.maxRequests;
+    return Math.max(0, this.maxRequests - state.count);
   }
 
-  if (now > current.resetTime) {
-    current.count = 1;
-    current.resetTime = now + options.windowMs;
-    return { limited: false, retryAfter: 0 };
+  /** Returns milliseconds until the window resets. */
+  getMsUntilReset(): number {
+    const state = this.getState();
+    const elapsed = Date.now() - state.windowStart;
+    return Math.max(0, this.windowMs - elapsed);
   }
 
-  if (current.count >= options.maxRequests) {
-    const retryAfter = Math.ceil((current.resetTime - now) / 1000);
-    return { limited: true, retryAfter };
+  /** Reset the rate limiter state. */
+  reset(): void {
+    try {
+      sessionStorage.removeItem(this.storageKey);
+    } catch { /* ignore */ }
   }
-
-  current.count += 1;
-  return { limited: false, retryAfter: 0 };
 }
+
+export const defaultRateLimiter = new RateLimiter({ maxRequests: 10, windowMs: 60_000 });
