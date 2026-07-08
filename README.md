@@ -198,3 +198,33 @@ src/
 - routes/ - TanStack Router pages
 - styles.css - Global styles and design tokens
 
+
+## Library Modules
+
+### Astrology Utilities
+- `nakshatra.ts` - 27 Nakshatra constants and getNakshatraFromDegrees()
+- `dasha.ts` - Vimshottari dasha period calculation
+- `dignity.ts` - Planetary exaltation/debilitation tables
+- `yogas.ts` - Vedic yoga (auspicious combination) definitions
+- `ayanamsha.ts` - Sidereal correction (Lahiri/Raman/KP/Fagan-Bradley)
+- `houseStrength.ts` - Kendra/Trikona/Dusthana classification
+- `aspects.ts` - Vedic Drishti (planetary aspect) calculator
+- `mangalDosha.ts` - Mangal Dosha checker with remedies
+- `kaalSarp.ts` - Kaal Sarp Dosha type classifier
+- `panchang.ts` - Daily Panchang almanac (Tithi/Vara/Nakshatra/Yoga/Karana)
+- `muhurta.ts` - Choghadiya auspicious timing
+- `sadeSati.ts` - Saturn Sade Sati phase calculator
+- `grahaMaitri.ts` - Natural planetary friendship/enmity
+- `geocoding.ts` - Place lookup via Nominatim API
+- `lagna.ts` - Ascendant sign estimator
+- `planetDescriptions.ts` - Planet metadata (deity, element, body parts)
+
+### React Hooks
+- `useChartHistory` - Persistent chart generation history
+- `useDebounce` - Value debounce
+- `useLocalStorage` - Typed localStorage sync
+- `useClipboard` - Clipboard copy with fallback
+- `useCountdown` - Countdown timer
+- `useWindowSize` - Responsive breakpoints
+- `useDarkMode` - System-aware theme toggle
+- `useIntersectionObserver` - Scroll visibility detection
