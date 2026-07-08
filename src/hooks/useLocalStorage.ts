@@ -1,20 +1,37 @@
-import { useState } from 'react';
+﻿/** useLocalStorage â€” typed localStorage hook with SSR safety */
+import { useState, useCallback } from 'react';
 
-/** Persists state to localStorage with private-browsing error handling */
-export function useLocalStorage<T>(key: string, initialValue: T) {
+/**
+ * A React hook to synchronize state with localStorage.
+ * @param key - The localStorage key
+ * @param initialValue - Default value if key is not found
+ */
+export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      const item = window.localStorage.getItem(key);
+      const item = localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
-    } catch { return initialValue; }
+    } catch {
+      return initialValue;
+    }
   });
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const v = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(v);
-      window.localStorage.setItem(key, JSON.stringify(v));
-    } catch { console.warn('useLocalStorage: write failed for key ' + key); }
-  };
-  return [storedValue, setValue] as const;
-}
 
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
+    setStoredValue(prev => {
+      const resolved = typeof value === 'function' ? (value as (prev: T) => T)(prev) : value;
+      try {
+        localStorage.setItem(key, JSON.stringify(resolved));
+      } catch { /* Ignore quota errors */ }
+      return resolved;
+    });
+  }, [key]);
+
+  const removeValue = useCallback(() => {
+    try {
+      localStorage.removeItem(key);
+    } catch { /* Ignore */ }
+    setStoredValue(initialValue);
+  }, [key, initialValue]);
+
+  return [storedValue, setValue, removeValue];
+}
