@@ -1,8 +1,9 @@
-/** KundaliChart - Renders a South Indian style kundali grid with planetary positions */
+﻿/** KundaliChart - Renders a South Indian style kundali grid with planetary positions */
 import React, { useMemo } from "react";
-// North Indian style Kundali chart — diamond with 12 houses
+// North Indian style Kundali chart â€” diamond with 12 houses
 // Decorative for the landing hero; numbers are sample data.
 
+/** Sample planetary positions for chart preview (not real data) */
 const SAMPLE = [
   { house: 1, sign: "Ari", planets: ["Su", "Ma"] },
   { house: 2, sign: "Tau", planets: [] },
@@ -268,9 +269,10 @@ export function KundaliChart({
           fill="oklch(0.88 0.16 90)"
           fontFamily="Cinzel, serif"
         >
-          ॐ
+          à¥
         </text>
       </svg>
     </div>
   );
 }
+
