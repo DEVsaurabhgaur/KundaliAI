@@ -1,0 +1,1 @@
+import React from 'react'; export const TransitAlert = ({ planet, sign }: { planet: string; sign: string }) => <div className='p-3 bg-amber-500/10 border-l-4 border-amber-500 text-xs text-amber-200'>Notice: {planet} in {sign} transit active.</div>;
