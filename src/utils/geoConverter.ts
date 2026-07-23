@@ -1,0 +1,1 @@
+export function decimalToDMS(decimal: number): { deg: number; min: number; sec: number } { const deg = Math.floor(decimal); const minFloat = (decimal - deg) * 60; const min = Math.floor(minFloat); const sec = Math.round((minFloat - min) * 60); return { deg, min, sec }; }
