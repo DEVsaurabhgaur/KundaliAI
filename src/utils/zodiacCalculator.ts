@@ -1,0 +1,1 @@
+import { normalizeDegree } from './astroMath'; export function getZodiacSignByDegree(deg: number): string { const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces']; return signs[Math.floor(normalizeDegree(deg) / 30)]; }
