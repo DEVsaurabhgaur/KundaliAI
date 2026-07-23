@@ -1,0 +1,1 @@
+import React from 'react'; export const CosmicHeader = () => <header className='py-6 border-b border-amber-500/20 text-center'><h1 className='text-3xl font-bold tracking-wider text-amber-400'>KundaliAI</h1></header>;
