@@ -1,0 +1,1 @@
+import React from 'react'; export const ReadingCard = ({ title, text }: { title: string; text: string }) => <div className='p-4 border border-amber-500/20 rounded bg-[#120c06]'><h5 className='text-amber-300 font-bold'>{title}</h5><p className='text-slate-300 text-sm mt-2'>{text}</p></div>;
