@@ -1,0 +1,1 @@
+import { calculateEqualHouses } from '../src/utils/houseCalculator'; const h = calculateEqualHouses(0); if (h.length !== 12) throw new Error('Equal houses failed');
