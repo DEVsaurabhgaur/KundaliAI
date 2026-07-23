@@ -1,0 +1,1 @@
+import { decimalToDMS } from '../src/utils/geoConverter'; const dms = decimalToDMS(28.5); if (dms.deg !== 28 || dms.min !== 30) throw new Error('DMS failed');
