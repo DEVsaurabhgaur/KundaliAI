@@ -1,0 +1,1 @@
+import { PlanetPosition } from '../src/types/astro'; const p: PlanetPosition = { planet: 'Sun', longitude: 120, latitude: 0, sign: 'Leo', house: 5, isRetrograde: false }; if (p.planet !== 'Sun') throw new Error('Type test failed');
