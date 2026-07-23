@@ -1,0 +1,1 @@
+import { getAngularDistance } from './angularDistance'; export function isConjunction(deg1: number, deg2: number, orb: number = 6): boolean { return getAngularDistance(deg1, deg2) <= orb; }
