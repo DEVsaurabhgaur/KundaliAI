@@ -1,0 +1,1 @@
+export interface AshtakootaScore { totalScore: number; maxScore: 36; varna: number; vashya: number; tara: number; yoni: number; maitri: number; gana: number; bhakoot: number; nadi: number; }
