@@ -1,0 +1,1 @@
+import { getAngularDistance } from '../src/utils/angularDistance'; if (getAngularDistance(10, 350) !== 20) throw new Error('Angular distance failed');
