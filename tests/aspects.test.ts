@@ -1,0 +1,1 @@
+import { isConjunction } from '../src/utils/aspectChecker'; if (!isConjunction(10, 12)) throw new Error('Aspect failed');
