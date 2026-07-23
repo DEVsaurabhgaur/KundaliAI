@@ -1,0 +1,1 @@
+import React from 'react'; export const PanchangWidget = () => <div className='flex gap-4 text-xs text-amber-300 font-mono'><span>Tithi: Shukla Navami</span><span>Nakshatra: Rohini</span></div>;
