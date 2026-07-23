@@ -1,0 +1,1 @@
+export function calculateEqualHouses(ascendantDegree: number): number[] { return Array.from({ length: 12 }, (_, i) => (ascendantDegree + i * 30) % 360); }
