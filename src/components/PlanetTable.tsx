@@ -1,0 +1,1 @@
+import React from 'react'; export const PlanetTable = () => <table className='w-full text-xs text-amber-200 border-collapse'><thead><tr><th>Planet</th><th>Degree</th><th>Sign</th></tr></thead></table>;
