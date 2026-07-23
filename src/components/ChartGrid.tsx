@@ -1,0 +1,1 @@
+import React from 'react'; export const ChartGrid = () => <div className='aspect-square border border-amber-500/40 p-4 grid grid-cols-4 gap-1 bg-[#0d0905] text-amber-300 font-serif'>Chart Grid</div>;
