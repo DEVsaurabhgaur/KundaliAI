@@ -1,0 +1,1 @@
+export interface NatalChartData { name: string; dateOfBirth: string; timeOfBirth: string; latitude: number; longitude: number; positions: PlanetPosition[]; }
