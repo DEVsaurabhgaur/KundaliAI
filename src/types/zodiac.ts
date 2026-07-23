@@ -1,0 +1,1 @@
+export interface ZodiacSign { id: number; name: string; element: 'Fire' | 'Earth' | 'Air' | 'Water'; ruler: string; degreeStart: number; }
