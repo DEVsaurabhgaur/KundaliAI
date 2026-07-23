@@ -1,0 +1,1 @@
+import React from 'react'; export const AshtakootaView = ({ score }: { score: number }) => <div className='text-center p-6 bg-amber-950/30 border border-amber-500/40 rounded-xl'><div className='text-3xl font-extrabold text-amber-400'>{score}/36</div></div>;
