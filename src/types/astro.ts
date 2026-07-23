@@ -1,0 +1,1 @@
+export interface PlanetPosition { planet: string; longitude: number; latitude: number; sign: string; house: number; isRetrograde: boolean; }
