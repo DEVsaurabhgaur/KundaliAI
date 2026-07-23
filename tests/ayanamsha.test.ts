@@ -1,0 +1,1 @@
+import { getLahiriAyanamsha } from '../src/utils/ayanamsha'; if (Math.abs(getLahiriAyanamsha(2026) - 24.21) > 0.1) throw new Error('Ayanamsha failed');
