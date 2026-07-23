@@ -1,0 +1,1 @@
+export function julianDayNumber(year: number, month: number, day: number): number { return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day - 1524.5; }
