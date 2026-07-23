@@ -1,0 +1,1 @@
+import { normalizeDegree } from './astroMath'; export function getAngularDistance(deg1: number, deg2: number): number { const diff = Math.abs(normalizeDegree(deg1) - normalizeDegree(deg2)); return diff > 180 ? 360 - diff : diff; }
