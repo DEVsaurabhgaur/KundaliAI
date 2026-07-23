@@ -1,0 +1,1 @@
+export function calculateTithi(moonDeg: number, sunDeg: number): number { const diff = (moonDeg - sunDeg + 360) % 360; return Math.floor(diff / 12) + 1; }
