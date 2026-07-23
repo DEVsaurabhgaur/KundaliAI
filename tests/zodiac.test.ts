@@ -1,0 +1,1 @@
+import { getZodiacSignByDegree } from '../src/utils/zodiacCalculator'; if (getZodiacSignByDegree(15) !== 'Aries') throw new Error('Zodiac test failed');
