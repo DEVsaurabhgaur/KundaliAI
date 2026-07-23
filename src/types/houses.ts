@@ -1,0 +1,1 @@
+export interface HouseCusp { houseNumber: number; sign: string; degree: number; Lord: string; }
