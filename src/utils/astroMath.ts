@@ -1,0 +1,1 @@
+export function normalizeDegree(deg: number): number { const n = deg % 360; return n < 0 ? n + 360 : n; }
