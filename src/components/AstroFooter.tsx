@@ -1,0 +1,1 @@
+import React from 'react'; export const AstroFooter = () => <footer className='py-6 border-t border-amber-500/20 text-center text-xs text-amber-600'>Calculated with precision spatial geometry.</footer>;
