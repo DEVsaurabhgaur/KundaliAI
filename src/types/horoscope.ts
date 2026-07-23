@@ -1,0 +1,1 @@
+export interface HoroscopeReading { overview: string; career: string; relationships: string; keyInsights: string[]; luckyColor: string; }
