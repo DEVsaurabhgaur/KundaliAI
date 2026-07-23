@@ -1,0 +1,1 @@
+export interface KundaliApiResponse<T> { success: boolean; data?: T; error?: string; timestamp: string; }
