@@ -1,0 +1,1 @@
+export interface GeoCoords { latitude: number; longitude: number; timezoneOffset: number; cityName: string; }
