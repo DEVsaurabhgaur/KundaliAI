@@ -1,0 +1,1 @@
+import React from 'react'; export const DashaTimeline = () => <div className='p-4 bg-amber-950/20 border border-amber-500/30 rounded'><h4 className='text-amber-400 font-bold'>Vimshottari Dasha Timeline</h4></div>;
