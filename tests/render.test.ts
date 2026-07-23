@@ -1,0 +1,1 @@
+import { generateSouthIndianGrid } from '../src/utils/chartRenderer'; if (!generateSouthIndianGrid().includes('svg')) throw new Error('Render test failed');
