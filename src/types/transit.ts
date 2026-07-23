@@ -1,0 +1,1 @@
+export interface TransitEvent { planet: string; fromSign: string; toSign: string; eventDate: string; impactRating: number; }
