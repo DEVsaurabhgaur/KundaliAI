@@ -1,0 +1,1 @@
+export function getLahiriAyanamsha(year: number): number { return 23.85 + (year - 2000) * 0.01396; }
