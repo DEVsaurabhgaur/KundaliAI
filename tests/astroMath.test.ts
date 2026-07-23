@@ -1,0 +1,1 @@
+import { normalizeDegree } from '../src/utils/astroMath'; if (normalizeDegree(390) !== 30) throw new Error('normalizeDegree failed'); console.log('astroMath test passed');
