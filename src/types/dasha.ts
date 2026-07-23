@@ -1,0 +1,1 @@
+export interface DashaPeriod { mahadasha: string; antardasha: string; startDate: string; endDate: string; }
