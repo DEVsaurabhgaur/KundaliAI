@@ -1,0 +1,1 @@
+import React from 'react'; export const GeoPicker = () => <input type='text' placeholder='Enter Birth City...' className='px-4 py-2 bg-black border border-amber-500/30 rounded text-amber-200'/>;
