@@ -1,0 +1,1 @@
+import { calculateTithi } from '../src/utils/panchang'; if (calculateTithi(24, 0) !== 3) throw new Error('Tithi failed');
