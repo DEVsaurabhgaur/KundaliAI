@@ -27,3 +27,13 @@ export * from './shadbala';
 export * from './gemstones';
 export * from './mantras';
 export * from './ashtakootaAggregator';
+
+export * from './dasha/ashtottariDasha';
+export * from './dasha/yoginiDasha';
+export * from './numerology/mulank';
+export * from './numerology/bhagyank';
+export * from './numerology/namank';
+export * from './ayurjyotish/tridosha';
+export * from './vastu/ashtaDikpalas';
+export * from './prashna/yesNoEngine';
+export * from './career/careerProfiler';
