@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saurabh Kumar Gaur - Resume</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.42;
+            color: #1a1a1a;
+            background: #ffffff;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.35in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1.5px solid #1a1a1a;
+        }
+
+        .header h1 {
+            font-size: 20pt;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 3px;
+            color: #111827;
+        }
+
+        .header .role {
+            font-size: 10.5pt;
+            font-weight: 600;
+            color: #1d4ed8;
+            margin-bottom: 5px;
+        }
+
+        .header .contact {
+            font-size: 9pt;
+            color: #374151;
+        }
+
+        .header .contact a {
+            color: #374151;
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 10.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #111827;
+            border-bottom: 1px solid #d1d5db;
+            padding-bottom: 2px;
+            margin-bottom: 6px;
+            margin-top: 10px;
+        }
+
+        .summary {
+            font-size: 9.5pt;
+            color: #374151;
+            line-height: 1.48;
+            margin-bottom: 4px;
+        }
+
+        .entry {
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+        }
+
+        .entry-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .entry-title {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .entry-company {
+            font-size: 9.5pt;
+            font-weight: 500;
+            color: #4b5563;
+            font-style: italic;
+        }
+
+        .entry-date {
+            font-size: 9pt;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .entry-tech {
+            font-size: 8.8pt;
+            font-weight: 500;
+            color: #1d4ed8;
+            margin: 1px 0 2px 0;
+        }
+
+        ul {
+            padding-left: 16px;
+            margin-top: 2px;
+        }
+
+        li {
+            font-size: 9.3pt;
+            color: #374151;
+            margin-bottom: 2px;
+            line-height: 1.42;
+        }
+
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.3pt;
+            margin-bottom: 2px;
+            page-break-inside: avoid;
+        }
+
+        .skills-table td {
+            padding: 1.5px 0;
+            vertical-align: top;
+        }
+
+        .skills-table td:first-child {
+            font-weight: 600;
+            width: 135px;
+            color: #111827;
+        }
+
+        .skills-table td:last-child {
+            color: #374151;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                font-size: 9.5pt;
+            }
+            .header h1 { font-size: 19pt; }
+            a { color: #374151 !important; text-decoration: none !important; }
+        }
+
+        @page {
+            size: A4;
+            margin: 0.35in 0.45in;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- HEADER                                                        -->
+    <!-- ============================================================ -->
+    <header class="header">
+        <h1>SAURABH KUMAR GAUR</h1>
+        <div class="role">AI/ML Engineer and Full-Stack Software Developer</div>
+        <div class="contact">
+            <a href="mailto:saurabhgaur122000@gmail.com">saurabhgaur122000@gmail.com</a>
+            | Rudrapur, Uttarakhand, India (Open to Remote / Global Relocation)
+            | <a href="https://saurabhgaur.world">saurabhgaur.world</a>
+            | <a href="https://linkedin.com/in/saurabh-gaur-122k">LinkedIn</a>
+            | <a href="https://github.com/DEVsaurabhgaur">GitHub</a>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- PROFESSIONAL SUMMARY                                          -->
+    <!-- ============================================================ -->
+    <h2>Professional Summary</h2>
+    <p class="summary">
+        AI/ML Engineer and Full-Stack Developer with 1+ year evaluating frontier LLMs (GPT-4, Claude, Gemini) for RLHF alignment at Scale AI, and a proven record of designing, building, and deploying 6+ production web and AI platforms. Expert in multi-agent orchestration (LangGraph), hybrid RAG architectures, LLM evaluation benchmarks, and full-stack systems (Python/FastAPI, TypeScript/Next.js, Supabase/PostgreSQL). Microsoft Certified (AZ-400 DevOps Engineer and AI Product Manager). Strong proponent of async engineering, autonomous execution, and shipping high-performance, resilient software.
+    </p>
+
+    <!-- ============================================================ -->
+    <!-- TECHNICAL SKILLS                                              -->
+    <!-- ============================================================ -->
+    <h2>Technical Skills</h2>
+    <table class="skills-table">
+        <tr>
+            <td>AI and LLM Systems</td>
+            <td>LangGraph, LangChain, RAG Systems, Multi-Agent Workflows, RLHF Alignment, LLM Evaluation, Prompt Engineering, Gemini API, OpenAI API</td>
+        </tr>
+        <tr>
+            <td>Languages</td>
+            <td>Python, TypeScript, JavaScript, SQL, HTML5, CSS3</td>
+        </tr>
+        <tr>
+            <td>Backend and APIs</td>
+            <td>FastAPI, Node.js, Express, RESTful APIs, Serverless Functions (Vercel, Railway), Webhooks, Rate Limiting</td>
+        </tr>
+        <tr>
+            <td>Frontend</td>
+            <td>React, Next.js 14 (App Router, RSC), TanStack Start (SSR), Tailwind CSS, Radix UI, Responsive UI</td>
+        </tr>
+        <tr>
+            <td>Databases and Vectors</td>
+            <td>Supabase (PostgreSQL, Row-Level Security, Storage), ChromaDB, FAISS, Pinecone</td>
+        </tr>
+        <tr>
+            <td>DevOps and Tools</td>
+            <td>Git, GitHub Actions (CI/CD), Docker, Azure DevOps (AZ-400 Certified), Vercel, Railway, Razorpay API, Linux/Bash</td>
+        </tr>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- PROFESSIONAL EXPERIENCE                                       -->
+    <!-- ============================================================ -->
+    <h2>Professional Experience</h2>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">Independent AI Product Developer</span>
+            <span class="entry-date">Apr 2026 - Present</span>
+        </div>
+        <div class="entry-company">Self-Employed | Remote (India)</div>
+        <ul>
+            <li>Architected, built, and launched 6+ live full-stack and AI applications end-to-end, managing entire lifecycles from system design and API engineering to deployment and payment integration (Razorpay UPI/Cards).</li>
+            <li>Engineered multi-agent resume analysis and rewriting SaaS (HireOS) using LangGraph and Gemini 2.0 Flash, cutting per-request processing latency to under 15 seconds via structured output validation and TTL caching.</li>
+            <li>Designed and deployed an e-commerce art platform and portfolio (saurabhgaur.world) using Next.js 14 App Router, Supabase Auth, PostgreSQL RLS, and HMAC-verified webhook fulfillment with time-limited download tokens.</li>
+            <li>Implemented a production RAG knowledge engine (RAGForge) featuring hybrid BM25 and dense vector retrieval, query expansion, reciprocal rank fusion, and a lightweight hallucination guard.</li>
+            <li>Built automated utility billing software (MakaanBook) with complex split-meter calculations, PDF report compilation, and conversational Hinglish querying powered by Gemini 1.5 Flash.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">AI / LLM Evaluator - Frontier Models</span>
+            <span class="entry-date">May 2025 - May 2026</span>
+        </div>
+        <div class="entry-company">Scale AI | Remote</div>
+        <ul>
+            <li>Evaluated, scored, and red-teamed frontier LLM outputs (GPT-4, Claude 3.5, Gemini) across complex programming, algorithm design, and multi-step reasoning tasks for RLHF training pipelines over 1+ year.</li>
+            <li>Formulated reproducible benchmarking rubrics across 5 key dimensions: instruction following, multi-source knowledge synthesis, safety boundary enforcement, logical coherence, and context persistence.</li>
+            <li>Authored failure taxonomies identifying hallucination patterns, reasoning drift, and edge-case safety violations, directly shaping data curation guidelines for subsequent model alignment rounds.</li>
+            <li>Constructed synthetic multi-server evaluation datasets (OpenClaw Atlas) with conflicting information nodes to measure cross-document reasoning and contradiction resolution in agentic models.</li>
+        </ul>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- KEY PROJECTS                                                  -->
+    <!-- ============================================================ -->
+    <h2 class="page-break">Key Projects</h2>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">HireOS - AI Resume Intelligence and Rewriting Platform</span>
+            <span class="entry-date">hire-os-langgraph.vercel.app</span>
+        </div>
+        <div class="entry-tech">Python, FastAPI, LangGraph, Google Gemini 2.0 Flash, Razorpay, Vercel, Railway</div>
+        <ul>
+            <li>Production multi-agent pipeline: Extraction Agent parses role requirements, Analysis Agent identifies skill gaps, and Rewrite Agent generates ATS-tailored resume bullets with keyword alignment.</li>
+            <li>Engineered security and reliability features including per-IP rate limiting, SHA-256 admin bypass, strict input validation, and in-memory TTL caching supporting 500 concurrent users.</li>
+            <li>Integrated seamless monetization with Razorpay payment webhooks for instant unlock of advanced resume rewriting and interview preparation modules.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">RAGForge - Production Multi-Document RAG Knowledge Engine</span>
+            <span class="entry-date">github.com/DEVsaurabhgaur/ragforge</span>
+        </div>
+        <div class="entry-tech">Python, LangChain, ChromaDB, Streamlit, HuggingFace Embeddings, Docker</div>
+        <ul>
+            <li>High-accuracy RAG engine integrating hybrid BM25 and ChromaDB vector retrieval via LangChain EnsembleRetriever, keyword-overlap reranking, and source citation with exact page mapping.</li>
+            <li>Includes multi-turn conversational memory, token usage and cost telemetry, persistent session saving, and Dockerized deployment workflows.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">MakaanBook - Smart Rental and Utility Billing Management System</span>
+            <span class="entry-date">makaan-book.vercel.app</span>
+        </div>
+        <div class="entry-tech">TypeScript, TanStack Start (React SSR), Supabase (PostgreSQL), Gemini 1.5 Flash, Tailwind CSS</div>
+        <ul>
+            <li>Full-stack property management suite with fault-tolerant mid-month meter replacement algorithms, dynamic PDF ledger generation, and conversational natural-language queries via Gemini.</li>
+            <li>Implemented encrypted document uploads using Supabase Storage buckets and granular PostgreSQL Row-Level Security policies.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">KundaliAI - Vedic Astrology Calculation and AI Interpretation Engine</span>
+            <span class="entry-date">kundaliai.vercel.app</span>
+        </div>
+        <div class="entry-tech">TypeScript, TanStack Start, Google Gemini AI, Supabase, Vercel</div>
+        <ul>
+            <li>Interactive web platform performing precise astronomical coordinate calculations to render Vedic birth charts paired with AI-driven narrative readings.</li>
+        </ul>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- EDUCATION                                                     -->
+    <!-- ============================================================ -->
+    <h2>Education</h2>
+    <div class="entry">
+        <div class="entry-head">
+            <span class="entry-title">Bachelor of Technology (B.Tech) - Computer Science and Engineering</span>
+            <span class="entry-date">Graduated 2025</span>
+        </div>
+        <div class="entry-company">Dr. A.P.J. Abdul Kalam Technical University (AKTU), Uttar Pradesh, India</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- CERTIFICATIONS                                                -->
+    <!-- ============================================================ -->
+    <h2>Certifications</h2>
+    <ul>
+        <li>Microsoft Certified: Designing and Implementing DevOps Solutions (AZ-400) - Microsoft / PearsonVue</li>
+        <li>Microsoft AI Product Manager Professional Certificate - Microsoft x Coursera</li>
+        <li>GitHub Copilot Fundamentals - GitHub x Microsoft Learn</li>
+        <li>GPU Optimization for LLM Inference - AMD AI Academy</li>
+        <li>AI Fundamentals - Google x Coursera</li>
+        <li>AI for Content Creation and Writing - Google</li>
+        <li>Microsoft AI Skills Fest 2026 - Microsoft</li>
+    </ul>
+
+    <!-- ============================================================ -->
+    <!-- ADDITIONAL HIGHLIGHTS                                         -->
+    <!-- ============================================================ -->
+    <h2>Additional Highlights</h2>
+    <ul>
+        <li>Open Source and Community: 13+ public repositories on GitHub with over 13,000 lifetime commits and consistent daily contribution streaks.</li>
+        <li>VS Code Marketplace: Author and maintainer of Infinite Void Theme, a curated high-contrast dark theme for developers.</li>
+        <li>AI Artistry and Creative Systems: Creator of a 200+ piece collection combining generative models (Stable Diffusion, Midjourney, ComfyUI) and traditional artwork.</li>
+        <li>Work Authorization: Indian Citizen, available for 100% remote global contracts, India-entity payroll, or relocation.</li>
+    </ul>
+
+</body>
+</html>
