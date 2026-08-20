@@ -71,3 +71,9 @@ export * from './remedies/gemstonePrescription';
 export * from './remedies/rudrakshaMatrix';
 export * from './medical/bhavaOrganMapping';
 export * from './medical/kharaNavamsha';
+
+export * from './numerology/index';
+export * from './sbc/index';
+export * from './prashna/index';
+export * from './vastu/ashtaDikpalas';
+export * from './vastu/brahmasthanEnergy';
