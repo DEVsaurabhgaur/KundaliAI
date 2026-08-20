@@ -1,27 +1,18 @@
 /**
- * Lo Shu 3x3 Magic Square Grid
- * Standard:
- * 4 9 2 (Mental Plane)
- * 3 5 7 (Emotional Plane)
- * 8 1 6 (Practical Plane)
+ * 3x3 Lo Shu Magic Square Grid (4,9,2 / 3,5,7 / 8,1,6)
  */
 
-export function generateLoShuGrid(birthDateStr: string) {
-  const digits = birthDateStr.replace(/[^0-9]/g, '').split('');
+export function generateLoShuGrid(birthDigits: number[]) {
   const counts: Record<number, number> = {};
-
   for (let i = 1; i <= 9; i++) counts[i] = 0;
-  digits.forEach(d => {
-    const num = Number(d);
-    if (num >= 1 && num <= 9) counts[num]++;
-  });
+  for (const d of birthDigits) {
+    if (d >= 1 && d <= 9) counts[d] = (counts[d] || 0) + 1;
+  }
 
   return {
-    grid: [
-      [counts[4], counts[9], counts[2]],
-      [counts[3], counts[5], counts[7]],
-      [counts[8], counts[1], counts[6]]
-    ],
-    counts
+    gridCounts: counts,
+    thoughtPlane: (counts[4] > 0 ? 1 : 0) + (counts[9] > 0 ? 1 : 0) + (counts[2] > 0 ? 1 : 0),
+    willPlane: (counts[3] > 0 ? 1 : 0) + (counts[5] > 0 ? 1 : 0) + (counts[7] > 0 ? 1 : 0),
+    actionPlane: (counts[8] > 0 ? 1 : 0) + (counts[1] > 0 ? 1 : 0) + (counts[6] > 0 ? 1 : 0)
   };
 }
