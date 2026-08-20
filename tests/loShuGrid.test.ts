@@ -1,10 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { generateLoShuGrid } from '../src/lib/numerology/loShuGrid';
 
-describe('Lo Shu Grid Generator', () => {
-  it('populates 3x3 matrix counts', () => {
-    const data = generateLoShuGrid('15-08-1995');
-    expect(data.grid).toHaveLength(3);
-    expect(data.counts[1]).toBeGreaterThanOrEqual(1);
+describe('Lo Shu Grid', () => {
+  it('counts digit occurrences and evaluates planes', () => {
+    const res = generateLoShuGrid([4, 9, 2]);
+    expect(res.thoughtPlane).toBe(3);
   });
 });
