@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { ASHTA_DIKPALAS } from '../lib/vastu/ashtaDikpalas';
+import { useMemo } from 'react';
+import { getDirectionInfo } from '../lib/vastu/ashtaDikpalas';
+import { isRoomPlacementIdeal } from '../lib/vastu/roomSuitabilityMatrix';
 
-export function useVastuCompass() {
-  const [selectedDirection, setSelectedDirection] = useState('North-East');
-  const activeZone = ASHTA_DIKPALAS.find(d => d.direction === selectedDirection) || ASHTA_DIKPALAS[0];
+export function useVastuCompass(direction: string, roomType: string) {
+  const info = useMemo(() => getDirectionInfo(direction), [direction]);
+  const isIdeal = useMemo(() => isRoomPlacementIdeal(roomType, direction), [roomType, direction]);
 
-  return { selectedDirection, setSelectedDirection, activeZone, allZones: ASHTA_DIKPALAS };
+  return { directionInfo: info, isPlacementIdeal: isIdeal };
 }
