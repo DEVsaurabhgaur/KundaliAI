@@ -1,21 +1,18 @@
 /**
- * Ashta Dikpalas (8 Guardians of Cardinal Directions)
+ * Ashta Dikpalas (8 Cardinal & Ordinal Directions) & Planetary Rulers
  */
 
-export interface DirectionGuardian {
-  direction: string;
-  guardian: string;
-  rulingPlanet: string;
-  idealRoom: string;
-}
+export const ASHTA_DIKPALAS: Record<string, { deity: string; planet: string; element: string }> = {
+  East: { deity: 'Indra', planet: 'Sun', element: 'Ether / Light' },
+  Southeast: { deity: 'Agni', planet: 'Venus', element: 'Fire' },
+  South: { deity: 'Yama', planet: 'Mars', element: 'Earth / Fire' },
+  Southwest: { deity: 'Nirriti', planet: 'Rahu', element: 'Earth' },
+  West: { deity: 'Varuna', planet: 'Saturn', element: 'Water / Air' },
+  Northwest: { deity: 'Vayu', planet: 'Moon', element: 'Air' },
+  North: { deity: 'Kubera', planet: 'Mercury', element: 'Water / Earth' },
+  Northeast: { deity: 'Ishanya (Shiva)', planet: 'Jupiter', element: 'Water / Space' }
+};
 
-export const ASHTA_DIKPALAS: DirectionGuardian[] = [
-  { direction: 'East', guardian: 'Indra', rulingPlanet: 'Sun', idealRoom: 'Main entrance, study room, meditation' },
-  { direction: 'South-East', guardian: 'Agni', rulingPlanet: 'Venus', idealRoom: 'Kitchen, electrical equipment' },
-  { direction: 'South', guardian: 'Yama', rulingPlanet: 'Mars', idealRoom: 'Master bedroom, heavy storage' },
-  { direction: 'South-West', guardian: 'Nirriti', rulingPlanet: 'Rahu', idealRoom: 'Head of household suite, wardrobe' },
-  { direction: 'West', guardian: 'Varuna', rulingPlanet: 'Saturn', idealRoom: 'Dining room, overhead water tanks' },
-  { direction: 'North-West', guardian: 'Vayu', rulingPlanet: 'Moon', idealRoom: 'Guest room, garage, finished stock' },
-  { direction: 'North', guardian: 'Kubera', rulingPlanet: 'Mercury', idealRoom: 'Treasury, cash locker, living room' },
-  { direction: 'North-East', guardian: 'Ishanya (Shiva)', rulingPlanet: 'Jupiter', idealRoom: 'Puja altar, meditation sanctuary' }
-];
+export function getDirectionInfo(direction: string) {
+  return ASHTA_DIKPALAS[direction] || ASHTA_DIKPALAS['East'];
+}
