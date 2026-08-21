@@ -77,3 +77,7 @@ export * from './sbc/index';
 export * from './prashna/index';
 export * from './vastu/ashtaDikpalas';
 export * from './vastu/brahmasthanEnergy';
+
+export * from './bsp/index';
+export * from './lalkitab/index';
+export * from './nimitta/index';
