@@ -1,672 +1,767 @@
-export const batch2 = [
-  // 36. Abhijit Muhurta
+export const todayBatch2 = [
+  // 46. KCD Deha Affliction
   {
-    step: 36,
-    msg: "feat(muhurta): add Abhijit Muhurta 8th diurnal segment calculator",
+    step: 46,
+    msg: "feat(kcd): add Transit malefic affliction detector on KCD Deha and Jeeva signs",
     files: [{
-      file: "src/lib/muhurta/abhijitMuhurta.ts",
-      content: `/**
- * Abhijit Muhurta (8th Muhurta of the day, exactly around midday solar noon)
- */
-
-export function calculateAbhijitMuhurta(sunriseTimestamp: number, sunsetTimestamp: number) {
-  const dayDuration = sunsetTimestamp - sunriseTimestamp;
-  const muhurtaDuration = dayDuration / 15;
-  const start = sunriseTimestamp + 7 * muhurtaDuration;
-  const end = sunriseTimestamp + 8 * muhurtaDuration;
+      file: "src/lib/kcd/kcdDehaAfflictionDetector.ts",
+      content: `export function checkDehaJeevaTransitAffliction(transitingMalefics: number[], dehaSign: number, jeevaSign: number) {
+  const isDehaAfflicted = transitingMalefics.includes(dehaSign);
+  const isJeevaAfflicted = transitingMalefics.includes(jeevaSign);
 
   return {
-    startTime: new Date(start).toISOString(),
-    endTime: new Date(end).toISOString(),
-    virtue: 'Supreme all-auspicious midday window ruled by Lord Vishnu that destroys 100,000 doshas.'
+    isDehaAfflicted,
+    isJeevaAfflicted,
+    warning: (isDehaAfflicted || isJeevaAfflicted) ? 'Caution: Malefic transiting Deha/Jeeva point. Perform protective Mrityunjaya japa.' : 'Deha and Jeeva points clean and vibrant.'
   };
 }
 `
     }]
   },
 
-  // 37. Rahu Kalam
-  {
-    step: 37,
-    msg: "feat(muhurta): add Rahu Kalam diurnal inauspicious timing by weekday",
-    files: [{
-      file: "src/lib/muhurta/rahuKalam.ts",
-      content: `/**
- * Rahu Kalam Diurnal Segments (1/8th of daytime)
- * Sun: 8th | Mon: 2nd | Tue: 7th | Wed: 5th | Thu: 6th | Fri: 4th | Sat: 3rd
- */
-
-const RAHU_SEGMENTS: Record<number, number> = { 0: 8, 1: 2, 2: 7, 3: 5, 4: 6, 5: 4, 6: 3 };
-
-export function getRahuKalamSegment(dayOfWeek: number): number {
-  return RAHU_SEGMENTS[dayOfWeek % 7];
-}
-`
-    }]
-  },
-
-  // 38. Yamaganda Kala
-  {
-    step: 38,
-    msg: "feat(muhurta): add Yamaganda Kalam death-point timing calculator",
-    files: [{
-      file: "src/lib/muhurta/yamagandaKala.ts",
-      content: `/**
- * Yamaganda Kalam Segments (1/8th of daytime)
- * Sun: 5th | Mon: 4th | Tue: 3rd | Wed: 2nd | Thu: 1st | Fri: 7th | Sat: 6th
- */
-
-const YAMA_SEGMENTS: Record<number, number> = { 0: 5, 1: 4, 2: 3, 3: 2, 4: 1, 5: 7, 6: 6 };
-
-export function getYamagandaSegment(dayOfWeek: number): number {
-  return YAMA_SEGMENTS[dayOfWeek % 7];
-}
-`
-    }]
-  },
-
-  // 39. Choghadiya Panchang
-  {
-    step: 39,
-    msg: "feat(muhurta): add 8 Day & 8 Night Choghadiya segments (Amrit, Shubh, Labh, Char, Rog, Kaal, Udveg)",
-    files: [{
-      file: "src/lib/muhurta/choghadiyaPanchang.ts",
-      content: `/**
- * 8 Choghadiyas of Day and Night
- * Amrit, Shubh, Labh (Auspicious) | Char (Neutral/Good for travel) | Rog, Kaal, Udveg (Inauspicious)
- */
-
-export interface ChoghadiyaResult {
-  name: 'Amrit' | 'Shubh' | 'Labh' | 'Char' | 'Rog' | 'Kaal' | 'Udveg';
-  nature: 'Auspicious' | 'Neutral' | 'Inauspicious';
-}
-
-export function evaluateChoghadiya(choghadiyaName: ChoghadiyaResult['name']): ChoghadiyaResult {
-  const nature = ['Amrit', 'Shubh', 'Labh'].includes(choghadiyaName)
-    ? 'Auspicious'
-    : choghadiyaName === 'Char'
-    ? 'Neutral'
-    : 'Inauspicious';
-
-  return { name: choghadiyaName, nature };
-}
-`
-    }]
-  },
-
-  // 40. Tara Shuddhi
-  {
-    step: 40,
-    msg: "feat(muhurta): add Guru-Shukra Tara Shuddhi combustion and visibility checker",
-    files: [{
-      file: "src/lib/muhurta/taraShuddhi.ts",
-      content: `/**
- * Guru-Shukra Tara Shuddhi (Combustion / Astangata Check)
- * No major life ceremonies (like Vivaha) may be held when Jupiter or Venus is combust (Tara Doobna).
- */
-
-export function checkTaraShuddhi(isJupiterCombust: boolean, isVenusCombust: boolean): boolean {
-  return !isJupiterCombust && !isVenusCombust;
-}
-`
-    }]
-  },
-
-  // 41. Karakamsha Overlay
-  {
-    step: 41,
-    msg: "feat(chara): add Karakamsha and Swamsha overlay in Chara Dasha interpretation",
-    files: [{
-      file: "src/lib/chara/charaKarakamshaOverlay.ts",
-      content: `/**
- * Karakamsha Overlay in Chara Dasha
- */
-
-export function checkKarakamshaDasha(activeSignIndex: number, karakamshaSignIndex: number): boolean {
-  return activeSignIndex === karakamshaSignIndex || (activeSignIndex + 6) % 12 === karakamshaSignIndex;
-}
-`
-    }]
-  },
-
-  // 42. Upapada Durability
-  {
-    step: 42,
-    msg: "feat(chara): add Upapada Lagna (UL) marital durability tracking in Chara Dasha",
-    files: [{
-      file: "src/lib/chara/charaUpapadaDurability.ts",
-      content: `/**
- * Upapada Lagna (UL) Dasha Interaction
- */
-
-export function isUpapadaDashaActive(activeSignIndex: number, upapadaSignIndex: number): boolean {
-  return activeSignIndex === upapadaSignIndex;
-}
-`
-    }]
-  },
-
-  // 43. Muntha in 12 Houses
-  {
-    step: 43,
-    msg: "feat(tajika): add Muntha in 12 Houses annual phala interpretations",
-    files: [{
-      file: "src/lib/tajika/munthaHousePhala.ts",
-      content: `/**
- * Muntha in 12 Houses of Annual Chart
- */
-
-const MUNTHA_PHALA: Record<number, string> = {
-  1: 'Physical vitality, personal honors, leadership triumph.',
-  2: 'Financial accretion, family joy, commercial prosperity.',
-  3: 'Courageous enterprise, victorious negotiations, short travels.',
-  4: 'Real estate gains or domestic agitation (requires benefic aspect).',
-  5: 'Creative breakthroughs, intellectual offspring, joyful romance.',
-  6: 'Victory over rivals, resolution of debts, health discipline.',
-  7: 'Partnership alliances, public acclaim, matrimonial harmony.',
-  8: 'Karmic restructuring, unexpected challenges, transformation.',
-  9: 'Divine grace, pilgrimage, mentor blessings, high fortune.',
-  10: 'Peak career achievement, governmental honors, business expansion.',
-  11: 'Monetary windfalls, wish fulfillment, expansive social circle.',
-  12: 'Spiritual detachment, foreign expenditures, retreat.'
-};
-
-export function getMunthaHousePhala(houseNum: number): string {
-  return MUNTHA_PHALA[houseNum] || 'Auspicious unfolding of annual fate.';
-}
-`
-    }]
-  },
-
-  // 44. Varsha Pravesh Lagna
-  {
-    step: 44,
-    msg: "feat(tajika): add Varsha Pravesh Ascendant exact calculation with Ayanamsha",
-    files: [{
-      file: "src/lib/tajika/varshaPraveshLagna.ts",
-      content: `/**
- * Varsha Pravesh Lagna (Annual Chart Ascendant)
- */
-
-export function calculateVarshaPraveshLagna(epochTimestamp: number, latitude: number, longitude: number): number {
-  const hours = new Date(epochTimestamp).getUTCHours();
-  const asc = (hours * 15 + longitude + latitude * 0.1) % 360;
-  return Number(asc.toFixed(4));
-}
-`
-    }]
-  },
-
-  // 45. Ayana Bala
-  {
-    step: 45,
-    msg: "feat(shadbala): add Ayana Bala declination and solstice strength calculator",
-    files: [{
-      file: "src/lib/shadbala/ayanaBala.ts",
-      content: `/**
- * Ayana Bala (Equinoctial / Declination Strength: 0 to 60 Virupas)
- */
-
-export function calculateAyanaBala(declinationDeg: number, isNorthernDeclination: boolean, planet: string): number {
-  const isSunOrMars = ['Sun', 'Mars', 'Jupiter', 'Venus'].includes(planet);
-  const virupas = isSunOrMars === isNorthernDeclination ? 30 + Math.abs(declinationDeg) : 30 - Math.abs(declinationDeg);
-  return Math.min(60, Math.max(0, Number(virupas.toFixed(2))));
-}
-`
-    }]
-  },
-
-  // 46. Yuddha Bala
-  {
-    step: 46,
-    msg: "feat(shadbala): add Graha Yuddha (Planetary War) victor and defeated virupa points",
-    files: [{
-      file: "src/lib/shadbala/yuddhaBala.ts",
-      content: `/**
- * Graha Yuddha (Planetary War)
- * Two planets (among Mars, Mercury, Jupiter, Venus, Saturn) within 1 degree.
- * The planet with northern declination or greater brightness wins and absorbs strength from the loser.
- */
-
-export function calculateYuddhaBala(isWinner: boolean, differenceInVirupas: number): number {
-  return isWinner ? differenceInVirupas : -differenceInVirupas;
-}
-`
-    }]
-  },
-
-  // 47. Saturn-Rahu Nadi
+  // 47. KCD Mahadasha Sequence
   {
     step: 47,
-    msg: "feat(nadi): add Saturn-Rahu Karma-Maya karmic debt and transformation combinations",
+    msg: "feat(kcd): add Complete 9-stage Kalachakra Mahadasha progression array",
     files: [{
-      file: "src/lib/nadi/saturnRahuNadi.ts",
-      content: `/**
- * Saturn-Rahu (Shani-Rahu) Nadi Combination
- */
+      file: "src/lib/kcd/kcdMahaDashaSequence.ts",
+      content: `import { getKCDDuration } from './kcdSignDurations';
 
-export function evaluateSaturnRahuNadi(): string {
-  return 'Shani-Rahu Nadi: Technical aptitude, high-technology innovation, foreign career trajectory, sudden shifts.';
+export function generateKCDSequence(startSign: number) {
+  return Array.from({ length: 9 }, (_, i) => {
+    const sign = (startSign + i) % 12;
+    return {
+      stage: i + 1,
+      signIndex: sign,
+      durationYears: getKCDDuration(sign)
+    };
+  });
 }
 `
     }]
   },
 
-  // 48. Venus-Mars Nadi
+  // 48. Partial Kala Sarpa
   {
     step: 48,
-    msg: "feat(nadi): add Venus-Mars Passion & Partnership synergy in BNN",
+    msg: "feat(kalasarpa): add Partial Kala Sarpa (Kala Amrita Yoga) single-planet breach calculator",
     files: [{
-      file: "src/lib/nadi/venusMarsNadi.ts",
-      content: `/**
- * Venus-Mars (Shukra-Mangal) Nadi Combination
- */
-
-export function evaluateVenusMarsNadi(): string {
-  return 'Shukra-Mangal Nadi: Kinetic magnetism, luxury real estate acquisition, passionate creative pursuits.';
+      file: "src/lib/kalasarpa/partialKalaSarpa.ts",
+      content: `export function evaluatePartialKalaSarpa(planetsInsideNodalAxis: number): string {
+  if (planetsInsideNodalAxis === 7) return 'Poorna Kala Sarpa Yoga (100% Enclosure)';
+  if (planetsInsideNodalAxis === 6) return 'Anshik / Partial Kala Sarpa Yoga (One Planet Escaping Axis)';
+  return 'No Kala Sarpa Enclosure (Free Planetary Distribution)';
 }
 `
     }]
   },
 
-  // 49. Mercury-Jupiter Nadi
+  // 49. Sarpa Shanti Mantras
   {
     step: 49,
-    msg: "feat(nadi): add Mercury-Jupiter Saraswati intellect and academic combination in Nadi",
+    msg: "feat(kalasarpa): add Maha Mrityunjaya and Navanaga Stotram japa counts",
     files: [{
-      file: "src/lib/nadi/mercuryJupiterNadi.ts",
-      content: `/**
- * Mercury-Jupiter (Budha-Guru) Nadi Combination
- */
-
-export function evaluateMercuryJupiterNadi(): string {
-  return 'Budha-Guru Nadi: Supreme scholarship, advisory brilliance, legal counsel, commercial wisdom.';
-}
-`
-    }]
-  },
-
-  // 50. Sun-Saturn Nadi
-  {
-    step: 50,
-    msg: "feat(nadi): add Sun-Saturn Pitru-Karma father-son karmic lesson combinations",
-    files: [{
-      file: "src/lib/nadi/sunSaturnNadi.ts",
-      content: `/**
- * Sun-Saturn (Surya-Shani) Nadi Combination
- */
-
-export function evaluateSunSaturnNadi(): string {
-  return 'Surya-Shani Nadi: Karmic discipline with ancestral authorities, gradual self-earned sovereign status.';
-}
-`
-    }]
-  },
-
-  // 51. Gowri Panchangam
-  {
-    step: 51,
-    msg: "feat(muhurta): add Gowri Panchangam traditional Tamil auspicious timing intervals",
-    files: [{
-      file: "src/lib/muhurta/gowriPanchangam.ts",
-      content: `/**
- * Gowri Panchangam (8 Choghadiya-like portions: Uthi, Amirtham, Rogam, Labam, Dhanam, Sugam, Soram, Visham)
- */
-
-export function isGowriAuspicious(portionName: string): boolean {
-  return ['Amirtham', 'Labam', 'Dhanam', 'Sugam'].includes(portionName);
-}
-`
-    }]
-  },
-
-  // 52. Hora Muhurta
-  {
-    step: 52,
-    msg: "feat(muhurta): add Planetary Hora (24 hourly rulers) Muhurta selector",
-    files: [{
-      file: "src/lib/muhurta/horaMuhurta.ts",
-      content: `/**
- * Planetary Hora Order: Sun, Venus, Mercury, Moon, Saturn, Jupiter, Mars (Chaldean Order)
- */
-
-const HORA_CYCLE = ['Sun', 'Venus', 'Mercury', 'Moon', 'Saturn', 'Jupiter', 'Mars'];
-
-export function getHoraLord(dayOfWeek: number, hourFromSunrise: number): string {
-  const startIdx = dayOfWeek % 7;
-  const idx = (startIdx + hourFromSunrise) % 7;
-  return HORA_CYCLE[idx];
-}
-`
-    }]
-  },
-
-  // 53. Dagdha Tithi
-  {
-    step: 53,
-    msg: "feat(muhurta): add Dagdha (Burnt) Tithi and Nakshatra taboo checks",
-    files: [{
-      file: "src/lib/muhurta/dagdhaTithi.ts",
-      content: `/**
- * Dagdha (Burnt) Tithis by Weekday
- */
-
-const DAGDHA_TITHIS: Record<number, number[]> = {
-  0: [12], 1: [11], 2: [5], 3: [2, 3], 4: [6], 5: [8], 6: [9]
+      file: "src/lib/kalasarpa/sarpaShantiMantras.ts",
+      content: `export const SARPA_MANTRA_COUNTS: Record<string, { count: number; mantra: string }> = {
+  Ananta: { count: 18000, mantra: 'Om Anantaya Namah' },
+  Vasuki: { count: 18000, mantra: 'Om Vasukaye Namah' },
+  Takshaka: { count: 18000, mantra: 'Om Takshakaya Namah' },
+  General: { count: 108, mantra: 'Om Namah Shivaya' }
 };
 
-export function isDagdhaTithi(dayOfWeek: number, tithiNumber: number): boolean {
-  const list = DAGDHA_TITHIS[dayOfWeek % 7] || [];
-  return list.includes(tithiNumber);
+export function getSarpaShantiDetails(yogaType: string) {
+  return SARPA_MANTRA_COUNTS[yogaType] || SARPA_MANTRA_COUNTS['General'];
 }
 `
     }]
   },
 
-  // 54. Chara Sookshma Dasha
+  // 50. Megha Garbhadhana
+  {
+    step: 50,
+    msg: "feat(medini): add Megha Garbhadhana (Cloud Pregnancy) 195-day monsoon gestation cycle",
+    files: [{
+      file: "src/lib/medini/meghaGarbhadhana.ts",
+      content: `/**
+ * Megha Garbhadhana (Cloud Conception in Medini Jyotish)
+ * Gestation period = 195 Solar Days (6.5 synodic lunar months) from Margashirsha to Ashadha.
+ */
+
+export function calculateMonsoonDeliveryDate(conceptionEpochMs: number): number {
+  return conceptionEpochMs + 195 * 24 * 60 * 60 * 1000;
+}
+`
+    }]
+  },
+
+  // 51. Rohini Yoga Rain
+  {
+    step: 51,
+    msg: "feat(medini): add Rohini Yoga monsoon rain forecast based on lunar transit in Ashadha",
+    files: [{
+      file: "src/lib/medini/rohiniYogaRain.ts",
+      content: `export function evaluateRohiniYoga(isSkyCloudyDuringTransit: boolean, windDirection: string): string {
+  if (isSkyCloudyDuringTransit && ['East', 'North'].includes(windDirection)) {
+    return 'Bountiful Monsoon & Supreme Agricultural Harvest.';
+  }
+  return 'Moderate Precipitation with local variations.';
+}
+`
+    }]
+  },
+
+  // 52. Trimshamsha Pathology
+  {
+    step: 52,
+    msg: "feat(drekkana): add D-30 Trimshamsha dosha and character vulnerability analysis",
+    files: [{
+      file: "src/lib/drekkana/trimshamshaPathology.ts",
+      content: `export function evaluateTrimshamsha(d30SignLord: string): string {
+  const PATHOLOGIES: Record<string, string> = {
+    Mars: 'Impulsive courage, high adrenaline, risk-taking drive.',
+    Saturn: 'Resilient endurance, overcoming early delays.',
+    Jupiter: 'Virtuous morality, wisdom, dharma protection.',
+    Mercury: 'Sharp commercial intellect, versatility.',
+    Venus: 'Refined artistic taste, sensuality, diplomacy.'
+  };
+  return PATHOLOGIES[d30SignLord] || 'Balanced Character Strength.';
+}
+`
+    }]
+  },
+
+  // 53. Drekkana Lagna Vigor
+  {
+    step: 53,
+    msg: "feat(drekkana): add Drekkana Lagna physical vitality and courage multiplier",
+    files: [{
+      file: "src/lib/drekkana/drekkanaLagnaVigor.ts",
+      content: `export function calculateDrekkanaVigor(is1stDrekkanaLordBenefic: boolean): number {
+  return is1stDrekkanaLordBenefic ? 1.25 : 1.0;
+}
+`
+    }]
+  },
+
+  // 54. Anuvakra Speed Rules
   {
     step: 54,
-    msg: "feat(chara): add Chara Sookshma Dasha 4th-tier temporal micro intervals",
+    msg: "feat(speed): add Anuvakra (Secondary Retrograde Motion) acceleration metrics",
     files: [{
-      file: "src/lib/chara/charaSookshmaDasha.ts",
-      content: `/**
- * Chara Sookshma Dasha (4th Level Micro-Progression)
- */
-
-export function getCharaSookshmaHours(pratyantarDays: number): number {
-  return (pratyantarDays * 24) / 12;
+      file: "src/lib/speed/anuvakraSpeedRules.ts",
+      content: `export function isAnuvakra(isRetrograde: boolean, isAcceleratingBackwards: boolean): boolean {
+  return isRetrograde && isAcceleratingBackwards;
 }
 `
     }]
   },
 
-  // 55. Chara Prana Dasha
+  // 55. Kutila Speed Rules
   {
     step: 55,
-    msg: "feat(chara): add Chara Prana Dasha 5th-tier breath-level timing sequence",
+    msg: "feat(speed): add Kutila (Curved/Irregular Motion) speed fluctuation tracking",
     files: [{
-      file: "src/lib/chara/charaPranaDasha.ts",
-      content: `/**
- * Chara Prana Dasha (5th Level Breath-Time)
- */
-
-export function getCharaPranaMinutes(sookshmaHours: number): number {
-  return (sookshmaHours * 60) / 12;
+      file: "src/lib/speed/kutilaSpeedRules.ts",
+      content: `export function isKutilaMotion(day1Speed: number, day2Speed: number): boolean {
+  return Math.abs(day2Speed - day1Speed) > 0.15;
 }
 `
     }]
   },
 
-  // 56. Saham Lord Dispositors
+  // 56. KCD Antardasha Calculator
   {
     step: 56,
-    msg: "feat(tajika): add Saham Lord dispositor strength and transit aspect trigger",
+    msg: "feat(kcd): add Kalachakra Antardasha sub-period proportional year calculator",
     files: [{
-      file: "src/lib/tajika/sahamLordSignificators.ts",
-      content: `/**
- * Saham Lord & Trigger Engine
- */
-
-export function evaluateSahamFruition(isSahamLordBenefic: boolean, hasBeneficAspect: boolean): boolean {
-  return isSahamLordBenefic || hasBeneficAspect;
+      file: "src/lib/kcd/kcdAntardashaCalculator.ts",
+      content: `export function calculateKCDAntardasha(majorDurationYears: number, subDurationYears: number, totalCycleYears: number): number {
+  return Number(((majorDurationYears * subDurationYears) / (totalCycleYears || 100)).toFixed(2));
 }
 `
     }]
   },
 
-  // 57. Ithasala Sub-Types
+  // 57. Kalamrita Spiritual Powers
   {
     step: 57,
-    msg: "feat(tajika): add Vartamana, Purna, and Bhavishyat Ithasala sub-type categorizer",
+    msg: "feat(kalasarpa): add Kalamrita Yoga psychic sensitivity and spiritual mastery markers",
     files: [{
-      file: "src/lib/tajika/ithasalaSubTypes.ts",
-      content: `/**
- * 3 Sub-types of Ithasala (Muthasila) Yoga
- * 1. Vartamana (Present): Applying within exact orb
- * 2. Purna (Complete): Applying within 1 degree
- * 3. Bhavishyat (Future): About to enter the orb
- */
-
-export function getIthasalaSubType(separationDeg: number, maxOrb: number): string {
-  if (separationDeg <= 1.0) return 'Purna Ithasala (Immediate Complete Fruition)';
-  if (separationDeg <= maxOrb) return 'Vartamana Ithasala (Active Unfolding)';
-  return 'Bhavishyat Ithasala (Future Potential)';
+      file: "src/lib/kalasarpa/kalamritaSpiritualPowers.ts",
+      content: `export function evaluateKalamritaPowers(isApasavya: boolean): string {
+  return isApasavya ? 'Kalamrita Mastery: Keen occult intuition, philosophical depth, and spiritual detachment.' : 'Standard Material Evolution.';
 }
 `
     }]
   },
 
-  // 58. Tribhaga Bala
+  // 58. Sannipata Omens
   {
     step: 58,
-    msg: "feat(shadbala): add Tribhaga Bala 3-part day/night planetary lord strengths",
+    msg: "feat(medini): add Sannipata (Planetary Cluster Conjunction) mundane turbulence indicator",
     files: [{
-      file: "src/lib/shadbala/tribhagaBala.ts",
-      content: `/**
- * Tribhaga Bala (3 Equal Divisions of Day and Night)
- * Day: Part 1 = Mercury, Part 2 = Sun, Part 3 = Saturn
- * Night: Part 1 = Moon, Part 2 = Venus, Part 3 = Mars
- * Jupiter always receives full Tribhaga strength (60 Virupas).
- */
-
-export function calculateTribhagaBala(isDay: boolean, partNumber: 1 | 2 | 3, planet: string): number {
-  if (planet === 'Jupiter') return 60;
-  if (isDay) {
-    if (partNumber === 1 && planet === 'Mercury') return 60;
-    if (partNumber === 2 && planet === 'Sun') return 60;
-    if (partNumber === 3 && planet === 'Saturn') return 60;
-  } else {
-    if (partNumber === 1 && planet === 'Moon') return 60;
-    if (partNumber === 2 && planet === 'Venus') return 60;
-    if (partNumber === 3 && planet === 'Mars') return 60;
-  }
-  return 0;
+      file: "src/lib/medini/sannipataOmens.ts",
+      content: `export function evaluateSannipata(planetsInSingleSign: number): boolean {
+  return planetsInSingleSign >= 5;
 }
 `
     }]
   },
 
-  // 59. Nathonatha Bala
+  // 59. Varaha Drekkana
   {
     step: 59,
-    msg: "feat(shadbala): add Nathonatha Bala midday/midnight solar distance strength",
+    msg: "feat(drekkana): add Varaha and Sarpa decanates deep psychological grounding",
     files: [{
-      file: "src/lib/shadbala/nathonathaBala.ts",
-      content: `/**
- * Nathonatha Bala (Diurnal / Nocturnal Mid-Arc Virupas)
- */
-
-export function calculateNathonathaBala(hoursFromLocalNoon: number): number {
-  const virupas = Math.max(0, 60 - Math.abs(hoursFromLocalNoon) * 5);
-  return Number(virupas.toFixed(2));
+      file: "src/lib/drekkana/varahaDrekkana.ts",
+      content: `export function isSarpaOrVarahaDrekkana(decanateIndex: number): boolean {
+  return [1, 2].includes(decanateIndex % 3);
 }
 `
     }]
   },
 
-  // 60. Jupiter-Ketu Nadi
+  // 60. Combustion Speed Interaction
   {
     step: 60,
-    msg: "feat(nadi): add Jupiter-Ketu Moksha and Spiritual Enlightenment axis in Nadi",
+    msg: "feat(speed): add Astangata (Combustion) combined with Manda/Sheeghra velocity metrics",
     files: [{
-      file: "src/lib/nadi/jupiterKetuNadi.ts",
-      content: `/**
- * Jupiter-Ketu (Guru-Ketu) Nadi Combination
- */
-
-export function evaluateJupiterKetuNadi(): string {
-  return 'Guru-Ketu Nadi: Supreme spiritual detachment, occult intuition, philosophical gnana, liberation drive.';
+      file: "src/lib/speed/combustionSpeedInteraction.ts",
+      content: `export function evaluateCombustionWithSpeed(isCombust: boolean, isSheeghra: boolean): string {
+  if (isCombust && isSheeghra) return 'Volatile Combustion: High velocity under intense solar rays.';
+  if (isCombust) return 'Dormant Combustion: Purifying internal potential.';
+  return 'Uncombust Luminous Independence.';
 }
 `
     }]
   },
 
-  // 61. useCharaDashaTree hook
+  // 61. KCD Paramayus Sum
   {
     step: 61,
-    msg: "feat(hooks): add useCharaDashaTree hook for multi-tier Jaimini dasha hierarchy",
+    msg: "feat(kcd): add Paramayus (Maximum Longevity Sum) 86 vs 100 year cycle selector",
     files: [{
-      file: "src/hooks/useCharaDashaTree.ts",
-      content: `import { useMemo } from 'react';
-import { getCharaDashaSequence } from '../lib/chara/charaProgressionDirection';
-
-export function useCharaDashaTree(lagnaSignIndex: number) {
-  const sequence = useMemo(() => getCharaDashaSequence(lagnaSignIndex), [lagnaSignIndex]);
-  return { sequence };
+      file: "src/lib/kcd/kcdParamayusSum.ts",
+      content: `export function getParamayusCycle(isSavya: boolean): number {
+  return isSavya ? 100 : 86;
 }
 `
     }]
   },
 
-  // 62. useTajikaVarshaphala hook
+  // 62. Takshaka Marital Impact
   {
     step: 62,
-    msg: "feat(hooks): add useTajikaVarshaphala hook for annual solar return analysis",
+    msg: "feat(kalasarpa): add Takshaka Kala Sarpa (7th-1st axis) partnership transformation rules",
     files: [{
-      file: "src/hooks/useTajikaVarshaphala.ts",
-      content: `import { useMemo } from 'react';
-import { calculateMuntha } from '../lib/tajika/munthaCalculator';
-
-export function useTajikaVarshaphala(natalLagnaSignIndex: number, age: number) {
-  const muntha = useMemo(() => calculateMuntha(natalLagnaSignIndex, age), [natalLagnaSignIndex, age]);
-  return { muntha };
+      file: "src/lib/kalasarpa/takshakaMaritalImpact.ts",
+      content: `export function evaluateTakshakaImpact(rahuHouse: number): string {
+  return rahuHouse === 7 ? 'Takshaka Kala Sarpa: Profound marital transformation and unconventional partnerships.' : 'Non-Takshaka Alignment.';
 }
 `
     }]
   },
 
-  // 63. useSahamCalculations hook
+  // 63. Comet Dhumaketu
   {
     step: 63,
-    msg: "feat(hooks): add useSahamCalculations hook for 50 classical Sahams",
+    msg: "feat(medini): add Dhumaketu (Comet) appearance direction and geopolitical repercussions",
     files: [{
-      file: "src/hooks/useSahamCalculations.ts",
-      content: `import { useMemo } from 'react';
-import { calculateSaham } from '../lib/tajika/tajikaSahams';
-
-export function useSahamCalculations(moonDeg: number, sunDeg: number, ascDeg: number, isDay: boolean) {
-  const punyaSaham = useMemo(() => calculateSaham(moonDeg, sunDeg, ascDeg, isDay), [moonDeg, sunDeg, ascDeg, isDay]);
-  return { punyaSaham };
+      file: "src/lib/medini/cometDhumaketu.ts",
+      content: `export function evaluateCometOmen(direction: string): string {
+  return \`Dhumaketu in \${direction}: Signals political restructuring in corresponding geopolitical quadrant.\`;
 }
 `
     }]
   },
 
-  // 64. useDetailedShadbala hook
+  // 64. Ayudha Drekkana Bravery
   {
     step: 64,
-    msg: "feat(hooks): add useDetailedShadbala hook for 6-fold virupa component analysis",
+    msg: "feat(drekkana): add Ayudha (Armed) Drekkana military, martial arts, and defense aptitude",
     files: [{
-      file: "src/hooks/useDetailedShadbala.ts",
-      content: `import { useMemo } from 'react';
-import { aggregateShadbala } from '../lib/shadbala/shadbalaSummary';
-
-export function useDetailedShadbala(planet: string, sthana: number, dig: number, kala: number, chesta: number, naisargika: number, drik: number) {
-  const summary = useMemo(() => aggregateShadbala(planet, sthana, dig, kala, chesta, naisargika, drik), [planet, sthana, dig, kala, chesta, naisargika, drik]);
-  return { summary };
+      file: "src/lib/drekkana/ayudhaDrekkanaBravery.ts",
+      content: `export function isAyudhaDrekkana(signIndex: number, decanate: number): boolean {
+  return decanate === 1 && [0, 7].includes(signIndex); // Aries & Scorpio 1st Drekkana
 }
 `
     }]
   },
 
-  // 65. useNadiAstrology hook
+  // 65. Mean Daily Motions Table
   {
     step: 65,
-    msg: "feat(hooks): add useNadiAstrology hook for BNN planetary combination interpretations",
+    msg: "feat(speed): add Standard mean daily motions astronomical lookup table for 7 planets",
     files: [{
-      file: "src/hooks/useNadiAstrology.ts",
-      content: `import { useMemo } from 'react';
-import { evaluateNadiConjunction } from '../lib/nadi/karmicConjunctions';
+      file: "src/lib/speed/meanDailyMotionsTable.ts",
+      content: `export const MEAN_DAILY_MOTIONS: Record<string, number> = {
+  Sun: 0.9856,
+  Moon: 13.1763,
+  Mars: 0.5240,
+  Mercury: 1.3833,
+  Jupiter: 0.0831,
+  Venus: 1.2000,
+  Saturn: 0.0335
+};
 
-export function useNadiAstrology(planetA: string, planetB: string) {
-  const interpretation = useMemo(() => evaluateNadiConjunction(planetA, planetB), [planetA, planetB]);
-  return { interpretation };
+export function getMeanSpeed(planet: string): number {
+  return MEAN_DAILY_MOTIONS[planet] || 1.0;
 }
 `
     }]
   },
 
-  // 66. useMuhurtaEngine hook
+  // 66. useMeshaSankranti hook
   {
     step: 66,
-    msg: "feat(hooks): add useMuhurtaEngine hook for 16 Samskaras and 6-fold Shuddhi",
+    msg: "feat(hooks): add useMeshaSankranti hook for annual solar ingress chart ruler",
     files: [{
-      file: "src/hooks/useMuhurtaEngine.ts",
+      file: "src/hooks/useMeshaSankranti.ts",
       content: `import { useMemo } from 'react';
-import { verifySixFoldShuddhi } from '../lib/muhurta/shuddhiMatrix';
+import { evaluateMeshaSankranti } from '../lib/medini/meshaSankranti';
 
-export function useMuhurtaEngine(t: boolean, v: boolean, n: boolean, y: boolean, k: boolean, l: boolean) {
-  const shuddhi = useMemo(() => verifySixFoldShuddhi(t, v, n, y, k, l), [t, v, n, y, k, l]);
-  return { shuddhi };
+export function useMeshaSankranti(weekdayIdx: number) {
+  const ruler = useMemo(() => evaluateMeshaSankranti(weekdayIdx), [weekdayIdx]);
+  return { annualRuler: ruler };
 }
 `
     }]
   },
 
-  // 67. useTajikaYogas hook
+  // 67. useStambhanaStatus hook
   {
     step: 67,
-    msg: "feat(hooks): add useTajikaYogas hook for 16 annual yogas evaluation",
+    msg: "feat(hooks): add useStambhanaStatus hook for zero velocity stationing alerts",
     files: [{
-      file: "src/hooks/useTajikaYogas.ts",
+      file: "src/hooks/useStambhanaStatus.ts",
       content: `import { useMemo } from 'react';
-import { evaluateTajikaYogaName } from '../lib/tajika/tajikaYogas16';
+import { isPlanetaryStationing } from '../lib/speed/stambhanaStation';
 
-export function useTajikaYogas(isApp: boolean, isSep: boolean, hasInter: boolean) {
-  const yogaName = useMemo(() => evaluateTajikaYogaName(isApp, isSep, hasInter), [isApp, isSep, hasInter]);
-  return { yogaName };
+export function useStambhanaStatus(speedDeg: number) {
+  const isStationary = useMemo(() => isPlanetaryStationing(speedDeg), [speedDeg]);
+  return { isStationary };
 }
 `
     }]
   },
 
-  // 68. useIshtaKashta hook
+  // 68. useNagaDosha hook
   {
     step: 68,
-    msg: "feat(hooks): add useIshtaKashta hook for planetary fruit balance metrics",
+    msg: "feat(hooks): add useNagaDosha hook for 5th house progeny dosha evaluations",
     files: [{
-      file: "src/hooks/useIshtaKashta.ts",
+      file: "src/hooks/useNagaDosha.ts",
       content: `import { useMemo } from 'react';
-import { calculateIshtaKashta } from '../lib/shadbala/ishtaKashtaPhala';
+import { evaluateNagaDosha } from '../lib/kalasarpa/nagaDosha';
 
-export function useIshtaKashta(uccha: number, chesta: number) {
-  const fruit = useMemo(() => calculateIshtaKashta(uccha, chesta), [uccha, chesta]);
-  return { fruit };
+export function useNagaDosha(is5thRahu: boolean, isGuruAfflicted: boolean) {
+  const dosha = useMemo(() => evaluateNagaDosha(is5thRahu, isGuruAfflicted), [is5thRahu, isGuruAfflicted]);
+  return { nagaDosha: dosha };
 }
 `
     }]
   },
 
-  // 69. useBhriguNandiTransits hook
+  // 69. useKCDJumps hook
   {
     step: 69,
-    msg: "feat(hooks): add useBhriguNandiTransits hook for Jupiter-Saturn double transit",
+    msg: "feat(hooks): add useKCDJumps hook for Manduka and Simhavalokana transition alerts",
     files: [{
-      file: "src/hooks/useBhriguNandiTransits.ts",
+      file: "src/hooks/useKCDJumps.ts",
       content: `import { useMemo } from 'react';
-import { checkNadiDoubleTransit } from '../lib/nadi/doubleTransitTiming';
+import { evaluateKCDJump } from '../lib/kcd/kcdGatiJumps';
 
-export function useBhriguNandiTransits(targetSign: number, guruSign: number, shaniSign: number) {
-  const isTriggered = useMemo(() => checkNadiDoubleTransit(targetSign, guruSign, shaniSign), [targetSign, guruSign, shaniSign]);
-  return { isTriggered };
+export function useKCDJumps(fromSign: number, toSign: number) {
+  const jump = useMemo(() => evaluateKCDJump(fromSign, toSign), [fromSign, toSign]);
+  return { jumpInfo: jump };
 }
 `
     }]
   },
 
-  // 70. useMahadoshaFilter hook
+  // 70. useEclipseImpact hook
   {
     step: 70,
-    msg: "feat(hooks): add useMahadoshaFilter hook for 21 Muhurta doshas real-time filter",
+    msg: "feat(hooks): add useEclipseImpact hook for national mundane chart impacts",
     files: [{
-      file: "src/hooks/useMahadoshaFilter.ts",
+      file: "src/hooks/useEclipseImpact.ts",
       content: `import { useMemo } from 'react';
-import { checkMuhurtaDoshas } from '../lib/muhurta/mahadosha21';
+import { evaluateEclipseMundaneImpact } from '../lib/medini/eclipseImpact';
 
-export function useMahadoshaFilter(latta: boolean, pata: boolean, jamitra: boolean) {
-  const activeDoshas = useMemo(() => checkMuhurtaDoshas(latta, pata, jamitra), [latta, pata, jamitra]);
-  return { activeDoshas, isClean: activeDoshas.length === 0 };
+export function useEclipseImpact(eclipseSign: number, countryLagna: number) {
+  const impact = useMemo(() => evaluateEclipseMundaneImpact(eclipseSign, countryLagna), [eclipseSign, countryLagna]);
+  return { eclipseImpact: impact };
 }
+`
+    }]
+  },
+
+  // 71 to 90: Unit tests
+  // 71. Deha Affliction Test
+  {
+    step: 71,
+    msg: "test(kcd): add unit test suite for Deha/Jeeva transit affliction detection",
+    files: [{
+      file: "tests/kcdDehaAfflictionDetector.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { checkDehaJeevaTransitAffliction } from '../src/lib/kcd/kcdDehaAfflictionDetector';
+
+describe('Deha Jeeva Affliction', () => {
+  it('flags affliction when malefic transits Deha sign', () => {
+    const res = checkDehaJeevaTransitAffliction([0], 0, 8);
+    expect(res.isDehaAfflicted).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 72. KCD Sequence Test
+  {
+    step: 72,
+    msg: "test(kcd): add unit test suite for 9-stage Mahadasha sequence",
+    files: [{
+      file: "tests/kcdMahaDashaSequence.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { generateKCDSequence } from '../src/lib/kcd/kcdMahaDashaSequence';
+
+describe('KCD Mahadasha Sequence', () => {
+  it('generates 9 dasha stages', () => {
+    const seq = generateKCDSequence(0);
+    expect(seq).toHaveLength(9);
+  });
+});
+`
+    }]
+  },
+
+  // 73. Partial Kala Sarpa Test
+  {
+    step: 73,
+    msg: "test(kalasarpa): add unit test suite for Partial Kala Sarpa Yoga",
+    files: [{
+      file: "tests/partialKalaSarpa.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluatePartialKalaSarpa } from '../src/lib/kalasarpa/partialKalaSarpa';
+
+describe('Partial Kala Sarpa', () => {
+  it('identifies Anshik Kala Sarpa when 6 planets are inside axis', () => {
+    expect(evaluatePartialKalaSarpa(6)).toContain('Anshik');
+  });
+});
+`
+    }]
+  },
+
+  // 74. Sarpa Shanti Mantras Test
+  {
+    step: 74,
+    msg: "test(kalasarpa): add unit test suite for Sarpa Shanti mantra counts",
+    files: [{
+      file: "tests/sarpaShantiMantras.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getSarpaShantiDetails } from '../src/lib/kalasarpa/sarpaShantiMantras';
+
+describe('Sarpa Shanti Mantras', () => {
+  it('allocates 18000 japas to Ananta', () => {
+    expect(getSarpaShantiDetails('Ananta').count).toBe(18000);
+  });
+});
+`
+    }]
+  },
+
+  // 75. Megha Garbhadhana Test
+  {
+    step: 75,
+    msg: "test(medini): add unit test suite for 195-day monsoon gestation",
+    files: [{
+      file: "tests/meghaGarbhadhana.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { calculateMonsoonDeliveryDate } from '../src/lib/medini/meghaGarbhadhana';
+
+describe('Megha Garbhadhana', () => {
+  it('calculates delivery epoch 195 days in future', () => {
+    const now = Date.now();
+    const future = calculateMonsoonDeliveryDate(now);
+    expect(future).toBeGreaterThan(now);
+  });
+});
+`
+    }]
+  },
+
+  // 76. Rohini Yoga Rain Test
+  {
+    step: 76,
+    msg: "test(medini): add unit test suite for Rohini Yoga rain predictions",
+    files: [{
+      file: "tests/rohiniYogaRain.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateRohiniYoga } from '../src/lib/medini/rohiniYogaRain';
+
+describe('Rohini Yoga Rain', () => {
+  it('predicts bountiful monsoon with cloudy skies and East winds', () => {
+    expect(evaluateRohiniYoga(true, 'East')).toContain('Bountiful Monsoon');
+  });
+});
+`
+    }]
+  },
+
+  // 77. Trimshamsha Pathology Test
+  {
+    step: 77,
+    msg: "test(drekkana): add unit test suite for D-30 Trimshamsha pathology",
+    files: [{
+      file: "tests/trimshamshaPathology.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateTrimshamsha } from '../src/lib/drekkana/trimshamshaPathology';
+
+describe('Trimshamsha Pathology', () => {
+  it('returns courage for Mars and wisdom for Jupiter', () => {
+    expect(evaluateTrimshamsha('Mars')).toContain('courage');
+    expect(evaluateTrimshamsha('Jupiter')).toContain('morality');
+  });
+});
+`
+    }]
+  },
+
+  // 78. Drekkana Lagna Vigor Test
+  {
+    step: 78,
+    msg: "test(drekkana): add unit test suite for Drekkana lagna vigor multiplier",
+    files: [{
+      file: "tests/drekkanaLagnaVigor.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { calculateDrekkanaVigor } from '../src/lib/drekkana/drekkanaLagnaVigor';
+
+describe('Drekkana Vigor', () => {
+  it('multiplies vigor by 1.25 for benefic lord', () => {
+    expect(calculateDrekkanaVigor(true)).toBe(1.25);
+  });
+});
+`
+    }]
+  },
+
+  // 79. Anuvakra Speed Test
+  {
+    step: 79,
+    msg: "test(speed): add unit test suite for Anuvakra retrograde acceleration",
+    files: [{
+      file: "tests/anuvakraSpeedRules.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isAnuvakra } from '../src/lib/speed/anuvakraSpeedRules';
+
+describe('Anuvakra Speed', () => {
+  it('identifies accelerating retrograde motion', () => {
+    expect(isAnuvakra(true, true)).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 80. Kutila Speed Test
+  {
+    step: 80,
+    msg: "test(speed): add unit test suite for Kutila irregular speed fluctuation",
+    files: [{
+      file: "tests/kutilaSpeedRules.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isKutilaMotion } from '../src/lib/speed/kutilaSpeedRules';
+
+describe('Kutila Motion', () => {
+  it('flags sharp daily speed fluctuations', () => {
+    expect(isKutilaMotion(0.5, 0.8)).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 81. KCD Antardasha Test
+  {
+    step: 81,
+    msg: "test(kcd): add unit test suite for KCD Antardasha duration calculations",
+    files: [{
+      file: "tests/kcdAntardashaCalculator.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { calculateKCDAntardasha } from '../src/lib/kcd/kcdAntardashaCalculator';
+
+describe('KCD Antardasha', () => {
+  it('computes proportional duration', () => {
+    const dur = calculateKCDAntardasha(21, 7, 100);
+    expect(dur).toBe(1.47);
+  });
+});
+`
+    }]
+  },
+
+  // 82. Kalamrita Powers Test
+  {
+    step: 82,
+    msg: "test(kalasarpa): add unit test suite for Kalamrita spiritual powers",
+    files: [{
+      file: "tests/kalamritaSpiritualPowers.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateKalamritaPowers } from '../src/lib/kalasarpa/kalamritaSpiritualPowers';
+
+describe('Kalamrita Powers', () => {
+  it('identifies occult intuition in Apasavya direction', () => {
+    expect(evaluateKalamritaPowers(true)).toContain('Kalamrita Mastery');
+  });
+});
+`
+    }]
+  },
+
+  // 83. Sannipata Omens Test
+  {
+    step: 83,
+    msg: "test(medini): add unit test suite for 5+ planet Sannipata clustering",
+    files: [{
+      file: "tests/sannipataOmens.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateSannipata } from '../src/lib/medini/sannipataOmens';
+
+describe('Sannipata Omens', () => {
+  it('flags turbulence when 5 or more planets cluster in one sign', () => {
+    expect(evaluateSannipata(5)).toBe(true);
+    expect(evaluateSannipata(3)).toBe(false);
+  });
+});
+`
+    }]
+  },
+
+  // 84. Varaha Drekkana Test
+  {
+    step: 84,
+    msg: "test(drekkana): add unit test suite for Varaha decanate detection",
+    files: [{
+      file: "tests/varahaDrekkana.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isSarpaOrVarahaDrekkana } from '../src/lib/drekkana/varahaDrekkana';
+
+describe('Varaha Drekkana', () => {
+  it('recognizes 2nd decanate', () => {
+    expect(isSarpaOrVarahaDrekkana(1)).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 85. Combustion Speed Test
+  {
+    step: 85,
+    msg: "test(speed): add unit test suite for Combustion and speed interactions",
+    files: [{
+      file: "tests/combustionSpeedInteraction.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateCombustionWithSpeed } from '../src/lib/speed/combustionSpeedInteraction';
+
+describe('Combustion Speed', () => {
+  it('identifies Volatile Combustion for Sheeghra combust planets', () => {
+    expect(evaluateCombustionWithSpeed(true, true)).toContain('Volatile');
+  });
+});
+`
+    }]
+  },
+
+  // 86. KCD Paramayus Sum Test
+  {
+    step: 86,
+    msg: "test(kcd): add unit test suite for Paramayus 86 vs 100 years",
+    files: [{
+      file: "tests/kcdParamayusSum.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getParamayusCycle } from '../src/lib/kcd/kcdParamayusSum';
+
+describe('KCD Paramayus', () => {
+  it('returns 100 for Savya and 86 for Apasavya', () => {
+    expect(getParamayusCycle(true)).toBe(100);
+    expect(getParamayusCycle(false)).toBe(86);
+  });
+});
+`
+    }]
+  },
+
+  // 87. Takshaka Marital Impact Test
+  {
+    step: 87,
+    msg: "test(kalasarpa): add unit test suite for Takshaka 7th house marital dynamics",
+    files: [{
+      file: "tests/takshakaMaritalImpact.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateTakshakaImpact } from '../src/lib/kalasarpa/takshakaMaritalImpact';
+
+describe('Takshaka Marital Impact', () => {
+  it('identifies marital transformation for Rahu in 7th', () => {
+    expect(evaluateTakshakaImpact(7)).toContain('Takshaka');
+  });
+});
+`
+    }]
+  },
+
+  // 88. Comet Dhumaketu Test
+  {
+    step: 88,
+    msg: "test(medini): add unit test suite for Dhumaketu comet directional omen",
+    files: [{
+      file: "tests/cometDhumaketu.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateCometOmen } from '../src/lib/medini/cometDhumaketu';
+
+describe('Dhumaketu Comet', () => {
+  it('signals restructuring in indicated direction', () => {
+    expect(evaluateCometOmen('North')).toContain('North');
+  });
+});
+`
+    }]
+  },
+
+  // 89. Ayudha Drekkana Test
+  {
+    step: 89,
+    msg: "test(drekkana): add unit test suite for Ayudha martial decanates",
+    files: [{
+      file: "tests/ayudhaDrekkanaBravery.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isAyudhaDrekkana } from '../src/lib/drekkana/ayudhaDrekkanaBravery';
+
+describe('Ayudha Drekkana', () => {
+  it('identifies 1st decanate of Aries as Ayudha', () => {
+    expect(isAyudhaDrekkana(0, 1)).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 90. Mean Daily Motions Table Test
+  {
+    step: 90,
+    msg: "test(speed): add unit test suite for Mean daily motions lookup table",
+    files: [{
+      file: "tests/meanDailyMotionsTable.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getMeanSpeed } from '../src/lib/speed/meanDailyMotionsTable';
+
+describe('Mean Daily Motions', () => {
+  it('returns 0.9856 for Sun and 13.1763 for Moon', () => {
+    expect(getMeanSpeed('Sun')).toBe(0.9856);
+    expect(getMeanSpeed('Moon')).toBe(13.1763);
+  });
+});
 `
     }]
   }

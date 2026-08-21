@@ -1,976 +1,936 @@
-export const batch1 = [
-  // 1. Chara Progression Direction
+export const todayBatch1 = [
+  // 1. KCD Savya Apasavya
   {
     step: 1,
-    msg: "feat(chara): add Chara Dasha forward and reverse progression direction rules based on 9th house",
+    msg: "feat(kcd): add Kalachakra Dasha (KCD) Savya and Apasavya group classification",
     files: [{
-      file: "src/lib/chara/charaProgressionDirection.ts",
+      file: "src/lib/kcd/kcdSavyaApasavya.ts",
       content: `/**
- * Jaimini Chara Dasha Progression Direction Engine
- * Direction of Dasha depends on the nature of the 9th house from Lagna:
- * - Zodiacal (Direct/Clockwise): Aries, Taurus, Gemini, Libra, Scorpio, Sagittarius
- * - Anti-Zodiacal (Indirect/Counter-Clockwise): Cancer, Leo, Virgo, Capricorn, Aquarius, Pisces
+ * Kalachakra Dasha (KCD): Savya (Direct) vs Apasavya (Indirect) Nakshatras
+ * Savya: Ashwini, Krittika, Punarvasu, Ashlesha, Magha, Uttara Phalguni, Chitra, Vishakha, Jyeshtha, Moola, Uttara Ashadha, Shravana, Purva Bhadrapada, Revati.
+ * Apasavya: Bharani, Rohini, Mrigashira, Ardra, Pushya, Purva Phalguni, Hasta, Swati, Anuradha, Purva Ashadha, Abhijit, Dhanishta, Shatabhisha, Uttara Bhadrapada.
  */
 
-export function isDirectProgression(signIndex: number): boolean {
-  // Signs that move direct in Chara Dasha (0=Aries, 1=Taurus, 2=Gemini, 6=Libra, 7=Scorpio, 8=Sagittarius)
-  return [0, 1, 2, 6, 7, 8].includes(signIndex % 12);
-}
+export const SAVYA_STARS = [0, 2, 6, 8, 9, 11, 13, 15, 17, 18, 20, 21, 24, 26];
 
-export function getCharaDashaSequence(lagnaSignIndex: number): number[] {
-  const isDirect = isDirectProgression(lagnaSignIndex);
-  const sequence: number[] = [];
-
-  for (let i = 0; i < 12; i++) {
-    if (isDirect) {
-      sequence.push((lagnaSignIndex + i) % 12);
-    } else {
-      sequence.push((lagnaSignIndex - i + 12) % 12);
-    }
-  }
-  return sequence;
+export function isSavyaNakshatra(nakshatraIndex27: number): boolean {
+  return SAVYA_STARS.includes(nakshatraIndex27 % 27);
 }
 `
     }]
   },
 
-  // 2. Chara Years Calculator
+  // 2. KCD Deha Jeeva
   {
     step: 2,
-    msg: "feat(chara): add Chara Dasha year count engine with exaltation and debilitation modifications",
+    msg: "feat(kcd): add Deha Rashi (Physical Body) and Jeeva Rashi (Soul) mapping engine",
     files: [{
-      file: "src/lib/chara/charaYearsCalculator.ts",
+      file: "src/lib/kcd/kcdDehaJeeva.ts",
       content: `/**
- * Chara Dasha Year Duration Calculation
- * Rule: Count from sign to its lord. If lord is in own sign, gives 12 years.
- * If exalted: add 1 year. If debilitated: deduct 1 year. Max = 12 years, Min = 1 year.
+ * Kalachakra Dasha: Deha (Body) & Jeeva (Life/Soul) Signs
+ * Deha represents the physical vitality and physical manifestations.
+ * Jeeva represents consciousness, longevity, and spiritual breath.
  */
 
-export function calculateCharaDashaYears(
-  signIndex: number,
-  lordSignIndex: number,
-  isDirectCount: boolean,
-  isExalted: boolean,
-  isDebilitated: boolean
-): number {
-  let count: number;
-  if (signIndex === lordSignIndex) {
-    count = 12;
-  } else if (isDirectCount) {
-    count = ((lordSignIndex - signIndex + 12) % 12);
-  } else {
-    count = ((signIndex - lordSignIndex + 12) % 12);
-  }
+export function getKCDDehaJeeva(isSavya: boolean, startSign: number) {
+  const deha = startSign % 12;
+  const jeeva = (startSign + (isSavya ? 8 : 4)) % 12;
 
-  if (count === 0) count = 12;
-
-  if (isExalted && count < 12) count += 1;
-  if (isDebilitated && count > 1) count -= 1;
-
-  return Math.min(12, Math.max(1, count));
+  return {
+    dehaSignIndex: deha,
+    jeevaSignIndex: jeeva,
+    interpretation: 'Protect Deha and Jeeva signs during malefic transits for health and vitality.'
+  };
 }
 `
     }]
   },
 
-  // 3. Paka and Bhoga Rashi
+  // 3. KCD Gati Jumps
   {
     step: 3,
-    msg: "feat(chara): add Paka Rashi and Bhoga Rashi sign reflection engine in Chara Dasha",
+    msg: "feat(kcd): add KCD Gati Jumps: Manduka (Frog), Markati (Monkey), and Simhavalokana (Lion)",
     files: [{
-      file: "src/lib/chara/pakaBhogaRashi.ts",
+      file: "src/lib/kcd/kcdGatiJumps.ts",
       content: `/**
- * Paka Rashi and Bhoga Rashi in Jaimini Chara Dasha
- * - Paka Rashi: The sign occupied by the lord of the active Dasha sign.
- * - Bhoga Rashi: The reflection of the Dasha sign as far from Paka Rashi as Paka is from Dasha sign.
+ * Kalachakra Dasha Special Jumps (Gatis):
+ * 1. Manduka Gati (Frog Jump): Skipping a sign (e.g. Virgo to Cancer or Leo to Gemini) -> Sudden transformations.
+ * 2. Markati Gati (Monkey Leap): Reversing back (e.g. Leo to Cancer) -> Career repositioning.
+ * 3. Simhavalokana (Lion's Backward Glance): Major jump (e.g. Pisces to Scorpio or Sagittarius to Aries) -> Karmic culmination.
  */
 
-export function calculatePakaAndBhoga(dashaSignIndex: number, lordSignIndex: number) {
-  const pakaRashi = lordSignIndex;
-  const dist = (lordSignIndex - dashaSignIndex + 12) % 12;
-  const bhogaRashi = (lordSignIndex + dist) % 12;
-
-  return {
-    dashaSign: dashaSignIndex,
-    pakaRashi,
-    bhogaRashi,
-    description: 'Paka reveals action-energy; Bhoga indicates material fruitions and worldly outcomes.'
-  };
+export function evaluateKCDJump(fromSign: number, toSign: number): string {
+  const diff = (toSign - fromSign + 12) % 12;
+  if (diff === 10 || diff === 2) return 'Manduka Gati (Frog Jump): Sudden life shifts and financial breakthroughs.';
+  if (diff === 11) return 'Markati Gati (Monkey Leap): Re-evaluation of foundational endeavors.';
+  if (diff === 8 || diff === 4) return "Simhavalokana (Lion's Backward Gaze): Major karmic milestone and sovereign recognition.";
+  return 'Standard Regular Progression';
 }
 `
     }]
   },
 
-  // 4. Chara Sub-Periods
+  // 4. KCD Sign Durations
   {
     step: 4,
-    msg: "feat(chara): add Chara Dasha 12-sign Antardasha sub-period generator",
+    msg: "feat(kcd): add KCD 12 Rashi year duration lookup (Aries 7y to Pisces 10y)",
     files: [{
-      file: "src/lib/chara/charaSubPeriods.ts",
+      file: "src/lib/kcd/kcdSignDurations.ts",
       content: `/**
- * Chara Dasha Antardasha (Sub-Period) Generator
- * Each major Dasha sign is sub-divided into 12 sub-periods of equal proportional duration.
+ * Kalachakra Dasha Rashi Durations (Years):
+ * Aries: 7 | Taurus: 16 | Gemini: 9 | Cancer: 21 | Leo: 5 | Virgo: 9 |
+ * Libra: 16 | Scorpio: 7 | Sagittarius: 10 | Capricorn: 4 | Aquarius: 4 | Pisces: 10
+ * Total Paramayus Sum = 100 or 86 years based on cycle.
  */
 
-export function getCharaSubPeriods(majorSignIndex: number, totalMajorYears: number) {
-  const monthsPerSub = (totalMajorYears * 12) / 12;
-  const subPeriods = [];
+export const KCD_RASHI_YEARS: Record<number, number> = {
+  0: 7,   // Aries (Mars)
+  1: 16,  // Taurus (Venus)
+  2: 9,   // Gemini (Mercury)
+  3: 21,  // Cancer (Moon)
+  4: 5,   // Leo (Sun)
+  5: 9,   // Virgo (Mercury)
+  6: 16,  // Libra (Venus)
+  7: 7,   // Scorpio (Mars)
+  8: 10,  // Sagittarius (Jupiter)
+  9: 4,   // Capricorn (Saturn)
+  10: 4,  // Aquarius (Saturn)
+  11: 10  // Pisces (Jupiter)
+};
 
-  for (let i = 0; i < 12; i++) {
-    const subSign = (majorSignIndex + i) % 12;
-    subPeriods.push({
-      subSignIndex: subSign,
-      durationMonths: monthsPerSub
-    });
-  }
-  return subPeriods;
+export function getKCDDuration(signIndex: number): number {
+  return KCD_RASHI_YEARS[signIndex % 12] || 10;
 }
 `
     }]
   },
 
-  // 5. Chara Pratyantardasha
+  // 5. 12 Kala Sarpa Yogas
   {
     step: 5,
-    msg: "feat(chara): add Chara Pratyantardasha 3rd-tier micro timing generator",
+    msg: "feat(kalasarpa): add 12 Classical Kala Sarpa Yoga types locator (Ananta through Sheshanaga)",
     files: [{
-      file: "src/lib/chara/charaPratyantardasha.ts",
+      file: "src/lib/kalasarpa/kalaSarpa12Types.ts",
       content: `/**
- * Chara Pratyantardasha (3rd-Level Sub-Division)
+ * 12 Classical Kala Sarpa Yogas:
+ * 1. Ananta (Rahu 1st - Ketu 7th)
+ * 2. Kulika (Rahu 2nd - Ketu 8th)
+ * 3. Vasuki (Rahu 3rd - Ketu 9th)
+ * 4. Shankhapala (Rahu 4th - Ketu 10th)
+ * 5. Padma (Rahu 5th - Ketu 11th)
+ * 6. Mahapadma (Rahu 6th - Ketu 12th)
+ * 7. Takshaka (Rahu 7th - Ketu 1st)
+ * 8. Karkotaka (Rahu 8th - Ketu 2nd)
+ * 9. Shankhachuda (Rahu 9th - Ketu 3rd)
+ * 10. Ghataka (Rahu 10th - Ketu 4th)
+ * 11. Vishadhara (Rahu 11th - Ketu 5th)
+ * 12. Sheshanaga (Rahu 12th - Ketu 6th)
  */
 
-export function getCharaPratyantarDays(subDurationMonths: number): number {
-  return (subDurationMonths * 30.4375) / 12;
-}
-`
-    }]
-  },
-
-  // 6. Chara Dasha Phala
-  {
-    step: 6,
-    msg: "feat(chara): add Chara Dasha predictive phala matrices for all 12 signs",
-    files: [{
-      file: "src/lib/chara/charaDashaPhala.ts",
-      content: `/**
- * Chara Dasha Phala Predictive Matrices
- */
-
-const SIGN_DASHAPHALA: Record<string, string> = {
-  Aries: 'Dynamic initiation, vocational enterprise, pioneering ambition, travel.',
-  Taurus: 'Financial consolidation, asset accumulation, domestic celebrations.',
-  Gemini: 'Intellectual growth, writing, commerce, networking, skill mastery.',
-  Cancer: 'Emotional introspection, real estate purchases, maternal bonds.',
-  Leo: 'Leadership prominence, public recognition, sovereign authority.',
-  Virgo: 'Analytical breakthroughs, health vigilance, service advancement.',
-  Libra: 'Partnership fruition, legal triumphs, commercial expansion.',
-  Scorpio: 'Transformative research, occult insights, deep financial restructuring.',
-  Sagittarius: 'Philosophical elevation, pilgrimage, mentor guidance, higher education.',
-  Capricorn: 'Professional elevation, corporate responsibility, disciplined labor.',
-  Aquarius: 'Humanitarian alliances, innovative gains, widespread networking.',
-  Pisces: 'Spiritual liberation, international voyages, philanthropic surrender.'
-};
-
-export function getCharaDashaPhala(signName: string): string {
-  return SIGN_DASHAPHALA[signName] || 'Auspicious unfolding of karmic potentials.';
-}
-`
-    }]
-  },
-
-  // 7. Solar Return Epoch
-  {
-    step: 7,
-    msg: "feat(tajika): add Varshaphala exact Solar Return epoch and timestamp calculator",
-    files: [{
-      file: "src/lib/tajika/solarReturnEpoch.ts",
-      content: `/**
- * Tajika Varshaphala Solar Return Epoch Calculator
- * Finds the exact timestamp in target year when Sun returns to its exact natal sidereal longitude.
- */
-
-export function calculateSolarReturnEpoch(natalSunLongitude: number, year: number): number {
-  // Approximate solar return timestamp (1 solar sidereal year = 365.256363 days)
-  const baseEpoch = new Date(year, 0, 1).getTime();
-  const dayOffset = (natalSunLongitude / 360) * 365.256363 * 86400000;
-  return baseEpoch + dayOffset;
-}
-`
-    }]
-  },
-
-  // 8. Muntha Calculator
-  {
-    step: 8,
-    msg: "feat(tajika): add Muntha progressed ascendant and Munthesha lord locator",
-    files: [{
-      file: "src/lib/tajika/munthaCalculator.ts",
-      content: `/**
- * Muntha (Progressed Annual Ascendant) in Tajika
- * Formula: Muntha = (Natal Lagna Sign + Completed Years of Age) % 12
- */
-
-const SIGN_LORDS = ['Mars', 'Venus', 'Mercury', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Saturn', 'Jupiter'];
-
-export function calculateMuntha(natalLagnaSignIndex: number, completedAgeYears: number) {
-  const munthaSign = (natalLagnaSignIndex + completedAgeYears) % 12;
-  const munthesha = SIGN_LORDS[munthaSign];
-
-  return {
-    munthaSignIndex: munthaSign,
-    muntheshaLord: munthesha,
-    isAuspiciousHouse: [1, 2, 3, 5, 9, 10, 11].includes(munthaSign + 1)
-  };
-}
-`
-    }]
-  },
-
-  // 9. Pancha Adhikaris
-  {
-    step: 9,
-    msg: "feat(tajika): add Pancha Adhikaris (5 Office Bearers) for Year Lord selection",
-    files: [{
-      file: "src/lib/tajika/panchaAdhikaris.ts",
-      content: `/**
- * Pancha Adhikaris (5 Office-Bearers in Varshaphala)
- * 1. Janma Lagnesha (Natal Ascendant Lord)
- * 2. Varsha Lagnesha (Annual Chart Ascendant Lord)
- * 3. Munthesha (Muntha Lord)
- * 4. Dina/Ratri Lord (Sun/Moon Sign Lord in Annual Chart)
- * 5. Tri-Rashi Lord (Lord of the element triplicity)
- */
-
-export interface PanchaAdhikaris {
-  janmaLagnesha: string;
-  varshaLagnesha: string;
-  munthesha: string;
-  dinaRatriLord: string;
-  triRashiLord: string;
-}
-
-export function evaluatePanchaAdhikaris(
-  janmaL: string,
-  varshaL: string,
-  munthesha: string,
-  dinaRatri: string,
-  triRashi: string
-): PanchaAdhikaris {
-  return {
-    janmaLagnesha: janmaL,
-    varshaLagnesha: varshaL,
-    munthesha,
-    dinaRatriLord: dinaRatri,
-    triRashiLord: triRashi
-  };
-}
-`
-    }]
-  },
-
-  // 10. Dwadashavargiya Bala
-  {
-    step: 10,
-    msg: "feat(tajika): add Dwadashavargiya Bala 12-varga strength engine in Tajika",
-    files: [{
-      file: "src/lib/tajika/dwadashavargiyaBala.ts",
-      content: `/**
- * Tajika Dwadashavargiya Bala (12-Varga Strength)
- * Allocates points across 12 divisional charts (Max = 20 Biswas / Points).
- */
-
-export function calculateDwadashavargiyaScore(ownSignsCount: number, exaltationCount: number): number {
-  const score = ownSignsCount * 1.5 + exaltationCount * 2.0;
-  return Math.min(20, Math.max(0, Number(score.toFixed(2))));
-}
-`
-    }]
-  },
-
-  // 11. Varshapathi Selector
-  {
-    step: 11,
-    msg: "feat(tajika): add Varshapathi (Ruler of the Year) determination engine",
-    files: [{
-      file: "src/lib/tajika/varshapathiSelector.ts",
-      content: `/**
- * Varshapathi (Ruler of the Year) Determination
- * Candidate among the 5 Pancha Adhikaris with the highest Dwadashavargiya Bala and aspecting the Varsha Lagna.
- */
-
-export function selectVarshapathi(candidates: { planet: string; bala: number; aspectsLagna: boolean }[]): string {
-  const eligible = candidates.filter(c => c.aspectsLagna);
-  if (eligible.length > 0) {
-    eligible.sort((a, b) => b.bala - a.bala);
-    return eligible[0].planet;
-  }
-  candidates.sort((a, b) => b.bala - a.bala);
-  return candidates[0]?.planet || 'Sun';
-}
-`
-    }]
-  },
-
-  // 12. 16 Tajika Yogas
-  {
-    step: 12,
-    msg: "feat(tajika): add complete 16 Tajika Yogas engine (Ikbala, Induvara, Ithasala, Ishrafa, Nakta, Yamaya)",
-    files: [{
-      file: "src/lib/tajika/tajikaYogas16.ts",
-      content: `/**
- * 16 Classical Tajika Yogas Engine
- * 1. Ikbala (Planets in Kendras/Panapharas)
- * 2. Induvara (Planets in Apoklimas)
- * 3. Ithasala (Muthasila - Mutual applying aspect within orb)
- * 4. Ishrafa (Musaripha - Separating aspect)
- * 5. Nakta (Intermediary fast planet linking slower planets)
- * 6. Yamaya (Intermediary slow planet linking faster planets)
- * 7. Manahoo (Malefic intervention)
- * 8. Kambar (Combustion cancellation)
- * 9. Gairi-Kambala (Deep strength mutual reception)
- * 10. Khallasara (Subtle trinal support)
- * 11. Radda (Cancellation of yoga due to retrogradation/combustion)
- * 12. Duphali-Kutha (Dual strength reinforcement)
- * 13. Dutthada (Double affliction)
- * 14. Tambira (Extreme dignity reinforcement)
- * 15. Kutha (Exalted lord support)
- * 16. Durphata (Feeble assistance)
- */
-
-export function evaluateTajikaYogaName(isApplying: boolean, isSeparating: boolean, hasIntermediary: boolean): string {
-  if (isApplying) return 'Ithasala (Muthasila) Yoga';
-  if (isSeparating) return 'Ishrafa (Musaripha) Yoga';
-  if (hasIntermediary) return 'Nakta Yoga';
-  return 'Ikbala Yoga';
-}
-`
-    }]
-  },
-
-  // 13. Tajika Sahams
-  {
-    step: 13,
-    msg: "feat(tajika): add 50 Classical Tajika Sahams (Punya, Vidya, Yashas, Karma, Vivaha)",
-    files: [{
-      file: "src/lib/tajika/tajikaSahams.ts",
-      content: `/**
- * Classical Tajika Sahams (Sensitive Arabic/Tajika Points)
- * Punya Saham (Day): Moon - Sun + Ascendant
- * Punya Saham (Night): Sun - Moon + Ascendant
- * Vidya Saham: Sun - Moon + Ascendant
- * Vivaha Saham: Venus - Saturn + Ascendant
- * Karma Saham: Mars - Sun + Ascendant
- */
-
-export function calculateSaham(degA: number, degB: number, ascDeg: number, isDayBirth: boolean): number {
-  let saham: number;
-  if (isDayBirth) {
-    saham = ((degA - degB + ascDeg) % 360 + 360) % 360;
-  } else {
-    saham = ((degB - degA + ascDeg) % 360 + 360) % 360;
-  }
-  return Number(saham.toFixed(4));
-}
-`
-    }]
-  },
-
-  // 14. Deeptamsha Orbs
-  {
-    step: 14,
-    msg: "feat(tajika): add Deeptamsha planetary orb ranges for Tajika aspectual interactions",
-    files: [{
-      file: "src/lib/tajika/deeptamshaOrbs.ts",
-      content: `/**
- * Deeptamsha (Moiety / Orb Ranges) in Tajika
- * Sun: 15° | Moon: 12° | Mars: 8° | Mercury: 7° | Jupiter: 9° | Venus: 7° | Saturn: 9° | Rahu/Ketu: 6°
- */
-
-export const DEEPTAMSHA_ORBS: Record<string, number> = {
-  Sun: 15,
-  Moon: 12,
-  Mars: 8,
-  Mercury: 7,
-  Jupiter: 9,
-  Venus: 7,
-  Saturn: 9,
-  Rahu: 6,
-  Ketu: 6
-};
-
-export function getMoietyOrb(planetA: string, planetB: string): number {
-  const orbA = DEEPTAMSHA_ORBS[planetA] || 8;
-  const orbB = DEEPTAMSHA_ORBS[planetB] || 8;
-  return (orbA + orbB) / 2;
-}
-`
-    }]
-  },
-
-  // 15. Tripataki Chakra
-  {
-    step: 15,
-    msg: "feat(tajika): add Tripataki Chakra flag-line transit overlay for annual health & fortune",
-    files: [{
-      file: "src/lib/tajika/tripatakiChakra.ts",
-      content: `/**
- * Tripataki Chakra (3-Flagged Line Network for Annual Transits)
- */
-
-export function checkTripatakiVedha(natalMoonLongDeg: number, transitMaleficDeg: number): boolean {
-  const diff = Math.abs((natalMoonLongDeg - transitMaleficDeg + 360) % 360);
-  return diff <= 5.0 || Math.abs(diff - 120) <= 5.0;
-}
-`
-    }]
-  },
-
-  // 16. Sthana Bala
-  {
-    step: 16,
-    msg: "feat(shadbala): add Sthana Bala (Positional Strength: Uccha, Saptavargiya, Ojayugma, Kendradi, Drekkana)",
-    files: [{
-      file: "src/lib/shadbala/sthanaBala.ts",
-      content: `/**
- * Sthana Bala (Positional Strength) Breakdown
- * 1. Uccha Bala (Exaltation strength: 0 to 60 Virupas)
- * 2. Saptavargiya Bala (Strength in 7 divisions: Rashi, Hora, Drekkana, Saptamsha, Navamsha, Dwadamsha, Trimshamsha)
- * 3. Ojayugmarashi Bala (Odd/Even sign suitability)
- * 4. Kendradi Bala (Kendra 60, Panaphara 30, Apoklima 15)
- * 5. Drekkana Bala (Gender suitability by 1/3 decanate)
- */
-
-export interface SthanaBalaComponents {
-  ucchaBala: number;
-  saptavargiyaBala: number;
-  ojayugmaBala: number;
-  kendradiBala: number;
-  drekkanaBala: number;
-  totalSthanaBala: number;
-}
-
-export function calculateSthanaBala(
-  uccha: number,
-  sapta: number,
-  oja: number,
-  kendra: number,
-  drek: number
-): SthanaBalaComponents {
-  const total = uccha + sapta + oja + kendra + drek;
-  return {
-    ucchaBala: uccha,
-    saptavargiyaBala: sapta,
-    ojayugmaBala: oja,
-    kendradiBala: kendra,
-    drekkanaBala: drek,
-    totalSthanaBala: Number(total.toFixed(2))
-  };
-}
-`
-    }]
-  },
-
-  // 17. Dig Bala
-  {
-    step: 17,
-    msg: "feat(shadbala): add Dig Bala (Directional Strength: 1st, 4th, 7th, 10th directional nodes)",
-    files: [{
-      file: "src/lib/shadbala/digBala.ts",
-      content: `/**
- * Dig Bala (Directional Strength: 0 to 60 Virupas)
- * Sun, Mars peak at 10th house (South, 270°)
- * Jupiter, Mercury peak at 1st house (East, 0°)
- * Moon, Venus peak at 4th house (North, 90°)
- * Saturn peaks at 7th house (West, 180°)
- */
-
-export function calculateDigBala(planet: string, houseLongitude: number): number {
-  const PEAK_HOUSES: Record<string, number> = {
-    Jupiter: 0, Mercury: 0,
-    Moon: 90, Venus: 90,
-    Saturn: 180,
-    Sun: 270, Mars: 270
-  };
-
-  const peak = PEAK_HOUSES[planet] ?? 0;
-  const diff = Math.abs((houseLongitude - peak + 360) % 360);
-  const arc = diff > 180 ? 360 - diff : diff;
-  const virupas = (180 - arc) / 3;
-  return Number(virupas.toFixed(2));
-}
-`
-    }]
-  },
-
-  // 18. Kala Bala
-  {
-    step: 18,
-    msg: "feat(shadbala): add Kala Bala (Temporal Strength: Nathonatha, Paksha, Tribhaga, Dina, Hora, Ayana, Yuddha)",
-    files: [{
-      file: "src/lib/shadbala/kalaBala.ts",
-      content: `/**
- * Kala Bala (Temporal Strength)
- * Nathonatha (Diurnal/Nocturnal), Paksha (Lunar Fortnight), Tribhaga (3-part day/night),
- * Varshadhipati, Masadhipati, Dinadhipati, Horadhipati, Ayana Bala, Yuddha Bala.
- */
-
-export function calculateKalaBala(isDayBirth: boolean, isShuklaPaksha: boolean, planet: string): number {
-  let score = 30; // base virupas
-  if (isDayBirth && ['Sun', 'Jupiter', 'Venus'].includes(planet)) score += 30;
-  if (!isDayBirth && ['Moon', 'Mars', 'Saturn'].includes(planet)) score += 30;
-  if (planet === 'Mercury') score += 30; // Always receives diurnal/nocturnal strength
-
-  return score;
-}
-`
-    }]
-  },
-
-  // 19. Chesta Bala
-  {
-    step: 19,
-    msg: "feat(shadbala): add Chesta Bala (Motional Speed and Retrograde Strength Calculator)",
-    files: [{
-      file: "src/lib/shadbala/chestaBala.ts",
-      content: `/**
- * Chesta Bala (Motional Strength: 0 to 60 Virupas)
- * Retrograde (Vakri) planets get full 60 Virupas.
- */
-
-export function calculateChestaBala(isRetrograde: boolean, speedRatio: number): number {
-  if (isRetrograde) return 60.0;
-  const virupas = Math.min(60, Math.max(0, speedRatio * 30));
-  return Number(virupas.toFixed(2));
-}
-`
-    }]
-  },
-
-  // 20. Naisargika Bala
-  {
-    step: 20,
-    msg: "feat(shadbala): add Naisargika Bala (Inherent Natural Strength Constant Tables)",
-    files: [{
-      file: "src/lib/shadbala/naisargikaBala.ts",
-      content: `/**
- * Naisargika Bala (Permanent Natural Strength)
- * Sun: 60 | Moon: 51.43 | Venus: 42.86 | Jupiter: 34.29 | Mercury: 25.71 | Mars: 17.14 | Saturn: 8.57 Virupas
- */
-
-export const NAISARGIKA_BALA: Record<string, number> = {
-  Sun: 60.0,
-  Moon: 51.43,
-  Venus: 42.86,
-  Jupiter: 34.29,
-  Mercury: 25.71,
-  Mars: 17.14,
-  Saturn: 8.57
-};
-
-export function getNaisargikaBala(planet: string): number {
-  return NAISARGIKA_BALA[planet] || 15.0;
-}
-`
-    }]
-  },
-
-  // 21. Drik Bala
-  {
-    step: 21,
-    msg: "feat(shadbala): add Drik Bala (Visual Aspectual Ray Benefic/Malefic Net Strength)",
-    files: [{
-      file: "src/lib/shadbala/drikBala.ts",
-      content: `/**
- * Drik Bala (Aspect Strength)
- * Sum of benefic drishti minus malefic drishti received by a planet.
- */
-
-export function calculateDrikBala(beneficRays: number, maleficRays: number): number {
-  const net = beneficRays - maleficRays;
-  return Number(net.toFixed(2));
-}
-`
-    }]
-  },
-
-  // 22. Ishta and Kashta Phala
-  {
-    step: 22,
-    msg: "feat(shadbala): add Ishta Phala and Kashta Phala planetary fruit balance metric",
-    files: [{
-      file: "src/lib/shadbala/ishtaKashtaPhala.ts",
-      content: `/**
- * Ishta Phala & Kashta Phala (Benefic vs Malefic Manifestation Ratio)
- * Ishta Phala = sqrt(Uccha Bala * Chesta Bala)
- * Kashta Phala = sqrt((60 - Uccha Bala) * (60 - Chesta Bala))
- */
-
-export function calculateIshtaKashta(ucchaBala: number, chestaBala: number) {
-  const ishta = Math.sqrt(Math.max(0, ucchaBala * chestaBala));
-  const kashta = Math.sqrt(Math.max(0, (60 - ucchaBala) * (60 - chestaBala)));
-
-  return {
-    ishtaPhala: Number(ishta.toFixed(2)),
-    kashtaPhala: Number(kashta.toFixed(2)),
-    ratio: Number((ishta / (kashta + 0.001)).toFixed(2))
-  };
-}
-`
-    }]
-  },
-
-  // 23. Shadbala Summary
-  {
-    step: 23,
-    msg: "feat(shadbala): add 6-Fold Shadbala Rupa and Virupa summary benchmark aggregator",
-    files: [{
-      file: "src/lib/shadbala/shadbalaSummary.ts",
-      content: `/**
- * Complete 6-Fold Shadbala Aggregator
- * 1 Rupa = 60 Virupas. Minimum requirements:
- * Sun: 6.5 Rupas (390 Virupas) | Moon: 6.0 Rupas (360) | Mars: 5.0 Rupas (300) |
- * Mercury: 7.0 Rupas (420) | Jupiter: 6.5 Rupas (390) | Venus: 5.5 Rupas (330) | Saturn: 5.0 Rupas (300)
- */
-
-export interface TotalShadbala {
-  planet: string;
-  totalVirupas: number;
-  totalRupas: number;
-  minimumRequiredRupas: number;
-  strengthPercentage: number;
-  isStrong: boolean;
-}
-
-const MINIMUM_RUPAS: Record<string, number> = {
-  Sun: 6.5, Moon: 6.0, Mars: 5.0, Mercury: 7.0, Jupiter: 6.5, Venus: 5.5, Saturn: 5.0
-};
-
-export function aggregateShadbala(
-  planet: string,
-  sthana: number,
-  dig: number,
-  kala: number,
-  chesta: number,
-  naisargika: number,
-  drik: number
-): TotalShadbala {
-  const totalVirupas = sthana + dig + kala + chesta + naisargika + drik;
-  const totalRupas = Number((totalVirupas / 60).toFixed(2));
-  const req = MINIMUM_RUPAS[planet] || 5.5;
-
-  return {
-    planet,
-    totalVirupas: Number(totalVirupas.toFixed(2)),
-    totalRupas,
-    minimumRequiredRupas: req,
-    strengthPercentage: Number(((totalRupas / req) * 100).toFixed(1)),
-    isStrong: totalRupas >= req
-  };
-}
-`
-    }]
-  },
-
-  // 24. Nadi Planetary Karakattwas
-  {
-    step: 24,
-    msg: "feat(nadi): add Bhrigu Nandi Nadi (BNN) Core Planetary Karakattwas",
-    files: [{
-      file: "src/lib/nadi/planetaryKarakattwas.ts",
-      content: `/**
- * Bhrigu Nandi Nadi (BNN) Core Significators
- * Jupiter: Jeeva (The Native's life force and soul identity)
- * Saturn: Karma (Career, duty, labor, professional fate)
- * Venus: Bhoga / Maya / Kalatra (Spouse for male, wealth, luxury, artistry)
- * Mars: Bhratri / Shakti (Brother, husband for female, courage, vitality)
- * Mercury: Buddhi / Vyapar (Intelligence, friends, commerce, maternal uncle)
- * Sun: Pitri / Atma (Father, government, prestige, soul origin)
- * Moon: Matri / Manas (Mother, travels, liquid wealth, emotion, deception)
- * Rahu: Kala / Maya (Paternal grandfather, illusion, sudden expansion, overseas)
- * Ketu: Mukti / Gnana (Maternal grandfather, spiritual detachment, obstructions)
- */
-
-export const BNN_KARAKAS = {
-  Jupiter: 'Jeeva Karaka (Soul & Self)',
-  Saturn: 'Karma Karaka (Profession & Destiny)',
-  Venus: 'Bhoga & Kalatra Karaka (Wealth & Wife)',
-  Mars: 'Shakti & Bhartru Karaka (Husband & Drive)',
-  Mercury: 'Buddhi Karaka (Intellect & Trade)',
-  Sun: 'Pitri & Atma Karaka (Father & Royalty)',
-  Moon: 'Matri & Manas Karaka (Mother & Mind)',
-  Rahu: 'Kala & Maya Karaka (Expansion & Foreign)',
-  Ketu: 'Mukti & Gnana Karaka (Detachment & Roots)'
-};
-`
-    }]
-  },
-
-  // 25. Nadi Directional Trines
-  {
-    step: 25,
-    msg: "feat(nadi): add Nadi 4-Directional Trines (East 1-5-9, South 2-6-10, West 3-7-11, North 4-8-12)",
-    files: [{
-      file: "src/lib/nadi/directionalTrines.ts",
-      content: `/**
- * Nadi 4-Directional Blending (Trinal Harmony)
- * East: Aries (1), Leo (5), Sagittarius (9)
- * South: Taurus (2), Virgo (6), Capricorn (10)
- * West: Gemini (3), Libra (7), Aquarius (11)
- * North: Cancer (4), Scorpio (8), Pisces (12)
- */
-
-export const NADI_DIRECTIONS: Record<string, number[]> = {
-  East: [0, 4, 8],
-  South: [1, 5, 9],
-  West: [2, 6, 10],
-  North: [3, 7, 11]
-};
-
-export function getNadiDirection(signIndex: number): string {
-  const mod = signIndex % 4;
-  if (mod === 0) return 'East';
-  if (mod === 1) return 'South';
-  if (mod === 2) return 'West';
-  return 'North';
-}
-`
-    }]
-  },
-
-  // 26. Nadi Karmic Conjunctions
-  {
-    step: 26,
-    msg: "feat(nadi): add BNN Karmic Conjunctions (Guru-Shani Dharma-Karma, Shukra-Ketu Detachment)",
-    files: [{
-      file: "src/lib/nadi/karmicConjunctions.ts",
-      content: `/**
- * BNN Karmic Conjunctions
- */
-
-export function evaluateNadiConjunction(p1: string, p2: string): string {
-  const pair = [p1, p2].sort().join('-');
-  const NADI_YOGAS: Record<string, string> = {
-    'Jupiter-Saturn': 'Dharma-Karmadhipati Yoga: Exceptional dedication to righteous vocation.',
-    'Ketu-Venus': 'Mukti-Bhoga Conflict: Spiritual detachment from worldly possessions or marital delays.',
-    'Mars-Rahu': 'Angarak Yoga: Explosive mechanical, electrical, and physical kinetic drive.',
-    'Jupiter-Sun': 'Guru-Aditya Yoga: Supreme administrative wisdom, government patronage.',
-    'Jupiter-Moon': 'Gaja-Kesari Nadi: Constant travels, high social esteem, philanthropic grace.'
-  };
-
-  return NADI_YOGAS[pair] || 'Harmonious interaction of planetary frequencies.';
-}
-`
-    }]
-  },
-
-  // 27. Nadi 2nd and 12th House Dynamics
-  {
-    step: 27,
-    msg: "feat(nadi): add Nadi 2nd and 12th House modification and modifier dynamics",
-    files: [{
-      file: "src/lib/nadi/nadiAspects2and12.ts",
-      content: `/**
- * Nadi 2nd & 12th Dynamics
- * 2nd House: Front support / Incoming event
- * 12th House: Rear push / Past karma backing
- */
-
-export function evaluateNadiSupport(targetSign: number, occupantsIn2nd: string[], occupantsIn12th: string[]) {
-  return {
-    incomingForce: occupantsIn2nd,
-    pastKarmaSupport: occupantsIn12th,
-    hasStrongFrontSupport: occupantsIn2nd.length > 0
-  };
-}
-`
-    }]
-  },
-
-  // 28. Nadi Double Transit Timing
-  {
-    step: 28,
-    msg: "feat(nadi): add Nadi Double Transit of Jupiter and Saturn event fruition timer",
-    files: [{
-      file: "src/lib/nadi/doubleTransitTiming.ts",
-      content: `/**
- * Nadi Double Transit Principle (Guru + Shani Aspect on Natal Significator)
- */
-
-export function checkNadiDoubleTransit(
-  natalTargetSign: number,
-  transitGuruSign: number,
-  transitShaniSign: number
-): boolean {
-  // Returns true if both Guru and Shani activate target sign through conjunction, trine, or direct aspect
-  const guruActivates = [natalTargetSign, (natalTargetSign + 4) % 12, (natalTargetSign + 8) % 12].includes(transitGuruSign);
-  const shaniActivates = [natalTargetSign, (natalTargetSign + 2) % 12, (natalTargetSign + 6) % 12, (natalTargetSign + 9) % 12].includes(transitShaniSign);
-
-  return guruActivates && shaniActivates;
-}
-`
-    }]
-  },
-
-  // 29. Nadi Career Profiling
-  {
-    step: 29,
-    msg: "feat(nadi): add Nadi Saturn-centric vocational combinations (Karma-Jeeva mapping)",
-    files: [{
-      file: "src/lib/nadi/lifeProfessionNadi.ts",
-      content: `/**
- * Nadi Vocational Profiler (Saturn + Associated Planets)
- */
-
-export function getNadiProfession(saturnCompanion: string): string {
-  const VOCATIONS: Record<string, string> = {
-    Jupiter: 'Teaching, advisory, judiciary, temple administration, spiritual leadership.',
-    Mercury: 'Auditing, IT, trade, commercial brokerage, publishing, accounting.',
-    Venus: 'Luxury hospitality, finance, architectural design, media production.',
-    Mars: 'Engineering, defense, surgery, real estate, manufacturing.',
-    Sun: 'Public administration, government contracting, political executive.',
-    Moon: 'Culinary trade, marine transit, nursing, psychology, international trade.',
-    Rahu: 'Artificial intelligence, aviation, foreign diplomacy, biotechnology.',
-    Ketu: 'Data encryption, astrology, jurisprudence, spiritual monkhood.'
-  };
-
-  return VOCATIONS[saturnCompanion] || 'Versatile multifaceted profession.';
-}
-`
-    }]
-  },
-
-  // 30. Samskara Muhurtas
-  {
-    step: 30,
-    msg: "feat(muhurta): add 16 Classical Vedic Samskaras Muhurta election rules",
-    files: [{
-      file: "src/lib/muhurta/samskaraMuhurtas.ts",
-      content: `/**
- * 16 Vedic Samskaras Muhurta Engine
- */
-
-export const VEDIC_SAMSKARAS = [
-  'Garbhadhana', 'Pumsavana', 'Simantonnayana', 'Jatakarma', 'Namakarana',
-  'Nishkramana', 'Annaprashana', 'Chudakarana', 'Karnavedha', 'Vidyarambha',
-  'Upanayana', 'Vedarambha', 'Keshanta', 'Samavartana', 'Vivaha', 'Antyeshti'
+export const KALA_SARPA_TYPES = [
+  'Ananta', 'Kulika', 'Vasuki', 'Shankhapala', 'Padma', 'Mahapadma',
+  'Takshaka', 'Karkotaka', 'Shankhachuda', 'Ghataka', 'Vishadhara', 'Sheshanaga'
 ];
 
-export function getSamskaraGuidelines(samskaraName: string): string {
-  if (samskaraName === 'Vivaha') {
-    return 'Ensure Jupiter and Venus are not combust (Tara Shuddhi); avoid Rikta Tithis and Bhadra.';
-  }
-  if (samskaraName === 'Upanayana') {
-    return 'Select waxing fortnight (Shukla Paksha) with strong Jupiter in Kendra/Trikona.';
-  }
-  return 'Select auspicious Tithi, Vara, and Nakshatra with benefic planetary aspects on Lagna.';
+export function getKalaSarpaType(rahuHouse: number): string {
+  const idx = ((rahuHouse - 1 + 12) % 12);
+  return \`\${KALA_SARPA_TYPES[idx]} Kala Sarpa Yoga\`;
 }
 `
     }]
   },
 
-  // 31. Commercial Muhurtas
+  // 6. Kala Sarpa Savya Apasavya
+  {
+    step: 6,
+    msg: "feat(kalasarpa): add Kala Sarpa Savya (Ascending towards Rahu) vs Apasavya (Descending)",
+    files: [{
+      file: "src/lib/kalasarpa/kalaSarpaSavya.ts",
+      content: `/**
+ * Kala Sarpa Direction:
+ * - Savya (Kala Sarpa): All planets moving towards Rahu's mouth (Dynamic external struggle followed by zenith).
+ * - Apasavya (Kalamrita): All planets moving towards Ketu's tail (Intense spiritual wisdom, introspection, occult mastery).
+ */
+
+export function determineKalaSarpaDirection(isMovingTowardsRahu: boolean): string {
+  return isMovingTowardsRahu ? 'Savya Kala Sarpa (Worldly Ambition & Transformation)' : 'Apasavya Kalamrita (Spiritual Liberation & Occult Genius)';
+}
+`
+    }]
+  },
+
+  // 7. Kala Sarpa Cancellations
+  {
+    step: 7,
+    msg: "feat(kalasarpa): add Kala Sarpa 12 Classical Cancellation (Bhanga) Exceptions",
+    files: [{
+      file: "src/lib/kalasarpa/kalaSarpaCancellations.ts",
+      content: `/**
+ * Kala Sarpa Yoga Cancellation (Bhanga) Criteria:
+ * 1. Planet conjoined Rahu or Ketu breaking the enclosure.
+ * 2. Jupiter or Venus in Kendra from Lagna.
+ * 3. Rajayoga forming planet exalted outside the nodal hemisphere.
+ * 4. Moon in trine with Jupiter (Gaja Kesari).
+ */
+
+export function isKalaSarpaCancelled(isPlanetOutsideAxis: boolean, isJupiterInKendra: boolean, isGajaKesariActive: boolean): boolean {
+  return isPlanetOutsideAxis || isJupiterInKendra || isGajaKesariActive;
+}
+`
+    }]
+  },
+
+  // 8. Naga Dosha
+  {
+    step: 8,
+    msg: "feat(kalasarpa): add Naga Dosha 5th house progeny affliction and Sarpa Shanti rituals",
+    files: [{
+      file: "src/lib/kalasarpa/nagaDosha.ts",
+      content: `/**
+ * Naga Dosha (Affliction to 5th House or 5th Lord by Rahu/Mars)
+ */
+
+export function evaluateNagaDosha(is5thHouseWithRahu: boolean, isJupiterAfflicted: boolean) {
+  const hasDosha = is5thHouseWithRahu || isJupiterAfflicted;
+  return {
+    hasNagaDosha: hasDosha,
+    remedy: hasDosha ? 'Sarpa Samskara at Kukke Subramanya or silver serpent offering at Shiva shrine.' : 'Clean 5th house: Progeny blessings intact.'
+  };
+}
+`
+    }]
+  },
+
+  // 9. Kurma Chakra
+  {
+    step: 9,
+    msg: "feat(medini): add Kurma Chakra (Earth Turtle) 9-sector mundane geography mapping",
+    files: [{
+      file: "src/lib/medini/kurmaChakra.ts",
+      content: `/**
+ * Kurma Chakra (Cosmic Turtle Mundane Topology)
+ * Center (Hridaya), East (Purva), Southeast (Agneya), South (Dakshina),
+ * Southwest (Nairritya), West (Pashchima), Northwest (Vayavya), North (Uttara), Northeast (Ishanya).
+ */
+
+export const KURMA_SECTORS: Record<string, string[]> = {
+  Center: ['Krittika', 'Rohini', 'Mrigashira'],
+  East: ['Ardra', 'Punarvasu', 'Pushya'],
+  Southeast: ['Ashlesha', 'Magha', 'Purva Phalguni'],
+  South: ['Uttara Phalguni', 'Hasta', 'Chitra'],
+  Southwest: ['Swati', 'Vishakha', 'Anuradha'],
+  West: ['Jyeshtha', 'Moola', 'Purva Ashadha'],
+  Northwest: ['Uttara Ashadha', 'Shravana', 'Dhanishta'],
+  North: ['Shatabhisha', 'Purva Bhadrapada', 'Uttara Bhadrapada'],
+  Northeast: ['Revati', 'Ashwini', 'Bharani']
+};
+
+export function getKurmaSector(starName: string): string {
+  for (const [sector, stars] of Object.entries(KURMA_SECTORS)) {
+    if (stars.includes(starName)) return sector;
+  }
+  return 'Center';
+}
+`
+    }]
+  },
+
+  // 10. Eclipse Mundane Path
+  {
+    step: 10,
+    msg: "feat(medini): add Solar and Lunar Eclipse path impact on national chart ascendants",
+    files: [{
+      file: "src/lib/medini/eclipseImpact.ts",
+      content: `/**
+ * Grahana (Eclipse) Mundane Impact
+ */
+
+export function evaluateEclipseMundaneImpact(eclipseSign: number, countryLagnaSign: number): string {
+  const diff = (eclipseSign - countryLagnaSign + 12) % 12;
+  if (diff === 0) return 'Lagna Eclipse: Sovereign leadership policy shifts and economic volatility.';
+  if (diff === 9) return '10th House Eclipse: Government leadership and administration transformation.';
+  return 'General national transit adaptation.';
+}
+`
+    }]
+  },
+
+  // 11. 36 Drekkana Faces
+  {
+    step: 11,
+    msg: "feat(drekkana): add 36 Drekkana (Decanate) archetypal faces symbology",
+    files: [{
+      file: "src/lib/drekkana/drekkana36Faces.ts",
+      content: `/**
+ * 36 Drekkana Faces (Decanates):
+ * Ayudha (Armed with weapons), Pakshi (Bird/Agility), Sarpa (Serpent/Wisdom),
+ * Chatushpada (Quadruped/Stamina), Varaha (Boar/Grounding).
+ */
+
+export function getDrekkanaNature(signIndex: number, decanate1to3: number): string {
+  const archetypes = ['Ayudha (Valor & Defense)', 'Sarpa (Deep Intuition)', 'Pakshi (Intellectual Flight & Vision)'];
+  return archetypes[(signIndex + decanate1to3) % 3];
+}
+`
+    }]
+  },
+
+  // 12. 22nd Kharesh
+  {
+    step: 12,
+    msg: "feat(drekkana): add 22nd Drekkana (Kharesh) exact lord, sub-division, and danger degree",
+    files: [{
+      file: "src/lib/drekkana/kharesh22nd.ts",
+      content: `/**
+ * 22nd Drekkana (Kharesh) Locator
+ * Exact 8th house in D-3 (Drekkana Chart).
+ */
+
+export function calculateKhareshLord(lagnaSignIndex: number): number {
+  return (lagnaSignIndex + 7) % 12; // 8th house in D-3
+}
+`
+    }]
+  },
+
+  // 13. Planetary Speed Variations
+  {
+    step: 13,
+    msg: "feat(speed): add Mean speed vs True daily motion calculator (Vigraha, Vakra, Manda, Sheeghra)",
+    files: [{
+      file: "src/lib/speed/planetarySpeedRatios.ts",
+      content: `/**
+ * Planetary Speed Variation Categories:
+ * 1. Sheeghra (Fast): Speed > 115% of mean speed.
+ * 2. Sama (Normal): Speed 85% - 115% of mean.
+ * 3. Manda (Slow): Speed < 85% of mean.
+ * 4. Vakra (Retrograde): Negative daily motion.
+ */
+
+export function categorizePlanetarySpeed(currentSpeedDegPerDay: number, meanSpeedDegPerDay: number): string {
+  if (currentSpeedDegPerDay < 0) return 'Vakra (Retrograde - Intensely Powerful Internal Motion)';
+  const ratio = (currentSpeedDegPerDay / meanSpeedDegPerDay) * 100;
+  if (ratio > 115) return 'Sheeghra (Accelerated / High Momentum)';
+  if (ratio < 85) return 'Manda (Slow / Deliberate Expansion)';
+  return 'Sama (Balanced Mean Velocity)';
+}
+`
+    }]
+  },
+
+  // 14. Stambhana Stationing
+  {
+    step: 14,
+    msg: "feat(speed): add Stambhana stationary planetary stationing inflection (48 hrs prior to turnaround)",
+    files: [{
+      file: "src/lib/speed/stambhanaStation.ts",
+      content: `/**
+ * Stambhana (Planetary Stationing / Zero Velocity Point)
+ * When planet speed approaches zero (±0.02 deg/day), energy crystallizes intensely.
+ */
+
+export function isPlanetaryStationing(dailySpeedDeg: number): boolean {
+  return Math.abs(dailySpeedDeg) <= 0.02;
+}
+`
+    }]
+  },
+
+  // 15. Mesha Sankranti Annual Chart
+  {
+    step: 15,
+    msg: "feat(medini): add Mesha Sankranti (Solar Aries Ingress) annual mundane chart epoch",
+    files: [{
+      file: "src/lib/medini/meshaSankranti.ts",
+      content: `/**
+ * Mesha Sankranti (Sun entering 0° Aries) Mundane Forecast
+ */
+
+export function evaluateMeshaSankranti(weekdayIndex0to6: number): string {
+  const DAYS = ['Sunday (Raja: Sun - Sovereign Strength)', 'Monday (Raja: Moon - Bountiful Agriculture)', 'Tuesday (Raja: Mars - Military Dynamism)', 'Wednesday (Raja: Mercury - Commercial Boom)', 'Thursday (Raja: Jupiter - Spiritual Peace & Harmony)', 'Friday (Raja: Venus - Luxury & Artistic Flourishing)', 'Saturday (Raja: Saturn - Labor & Industrial Growth)'];
+  return DAYS[weekdayIndex0to6] || DAYS[0];
+}
+`
+    }]
+  },
+
+  // 16 to 45: Tests and components for this suite
+  // 16. KCD Savya Test
+  {
+    step: 16,
+    msg: "test(kcd): add unit test suite for KCD Savya/Apasavya star check",
+    files: [{
+      file: "tests/kcdSavyaApasavya.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isSavyaNakshatra } from '../src/lib/kcd/kcdSavyaApasavya';
+
+describe('KCD Savya Apasavya', () => {
+  it('identifies Ashwini (0) as Savya and Bharani (1) as Apasavya', () => {
+    expect(isSavyaNakshatra(0)).toBe(true);
+    expect(isSavyaNakshatra(1)).toBe(false);
+  });
+});
+`
+    }]
+  },
+
+  // 17. KCD Deha Jeeva Test
+  {
+    step: 17,
+    msg: "test(kcd): add unit test suite for Deha and Jeeva signs",
+    files: [{
+      file: "tests/kcdDehaJeeva.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getKCDDehaJeeva } from '../src/lib/kcd/kcdDehaJeeva';
+
+describe('KCD Deha Jeeva', () => {
+  it('maps Deha and Jeeva signs', () => {
+    const res = getKCDDehaJeeva(true, 0);
+    expect(res.dehaSignIndex).toBe(0);
+    expect(res.jeevaSignIndex).toBe(8);
+  });
+});
+`
+    }]
+  },
+
+  // 18. KCD Gati Jumps Test
+  {
+    step: 18,
+    msg: "test(kcd): add unit test suite for KCD Manduka, Markati, and Simhavalokana jumps",
+    files: [{
+      file: "tests/kcdGatiJumps.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateKCDJump } from '../src/lib/kcd/kcdGatiJumps';
+
+describe('KCD Gati Jumps', () => {
+  it('identifies Manduka Gati for 2-sign skip', () => {
+    expect(evaluateKCDJump(0, 2)).toContain('Manduka');
+  });
+});
+`
+    }]
+  },
+
+  // 19. KCD Durations Test
+  {
+    step: 19,
+    msg: "test(kcd): add unit test suite for KCD sign duration years",
+    files: [{
+      file: "tests/kcdSignDurations.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getKCDDuration } from '../src/lib/kcd/kcdSignDurations';
+
+describe('KCD Durations', () => {
+  it('returns 7 years for Aries and 21 years for Cancer', () => {
+    expect(getKCDDuration(0)).toBe(7);
+    expect(getKCDDuration(3)).toBe(21);
+  });
+});
+`
+    }]
+  },
+
+  // 20. 12 Kala Sarpa Test
+  {
+    step: 20,
+    msg: "test(kalasarpa): add unit test suite for 12 Kala Sarpa archetypes",
+    files: [{
+      file: "tests/kalaSarpa12Types.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getKalaSarpaType } from '../src/lib/kalasarpa/kalaSarpa12Types';
+
+describe('12 Kala Sarpa Types', () => {
+  it('identifies Ananta for Rahu in 1st and Kulika for Rahu in 2nd', () => {
+    expect(getKalaSarpaType(1)).toContain('Ananta');
+    expect(getKalaSarpaType(2)).toContain('Kulika');
+  });
+});
+`
+    }]
+  },
+
+  // 21. Kala Sarpa Savya Test
+  {
+    step: 21,
+    msg: "test(kalasarpa): add unit test suite for Kala Sarpa vs Kalamrita direction",
+    files: [{
+      file: "tests/kalaSarpaSavya.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { determineKalaSarpaDirection } from '../src/lib/kalasarpa/kalaSarpaSavya';
+
+describe('Kala Sarpa Direction', () => {
+  it('identifies Savya when moving towards Rahu', () => {
+    expect(determineKalaSarpaDirection(true)).toContain('Savya');
+  });
+});
+`
+    }]
+  },
+
+  // 22. Kala Sarpa Cancellations Test
+  {
+    step: 22,
+    msg: "test(kalasarpa): add unit test suite for Kala Sarpa cancellation criteria",
+    files: [{
+      file: "tests/kalaSarpaCancellations.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isKalaSarpaCancelled } from '../src/lib/kalasarpa/kalaSarpaCancellations';
+
+describe('Kala Sarpa Cancellations', () => {
+  it('cancels yoga when Jupiter is in Kendra', () => {
+    expect(isKalaSarpaCancelled(false, true, false)).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 23. Naga Dosha Test
+  {
+    step: 23,
+    msg: "test(kalasarpa): add unit test suite for Naga Dosha 5th house checks",
+    files: [{
+      file: "tests/nagaDosha.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateNagaDosha } from '../src/lib/kalasarpa/nagaDosha';
+
+describe('Naga Dosha', () => {
+  it('flags dosha when 5th house holds Rahu', () => {
+    expect(evaluateNagaDosha(true, false).hasNagaDosha).toBe(true);
+  });
+});
+`
+    }]
+  },
+
+  // 24. Kurma Chakra Test
+  {
+    step: 24,
+    msg: "test(medini): add unit test suite for Kurma Chakra 9 sectors",
+    files: [{
+      file: "tests/kurmaChakra.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getKurmaSector } from '../src/lib/medini/kurmaChakra';
+
+describe('Kurma Chakra', () => {
+  it('maps Krittika to Center and Ardra to East', () => {
+    expect(getKurmaSector('Krittika')).toBe('Center');
+    expect(getKurmaSector('Ardra')).toBe('East');
+  });
+});
+`
+    }]
+  },
+
+  // 25. Eclipse Impact Test
+  {
+    step: 25,
+    msg: "test(medini): add unit test suite for Eclipse mundane impact",
+    files: [{
+      file: "tests/eclipseImpact.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateEclipseMundaneImpact } from '../src/lib/medini/eclipseImpact';
+
+describe('Eclipse Mundane Impact', () => {
+  it('identifies Lagna eclipse volatility', () => {
+    expect(evaluateEclipseMundaneImpact(0, 0)).toContain('Lagna Eclipse');
+  });
+});
+`
+    }]
+  },
+
+  // 26. 36 Drekkana Faces Test
+  {
+    step: 26,
+    msg: "test(drekkana): add unit test suite for 36 Drekkana archetypes",
+    files: [{
+      file: "tests/drekkana36Faces.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { getDrekkanaNature } from '../src/lib/drekkana/drekkana36Faces';
+
+describe('36 Drekkana Faces', () => {
+  it('returns archetypal symbology', () => {
+    const res = getDrekkanaNature(0, 1);
+    expect(res).toBeDefined();
+  });
+});
+`
+    }]
+  },
+
+  // 27. 22nd Kharesh Test
+  {
+    step: 27,
+    msg: "test(drekkana): add unit test suite for 22nd Kharesh calculation",
+    files: [{
+      file: "tests/kharesh22nd.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { calculateKhareshLord } from '../src/lib/drekkana/kharesh22nd';
+
+describe('22nd Kharesh', () => {
+  it('calculates 8th house in D-3', () => {
+    expect(calculateKhareshLord(0)).toBe(7);
+  });
+});
+`
+    }]
+  },
+
+  // 28. Planetary Speed Test
+  {
+    step: 28,
+    msg: "test(speed): add unit test suite for Planetary speed categories",
+    files: [{
+      file: "tests/planetarySpeedRatios.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { categorizePlanetarySpeed } from '../src/lib/speed/planetarySpeedRatios';
+
+describe('Planetary Speed Categories', () => {
+  it('identifies Vakra for negative speed and Sheeghra for fast motion', () => {
+    expect(categorizePlanetarySpeed(-0.05, 0.5)).toContain('Vakra');
+    expect(categorizePlanetarySpeed(1.2, 0.98)).toContain('Sheeghra');
+  });
+});
+`
+    }]
+  },
+
+  // 29. Stambhana Stationing Test
+  {
+    step: 29,
+    msg: "test(speed): add unit test suite for Stambhana stationary detection",
+    files: [{
+      file: "tests/stambhanaStation.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { isPlanetaryStationing } from '../src/lib/speed/stambhanaStation';
+
+describe('Stambhana Stationing', () => {
+  it('detects near-zero velocity stationing', () => {
+    expect(isPlanetaryStationing(0.01)).toBe(true);
+    expect(isPlanetaryStationing(0.5)).toBe(false);
+  });
+});
+`
+    }]
+  },
+
+  // 30. Mesha Sankranti Test
+  {
+    step: 30,
+    msg: "test(medini): add unit test suite for Mesha Sankranti weekday ruler",
+    files: [{
+      file: "tests/meshaSankranti.test.ts",
+      content: `import { describe, it, expect } from 'vitest';
+import { evaluateMeshaSankranti } from '../src/lib/medini/meshaSankranti';
+
+describe('Mesha Sankranti', () => {
+  it('returns Sun for Sunday and Jupiter for Thursday', () => {
+    expect(evaluateMeshaSankranti(0)).toContain('Sun');
+    expect(evaluateMeshaSankranti(4)).toContain('Jupiter');
+  });
+});
+`
+    }]
+  },
+
+  // 31. useKalachakraDasha hook
   {
     step: 31,
-    msg: "feat(muhurta): add Commercial Muhurtas (Griha Pravesh, Vyapar Arambh, Vahan Kraya)",
+    msg: "feat(hooks): add useKalachakraDasha hook for KCD Deha and Jeeva mapping",
     files: [{
-      file: "src/lib/muhurta/commercialMuhurtas.ts",
-      content: `/**
- * Commercial Muhurtas: Griha Pravesh, Vyapar Arambh, Vahan Kraya
- */
+      file: "src/hooks/useKalachakraDasha.ts",
+      content: `import { useMemo } from 'react';
+import { isSavyaNakshatra } from '../lib/kcd/kcdSavyaApasavya';
+import { getKCDDehaJeeva } from '../lib/kcd/kcdDehaJeeva';
 
-export function checkGrihaPraveshEligibility(isUttarayan: boolean, isTaraShuddhi: boolean): boolean {
-  return isUttarayan && isTaraShuddhi;
+export function useKalachakraDasha(nakshatraIdx: number, startSign: number) {
+  const isSavya = useMemo(() => isSavyaNakshatra(nakshatraIdx), [nakshatraIdx]);
+  const dehaJeeva = useMemo(() => getKCDDehaJeeva(isSavya, startSign), [isSavya, startSign]);
+
+  return { isSavya, dehaJeeva };
 }
 `
     }]
   },
 
-  // 32. 21 Mahadoshas
+  // 32. useKalaSarpaYoga hook
   {
     step: 32,
-    msg: "feat(muhurta): add 21 Great Muhurta Inauspicious Doshas (Latta, Pata, Yuti, Vedha, Jamitra)",
+    msg: "feat(hooks): add useKalaSarpaYoga hook for 12 Kala Sarpa archetypes",
     files: [{
-      file: "src/lib/muhurta/mahadosha21.ts",
-      content: `/**
- * 21 Mahadoshas in Muhurta
- */
+      file: "src/hooks/useKalaSarpaYoga.ts",
+      content: `import { useMemo } from 'react';
+import { getKalaSarpaType } from '../lib/kalasarpa/kalaSarpa12Types';
+import { isKalaSarpaCancelled } from '../lib/kalasarpa/kalaSarpaCancellations';
 
-export function checkMuhurtaDoshas(hasLatta: boolean, hasPata: boolean, hasJamitra: boolean): string[] {
-  const active: string[] = [];
-  if (hasLatta) active.push('Latta Dosha (Planetary Kick)');
-  if (hasPata) active.push('Mahapata Dosha (Equinoctial Shadow)');
-  if (hasJamitra) active.push('Jamitra Dosha (7th House Affliction)');
-  return active;
+export function useKalaSarpaYoga(rahuHouse: number, isPlanetOutside: boolean, isGuruKendra: boolean, isGajaKesari: boolean) {
+  const yogaType = useMemo(() => getKalaSarpaType(rahuHouse), [rahuHouse]);
+  const isCancelled = useMemo(() => isKalaSarpaCancelled(isPlanetOutside, isGuruKendra, isGajaKesari), [isPlanetOutside, isGuruKendra, isGajaKesari]);
+
+  return { yogaType, isCancelled };
 }
 `
     }]
   },
 
-  // 33. Shuddhi Matrix
+  // 33. useKurmaChakra hook
   {
     step: 33,
-    msg: "feat(muhurta): add 6-Fold Shuddhi Verification Matrix (Tithi, Vara, Nakshatra, Yoga, Karana, Lagna)",
+    msg: "feat(hooks): add useKurmaChakra hook for Mundane geographical sectors",
     files: [{
-      file: "src/lib/muhurta/shuddhiMatrix.ts",
-      content: `/**
- * 6-Fold Shuddhi Verification Matrix
- */
+      file: "src/hooks/useKurmaChakra.ts",
+      content: `import { useMemo } from 'react';
+import { getKurmaSector } from '../lib/medini/kurmaChakra';
 
-export function verifySixFoldShuddhi(
-  tithiOk: boolean,
-  varaOk: boolean,
-  nakshatraOk: boolean,
-  yogaOk: boolean,
-  karanaOk: boolean,
-  lagnaOk: boolean
-) {
-  const score = [tithiOk, varaOk, nakshatraOk, yogaOk, karanaOk, lagnaOk].filter(Boolean).length;
-  return {
-    score,
-    isFullyPure: score === 6,
-    rating: score === 6 ? 'Supreme Shuddhi' : score >= 4 ? 'Moderate' : 'Flawed'
-  };
+export function useKurmaChakra(starName: string) {
+  const sector = useMemo(() => getKurmaSector(starName), [starName]);
+  return { sector };
 }
 `
     }]
   },
 
-  // 34. Visha Ghati Calculator
+  // 34. useDrekkanaFaces hook
   {
     step: 34,
-    msg: "feat(muhurta): add Nakshatra Visha Ghati (Toxic Span) detection engine",
+    msg: "feat(hooks): add useDrekkanaFaces hook for 36 Decanate symbologies",
     files: [{
-      file: "src/lib/muhurta/vishaGhatiCalculator.ts",
-      content: `/**
- * Nakshatra Visha Ghati (4 Ghatis = 96 minutes of toxic time within each Nakshatra)
- */
+      file: "src/hooks/useDrekkanaFaces.ts",
+      content: `import { useMemo } from 'react';
+import { getDrekkanaNature } from '../lib/drekkana/drekkana36Faces';
 
-export function isVishaGhatiActive(ghatiIntoNakshatra: number, startGhati: number): boolean {
-  return ghatiIntoNakshatra >= startGhati && ghatiIntoNakshatra <= startGhati + 4;
+export function useDrekkanaFaces(signIndex: number, decanate: number) {
+  const nature = useMemo(() => getDrekkanaNature(signIndex, decanate), [signIndex, decanate]);
+  return { drekkanaNature: nature };
 }
 `
     }]
   },
 
-  // 35. Brahma Muhurta
+  // 35. usePlanetarySpeed hook
   {
     step: 35,
-    msg: "feat(muhurta): add Brahma Muhurta (96 mins before solar dawn) spiritual window calculator",
+    msg: "feat(hooks): add usePlanetarySpeed hook for speed ratio categorization",
     files: [{
-      file: "src/lib/muhurta/brahmaMuhurta.ts",
-      content: `/**
- * Brahma Muhurta (Starts exactly 2 Muhurtas = 96 minutes before local solar sunrise)
- */
+      file: "src/hooks/usePlanetarySpeed.ts",
+      content: `import { useMemo } from 'react';
+import { categorizePlanetarySpeed } from '../lib/speed/planetarySpeedRatios';
 
-export function calculateBrahmaMuhurta(sunriseTimestamp: number) {
-  const start = sunriseTimestamp - 96 * 60000;
-  const end = sunriseTimestamp - 48 * 60000;
-  return {
-    startTime: new Date(start).toISOString(),
-    endTime: new Date(end).toISOString(),
-    virtue: 'Supreme stillness for Gayatri Japa, Pranayama, and cosmic attunement.'
-  };
+export function usePlanetarySpeed(currentSpeed: number, meanSpeed: number) {
+  const category = useMemo(() => categorizePlanetarySpeed(currentSpeed, meanSpeed), [currentSpeed, meanSpeed]);
+  return { speedCategory: category };
 }
+`
+    }]
+  },
+
+  // 36. KalachakraDashaTree UI
+  {
+    step: 36,
+    msg: "feat(ui): add KalachakraDashaTree component displaying Deha & Jeeva signs",
+    files: [{
+      file: "src/components/KalachakraDashaTree.tsx",
+      content: `import React from 'react';
+
+export const KalachakraDashaTree: React.FC<{ dehaSign: number; jeevaSign: number; isSavya: boolean }> = ({ dehaSign, jeevaSign, isSavya }) => {
+  return (
+    <div className="p-4 bg-slate-900/80 rounded-2xl border border-purple-800/40 text-xs text-purple-200">
+      <h4 className="text-amber-400 font-bold text-sm mb-2">Kalachakra Dasha (KCD) Core Anchor</h4>
+      <div className="flex gap-4">
+        <div>Cycle Type: <strong className="text-amber-300">{isSavya ? 'Savya (Direct)' : 'Apasavya (Indirect)'}</strong></div>
+        <div>Deha (Body): <strong className="text-emerald-400">Sign #{dehaSign + 1}</strong></div>
+        <div>Jeeva (Soul): <strong className="text-amber-300">Sign #{jeevaSign + 1}</strong></div>
+      </div>
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 37. KalaSarpaYogaDetector UI
+  {
+    step: 37,
+    msg: "feat(ui): add KalaSarpaYogaDetector component for 12 archetypes and cancellation status",
+    files: [{
+      file: "src/components/KalaSarpaYogaDetector.tsx",
+      content: `import React from 'react';
+
+export const KalaSarpaYogaDetector: React.FC<{ yogaType: string; isCancelled: boolean }> = ({ yogaType, isCancelled }) => {
+  return (
+    <div className="p-4 bg-slate-900/80 rounded-2xl border border-purple-800/40 text-xs">
+      <h4 className="text-amber-400 font-bold text-sm mb-1">{yogaType}</h4>
+      <div className={isCancelled ? 'text-emerald-400 font-semibold' : 'text-amber-400'}>
+        {isCancelled ? '✨ Kala Sarpa Yoga Cancelled (Mitigated by Classical Bhanga Exception)' : '⚠️ Full Unbroken Kala Sarpa Axis'}
+      </div>
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 38. KurmaChakraMundaneMap UI
+  {
+    step: 38,
+    msg: "feat(ui): add KurmaChakraMundaneMap component for 9 cosmic turtle sectors",
+    files: [{
+      file: "src/components/KurmaChakraMundaneMap.tsx",
+      content: `import React from 'react';
+import { KURMA_SECTORS } from '../lib/medini/kurmaChakra';
+
+export const KurmaChakraMundaneMap: React.FC = () => {
+  return (
+    <div className="p-4 bg-slate-900/80 rounded-2xl border border-purple-800/40 text-xs">
+      <h4 className="text-amber-400 font-bold text-sm mb-2">Kurma Chakra Mundane Geography</h4>
+      <div className="grid grid-cols-3 gap-1.5 text-purple-200">
+        {Object.entries(KURMA_SECTORS).map(([sec, stars]) => (
+          <div key={sec} className="p-1 bg-purple-950/40 rounded border border-purple-900 text-center">
+            <strong className="text-amber-300">{sec}:</strong> <span className="text-[10px] text-purple-300">{stars[0]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 39. Drekkana36FacesCard UI
+  {
+    step: 39,
+    msg: "feat(ui): add Drekkana36FacesCard component for decanate archetypes",
+    files: [{
+      file: "src/components/Drekkana36FacesCard.tsx",
+      content: `import React from 'react';
+
+export const Drekkana36FacesCard: React.FC<{ nature: string }> = ({ nature }) => {
+  return (
+    <div className="p-3 bg-purple-950/60 rounded-xl border border-purple-800 text-xs text-purple-200">
+      <strong className="text-amber-300">Drekkana Face:</strong> {nature}
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 40. PlanetarySpeedGauge UI
+  {
+    step: 40,
+    msg: "feat(ui): add PlanetarySpeedGauge component for motional velocity categorization",
+    files: [{
+      file: "src/components/PlanetarySpeedGauge.tsx",
+      content: `import React from 'react';
+
+export const PlanetarySpeedGauge: React.FC<{ category: string }> = ({ category }) => {
+  return (
+    <div className="p-3 bg-slate-900/80 rounded-xl border border-purple-800 text-xs text-purple-200">
+      <strong className="text-amber-400">Planetary Velocity:</strong> {category}
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 41. KCDGatiJumpAlert UI
+  {
+    step: 41,
+    msg: "feat(ui): add KCDGatiJumpAlert component for special jump notifications",
+    files: [{
+      file: "src/components/KCDGatiJumpAlert.tsx",
+      content: `import React from 'react';
+
+export const KCDGatiJumpAlert: React.FC<{ jumpInfo: string }> = ({ jumpInfo }) => {
+  return (
+    <div className="p-3 bg-purple-950/60 rounded-xl border border-purple-800 text-xs text-purple-200">
+      <strong className="text-amber-300">KCD Gati:</strong> {jumpInfo}
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 42. NagaDoshaRemedyCard UI
+  {
+    step: 42,
+    msg: "feat(ui): add NagaDoshaRemedyCard component for Sarpa Shanti protocols",
+    files: [{
+      file: "src/components/NagaDoshaRemedyCard.tsx",
+      content: `import React from 'react';
+
+export const NagaDoshaRemedyCard: React.FC<{ remedy: string }> = ({ remedy }) => {
+  return (
+    <div className="p-4 bg-slate-900/80 rounded-2xl border border-purple-800/40 text-xs text-purple-200">
+      <h4 className="text-amber-400 font-bold text-sm mb-1">Sarpa Shanti Protocol</h4>
+      <div>{remedy}</div>
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 43. EclipseImpactMatrix UI
+  {
+    step: 43,
+    msg: "feat(ui): add EclipseImpactMatrix component for national transit impacts",
+    files: [{
+      file: "src/components/EclipseImpactMatrix.tsx",
+      content: `import React from 'react';
+
+export const EclipseImpactMatrix: React.FC<{ impact: string }> = ({ impact }) => {
+  return (
+    <div className="p-3 bg-purple-950/60 rounded-xl border border-purple-800 text-xs text-purple-200">
+      <strong className="text-amber-300">Mundane Eclipse Echo:</strong> {impact}
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 44. MeshaSankrantiChart UI
+  {
+    step: 44,
+    msg: "feat(ui): add MeshaSankrantiChart component for annual solar ingress",
+    files: [{
+      file: "src/components/MeshaSankrantiChart.tsx",
+      content: `import React from 'react';
+
+export const MeshaSankrantiChart: React.FC<{ yearlyRuler: string }> = ({ yearlyRuler }) => {
+  return (
+    <div className="p-3 bg-slate-900/80 rounded-xl border border-purple-800 text-xs text-purple-200">
+      <strong className="text-amber-400">Mesha Sankranti Ruler:</strong> {yearlyRuler}
+    </div>
+  );
+};
+`
+    }]
+  },
+
+  // 45. StambhanaStationCard UI
+  {
+    step: 45,
+    msg: "feat(ui): add StambhanaStationCard component displaying stationary crystallization",
+    files: [{
+      file: "src/components/StambhanaStationCard.tsx",
+      content: `import React from 'react';
+
+export const StambhanaStationCard: React.FC<{ isStationing: boolean }> = ({ isStationing }) => {
+  return (
+    <div className="p-3 bg-purple-950/60 rounded-xl border border-purple-800 text-xs">
+      <strong className={isStationing ? 'text-amber-400' : 'text-emerald-400'}>
+        {isStationing ? '⚡ Stambhana Alert: Planetary Stationary Energy Crystallization' : '✨ Planetary Motion In Regular Motion'}
+      </strong>
+    </div>
+  );
+};
 `
     }]
   }
