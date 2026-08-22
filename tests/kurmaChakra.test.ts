@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { getKurmaDirection } from '../src/lib/kurmaChakra';
+import { getKurmaSector } from '../src/lib/medini/kurmaChakra';
 
 describe('Kurma Chakra', () => {
-  it('returns cardinal direction for nakshatra index', () => {
-    const dir = getKurmaDirection(0);
-    expect(dir).toBe('East');
+  it('maps Krittika to Center and Ardra to East', () => {
+    expect(getKurmaSector('Krittika')).toBe('Center');
+    expect(getKurmaSector('Ardra')).toBe('East');
   });
 });
