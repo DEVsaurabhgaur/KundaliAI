@@ -81,3 +81,9 @@ export * from './vastu/brahmasthanEnergy';
 export * from './bsp/index';
 export * from './lalkitab/index';
 export * from './nimitta/index';
+
+export * from './kcd/index';
+export * from './kalasarpa/index';
+export * from './medini/index';
+export * from './drekkana/index';
+export * from './speed/index';
